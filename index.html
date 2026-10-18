@@ -323,6 +323,9 @@ header,footer,#rooms,.bubble,#card,.fc{transition:background .4s,border-color .4
 #sug{position:absolute;left:8px;bottom:58px;min-width:200px;background:var(--bg);border:2px solid var(--bd);z-index:21;display:none;animation:pop .15s}#sug.on{display:block}
 #sug div{padding:7px 10px;font-size:11px;cursor:pointer}#sug div.on,#sug div:hover{background:var(--bd)}
 body.compact .bubble{padding:5px 10px;font-size:12px}body.compact .message{margin-bottom:6px}body.compact .avatar,body.compact .avw{width:26px;height:26px}body.compact .message.grp{margin-top:-3px}
+#cmds{max-height:45vh;overflow-y:auto}
+#coinBtn{background:linear-gradient(#422006,#1c1917);border-color:#a16207;color:#fde68a}
+#coinBtn:hover{background:#713f12;box-shadow:0 0 10px rgba(250,204,21,.4)}
 </style>
 </head>
 <body>
@@ -445,6 +448,8 @@ body.compact .bubble{padding:5px 10px;font-size:12px}body.compact .message{margi
       <span class="u">(u)</span> transparent red favicon<br>
       <span class="u">(u)</span> avatar decorations (profile card + settings > custom)<br>
       <span class="u">(u)</span> bottom-left user panel + status picker (online / idle / dnd / invisible)<br>
+      <span class="u">(u)</span> casino: 🪙 coins + /slots /crash /roulette /scratch /bet /daily /rich<br>
+      <span class="u">(u)</span> fun commands: /8ball /choose /rps /rate<br>
       <br>u = updated, a = i want to add<br>- wolf/owner
     </div>
   </section>
@@ -643,6 +648,7 @@ function cleanProfile(d) {
     favSong: s("favSong", 80) || s("favoriteSong", 80),
     website: safeUrl(s("website", 200)), github: safeUrl(s("github", 200)),
     messageCount: +d.messageCount || 0,
+    coins: d.coins === undefined ? 1000 : Math.max(0, Math.min(1e12, Math.floor(+d.coins) || 0)),
     secret: s("secret", 64),
     location: s("location", 40), birthday: s("birthday", 10), interests: s("interests", 80), nameColor: hex(s("nameColor", 7)),
     bubColor: hex(s("bubColor", 7)), bubText: hex(s("bubText", 7)), bubImg: im("bubImg"), textColor: hex(s("textColor", 7)),
@@ -652,7 +658,7 @@ function cleanProfile(d) {
 
 const rnd = () => Array.from(crypto.getRandomValues(new Uint8Array(16)), b => b.toString(16).padStart(2, "0")).join("");
 const sha = async t => Array.from(new Uint8Array(await crypto.subtle.digest("SHA-256", new TextEncoder().encode(t))), b => b.toString(16).padStart(2, "0")).join("");
-const pub = p => { const { secret, ...r } = p; return r; };
+const pub = p => { const { secret, coins, ...r } = p; return r; };
 // atomically reserves a username for the signed-in account (legacy secret keys get upgraded)
 async function claim(p) {
   const uid = auth.currentUser.uid, old = p.secret ? await sha(p.secret) : null;
@@ -1007,6 +1013,7 @@ const dotCls = u => "dot" + ({ online: " on", idle: " idle", dnd: " dnd" }[stOf(
 const stLabel = u => ({ online: "online", idle: "idle", dnd: "do not disturb", offline: "offline" })[stOf(u)];
 function paintUbar() {
   if (!me) return;
+  window.__paintCoins?.();
   $("ubAv").src = safeImg(me.pfp) || avatar(me.name);
   $("ubName").textContent = me.displayName || me.name; setDecor($("ubDecor"), me.decor);
   $("ubSt").textContent = ST[myStatus][1];
@@ -1251,7 +1258,7 @@ $("importFile").onchange = async e => {
   const f = e.target.files[0]; if (!f) return;
   try {
     const p = cleanProfile(JSON.parse(await f.text()));
-    p.name = me.name; p.secret = me.secret; me = p; await pushProfile(); hydrate(); toast("layout imported ✅");
+    p.name = me.name; p.secret = me.secret; p.coins = me.coins; me = p; await pushProfile(); hydrate(); toast("layout imported ✅");
   } catch { toast("invalid layout file"); }
 };
 
@@ -1683,7 +1690,7 @@ async function gate(u) {
   if (!ok) return;
   try {
     const nm = (await get(ref(db, "uidMap/" + u.uid))).val(), snap = nm && await get(ref(db, "profiles/" + nm));
-    if (snap && snap.exists()) { const p = cleanProfile(snap.val()); p.secret = loadMe()?.secret || ""; return setMe(p); }
+    if (snap && snap.exists()) { const p = cleanProfile(snap.val()), lm = loadMe(); p.secret = lm?.secret || ""; if (snap.val().coins === undefined && lm) p.coins = lm.coins; return setMe(p); }
   } catch { return fail(); }
   const loc = loadMe();
   loc ? setMe(loc) : $("first").classList.add("active");
@@ -1744,12 +1751,16 @@ sIn.onkeydown = e => { if (e.key === "Escape") openSearch(false); if (e.key === 
 const ks = mk("div", "keys", "", '<div class="fc"><h2>shortcuts</h2><p><span>search room</span><kbd>ctrl+k</kbd></p><p><span>edit last message</span><kbd>↑ (empty box)</kbd></p><p><span>next / prev room</span><kbd>alt+↓ / alt+↑</kbd></p><p><span>sounds on/off</span><kbd>alt+m</kbd></p><p><span>commands</span><kbd>/</kbd></p><p><span>emoji / mention</span><kbd>:fire / @name</kbd></p><p><span>spoiler</span><kbd>||text||</kbd></p><p><span>this card</span><kbd>?</kbd></p><p><span>panic cloak</span><kbd>ctrl+shift+4</kbd></p><button class="wide" id="kX">close</button></div>');
 document.body.append(ks); ks.onclick = e => { if (e.target === ks || e.target.id === "kX") ks.classList.remove("on"); };
 /* slash commands */
-const CM = { shrug: ["¯\\_(ツ)_/¯", "add a shrug"], tableflip: ["(╯°□°)╯︵ ┻━┻", "flip the table"], unflip: ["┬─┬ ノ( ゜-゜ノ)", "put it back"], me: ["*action*", "say it in third person"], roll: ["2d6", "roll dice, e.g. /roll 3d20"], flip: ["", "flip a coin"], confetti: ["", "celebrate"], search: ["", "search this room"], shortcuts: ["", "show shortcuts"], mute: ["", "toggle sounds"], export: ["", "download this room as .txt"], notify: ["", "desktop alerts on/off"], compact: ["", "compact chat on/off"] };
+const CM = { shrug: ["¯\\_(ツ)_/¯", "add a shrug"], tableflip: ["(╯°□°)╯︵ ┻━┻", "flip the table"], unflip: ["┬─┬ ノ( ゜-゜ノ)", "put it back"], me: ["*action*", "say it in third person"], roll: ["2d6", "roll dice, e.g. /roll 3d20"], flip: ["", "flip a coin"], confetti: ["", "celebrate"], search: ["", "search this room"], shortcuts: ["", "show shortcuts"], mute: ["", "toggle sounds"], export: ["", "download this room as .txt"], notify: ["", "desktop alerts on/off"], compact: ["", "compact chat on/off"],
+  slots: ["", "🎰 /slots 100 · 7️⃣7️⃣7️⃣ = x100"], crash: ["", "🚀 /crash 100 5 · cash out at 5x (up to 1000x)"], roulette: ["", "🎡 /roulette 100 red · or 0-36 for x36"], scratch: ["", "🎟️ /scratch 100 · 🐺🐺🐺 = x500"], bet: ["", "🪙 /bet 100 heads · double or nothing"],
+  daily: ["", "🎁 claim 500 free coins"], beg: ["", "🥺 when you're broke"], balance: ["", "see your coins"], rich: ["", "💰 richest wolves leaderboard"],
+  "8ball": ["", "🎱 ask the magic 8 ball"], choose: ["", "🤔 /choose pizza | tacos"], rps: ["", "✂️ /rps rock vs the bot"], rate: ["", "⭐ rate anything out of 10"] };
 const cm = mk("div", "cmds"); foot.append(cm); const cc = mk("div", "cc"); foot.append(cc); let sel = 0, list = [];
 function cmdUi() {
   const v = msg.value, m = /^\/(\w*)$/.exec(v);
   list = m ? Object.keys(CM).filter(k => k.startsWith(m[1].toLowerCase())) : []; sel = Math.min(sel, Math.max(list.length - 1, 0));
   cm.classList.toggle("on", list.length > 0); cm.replaceChildren(...list.map((k, i) => { const d = mk("div", "", i === sel ? "on" : "", `<b>/${k}</b><small>${CM[k][1]}</small>`); d.onmousedown = e => { e.preventDefault(); msg.value = "/" + k + " "; caretEnd(); cmdUi(); }; return d; }));
+  cm.children[sel]?.scrollIntoView({ block: "nearest" });
   const n = v.length; cc.textContent = 500 - n; cc.classList.toggle("on", n > 400); cc.classList.toggle("over", n > 500);
 }
 msg.addEventListener("input", () => { cmdUi(); try { localStorage.setItem("wc_draft_" + tkey(), msg.value); } catch {} });
@@ -1762,6 +1773,109 @@ msg.addEventListener("keydown", e => {
     const k = Object.keys(msgs).filter(k => msgs[k].name === me.name).sort((a, b) => msgs[b].ts - msgs[a].ts)[0]; if (k) { e.preventDefault(); edit(k, msgs[k]); }
   }
 }, true);
+/* ---- casino: coins + gambling games ---- */
+const fm = n => Math.floor(n).toLocaleString();
+const R = () => crypto.getRandomValues(new Uint32Array(1))[0] / 4294967296;
+const ri = n => Math.floor(R() * n);
+const wpick = t => { let r = R() * t.reduce((a, x) => a + x[1], 0); for (const x of t) { if ((r -= x[1]) < 0) return x[0]; } return t[t.length - 1][0]; };
+const coinBtn = mk("button", "coinBtn"); coinBtn.title = "your coins (try /slots 100)"; document.querySelector(".hr").prepend(coinBtn);
+window.__paintCoins = () => { if (me) { coinBtn.textContent = "🪙 " + fm(me.coins); tw(coinBtn); } };
+coinBtn.onclick = () => toast(`🪙 ${fm(me.coins)} coins · try /slots, /crash, /roulette, /scratch`, 3500);
+const setCoins = n => {
+  me.coins = Math.max(0, Math.min(1e12, Math.floor(n)));
+  try { localStorage.setItem(PKEY, JSON.stringify(me)); } catch {}
+  set(ref(db, `profiles/${me.name}/coins`), me.coins).catch(() => {});
+  window.__paintCoins();
+};
+const parseBet = s => { s = (s || "").trim().toLowerCase(); if (s === "all" || s === "allin") return me.coins; if (s === "half") return Math.floor(me.coins / 2); const m = /^(\d+(?:\.\d+)?)([km])?$/.exec(s); return m ? Math.floor(+m[1] * ({ k: 1e3, m: 1e6 }[m[2]] || 1)) : NaN; };
+const okBet = (b, usage) => {
+  if (me.coins < 1) { toast("you're broke 💀 try /daily or /beg", 3000); return false; }
+  if (!(b >= 1)) { toast(usage, 4000); return false; }
+  if (b > me.coins) { toast(`you only have 🪙 ${fm(me.coins)}`, 3000); return false; }
+  return true;
+};
+const settle = (bet, mult) => { const net = Math.floor(bet * mult) - bet; setCoins(me.coins + net); if (mult >= 10) confetti(); return net; };
+const outcome = net => net > 0 ? `won **+${fm(net)}** 🤑` : net < 0 ? `lost **${fm(-net)}** 💸` : "broke even 😐";
+const bal = () => ` · 🪙 ${fm(me.coins)}` + (me.coins < 1 ? " · **BUSTED** 💀" : "");
+const GAMES = {
+  balance: () => { toast(`🪙 you have ${fm(me.coins)} coins`, 2500); return null; },
+  daily: () => {
+    const k = "wc_daily_" + ACTIVE, left = (+localStorage.getItem(k) || 0) + 72e6 - Date.now();
+    if (left > 0) { toast(`come back in ${Math.floor(left / 36e5)}h ${Math.ceil(left % 36e5 / 6e4)}m for your next daily`, 3000); return null; }
+    localStorage.setItem(k, Date.now()); setCoins(me.coins + 500);
+    return `🎁 ${me.name} claimed their daily **500** coins${bal()}`;
+  },
+  beg: () => {
+    const k = "wc_beg_" + ACTIVE;
+    if (me.coins >= 10) { toast("you're not broke enough to beg 😤"); return null; }
+    if (Date.now() - (+localStorage.getItem(k) || 0) < 3e5) { toast("nobody's feeling generous yet, wait a few minutes", 3000); return null; }
+    localStorage.setItem(k, Date.now()); setCoins(me.coins + 100);
+    return `🥺 ${me.name} begged for change and got **100** coins${bal()}`;
+  },
+  rich: () => {
+    const e = Object.entries(profiles).map(([n, p]) => [n, n === me.name ? me.coins : p.coins]).filter(x => typeof x[1] === "number").sort((a, b) => b[1] - a[1]).slice(0, 5);
+    if (!e.length) { toast("nobody has coins yet"); return null; }
+    return "💰 **richest wolves:** " + e.map(([n, c], i) => `${["🥇", "🥈", "🥉", "4.", "5."][i]} ${n} ${fm(c)}`).join(" · ");
+  },
+  slots: a => {
+    const bet = parseBet(a); if (!okBet(bet, "usage: /slots 100 (or all, half, 5k)")) return null;
+    const S = [["🍒", 30], ["🍋", 25], ["🔔", 20], ["💎", 15], ["7️⃣", 10]], PAY = { "🍒": 5, "🍋": 8, "🔔": 15, "💎": 40, "7️⃣": 100 };
+    const w1 = wpick(S), r = me.name === OWNER ? [w1, w1, w1] : [w1, wpick(S), wpick(S)], u = new Set(r).size, mult = u === 1 ? PAY[r[0]] : u === 2 ? .5 : 0;
+    const net = settle(bet, mult);
+    return `🎰 ${me.name} bet ${fm(bet)} → ${r.join(" ")} ${u === 1 ? `**x${mult}**` : ""} — ${outcome(net)}${bal()}`;
+  },
+  bet: a => {
+    const [b, s] = a.trim().split(/\s+/), bet = parseBet(b); if (!okBet(bet, "usage: /bet 100 heads (or tails)")) return null;
+    const pick = /^t/i.test(s || "") ? "tails" : "heads", res = me.name === OWNER ? pick : R() < .5 ? "heads" : "tails", net = settle(bet, res === pick ? 2 : 0);
+    return `🪙 ${me.name} bet ${fm(bet)} on ${pick} → **${res}** — ${outcome(net)}${bal()}`;
+  },
+  crash: a => {
+    const [b, t] = a.trim().split(/\s+/), bet = parseBet(b), tg = Math.round(parseFloat(String(t || "2").replace(/x$/i, "")) * 100) / 100;
+    if (!okBet(bet, "usage: /crash 100 2.5 (cash out at 2.5x, up to 1000x)")) return null;
+    if (!(tg >= 1.1 && tg <= 1000)) { toast("cash out target must be between 1.1x and 1000x", 3000); return null; }
+    const pt0 = Math.max(1, Math.floor(99 / (1 - R())) / 100), pt = me.name === OWNER ? Math.max(pt0, Math.round(tg * (1 + R()) * 100) / 100) : pt0, net = settle(bet, pt >= tg ? tg : 0);
+    return `🚀 ${me.name} bet ${fm(bet)}, cashing out @ **${tg.toFixed(2)}x** → rocket crashed at **${pt.toFixed(2)}x** 💥 — ${outcome(net)}${bal()}`;
+  },
+  roulette: a => {
+    const [b, t] = a.trim().split(/\s+/), bet = parseBet(b), w = (t || "").toLowerCase(), num = /^\d{1,2}$/.test(w) && +w <= 36;
+    if (!okBet(bet, "usage: /roulette 100 red|black|green|odd|even|0-36")) return null;
+    if (!num && !["red", "black", "green", "odd", "even"].includes(w)) { toast("pick red, black, green, odd, even or a number 0-36", 3000); return null; }
+    const RED = [1, 3, 5, 7, 9, 12, 14, 16, 18, 19, 21, 23, 25, 27, 30, 32, 34, 36], colOf = k => k === 0 ? "green" : RED.includes(k) ? "red" : "black";
+    const wins = k => num ? +w === k : w === colOf(k) || (w === "odd" && k % 2 === 1) || (w === "even" && k > 0 && k % 2 === 0);
+    let n = ri(37); if (me.name === OWNER) while (!wins(n)) n = ri(37);
+    const col = colOf(n), win = wins(n);
+    const net = settle(bet, !win ? 0 : num || w === "green" ? 36 : 2);
+    return `🎡 ${me.name} bet ${fm(bet)} on ${w} → ball landed on ${{ red: "🔴", black: "⚫", green: "🟢" }[col]} **${n}** — ${outcome(net)}${bal()}`;
+  },
+  scratch: a => {
+    const bet = parseBet(a); if (!okBet(bet, "usage: /scratch 100 (match 3 to win, 🐺🐺🐺 = x500)")) return null;
+    const T = [[0, 76.52], [2, 17], [5, 5], [10, 1.2], [50, .25], [500, .03]], IC = { 2: "🍀", 5: "⭐", 10: "💎", 50: "👑", 500: "🐺" }, F = ["🍀", "⭐", "💎", "👑", "🐺", "🍒", "🍋"];
+    const m = wpick(me.name === OWNER ? T.slice(1) : T); let cells;
+    if (m) cells = [IC[m], IC[m], IC[m]]; else { do { cells = [0, 1, 2].map(() => F[ri(F.length)]); } while (new Set(cells).size === 1); }
+    const net = settle(bet, m);
+    return `🎟️ ${me.name} bet ${fm(bet)} on a scratch card → ${cells.join(" ")} ${m ? `**x${m}**` : ""} — ${outcome(net)}${bal()}`;
+  },
+  "8ball": a => {
+    if (!a.trim()) { toast("ask a question: /8ball will i win?"); return null; }
+    const A = ["yes, definitely", "without a doubt", "signs point to yes", "outlook good", "ask again later", "cannot predict now", "don't count on it", "my sources say no", "very doubtful", "absolutely not"];
+    return `🎱 "${a.trim().slice(0, 200)}" → **${A[ri(A.length)]}**`;
+  },
+  choose: a => {
+    const o = a.split(/\s*[|,]\s*/).map(x => x.trim()).filter(Boolean);
+    if (o.length < 2) { toast("usage: /choose pizza | tacos | sushi"); return null; }
+    return `🤔 i choose **${o[ri(o.length)]}**`;
+  },
+  rps: a => {
+    const m = { r: "rock", p: "paper", s: "scissors" }, ic = { rock: "🪨", paper: "📄", scissors: "✂️" }, u = m[(a.trim()[0] || "").toLowerCase()];
+    if (!u) { toast("usage: /rps rock (or paper, scissors)"); return null; }
+    const b = ["rock", "paper", "scissors"][ri(3)], beats = { rock: "scissors", paper: "rock", scissors: "paper" };
+    return `${ic[u]} ${me.name} vs ${ic[b]} bot — ${u === b ? "tie 😐" : beats[u] === b ? "**you win** 🎉" : "**bot wins** 🤖"}`;
+  },
+  rate: a => {
+    if (!a.trim()) { toast("usage: /rate pineapple pizza"); return null; }
+    return `⭐ i rate **${a.trim().slice(0, 100)}** a **${ri(11)}/10**`;
+  }
+};
 const _send = send;
 send = function () {
   const m = /^\/(\w+)\s*(.*)$/s.exec(msg.value.trim()); if (!m || !CM[m[1].toLowerCase()]) { _send(); return afterSend(); }
@@ -1771,6 +1885,7 @@ send = function () {
   else if (c === "flip") msg.value = "🪙 " + me.name + " flipped **" + (Math.random() < .5 ? "heads" : "tails") + "**";
   else if (c === "roll") { const r = /^(\d{1,2})?d(\d{1,3})$/i.exec(a.trim() || "2d6") || [0, 2, 6], n = +r[1] || 1, s = Math.max(2, +r[2]), d = Array.from({ length: n }, () => 1 + Math.random() * s | 0); msg.value = `🎲 ${me.name} rolled ${n}d${s}: **${d.reduce((x, y) => x + y)}**` + (n > 1 ? ` (${d.join(", ")})` : ""); }
   else if (c === "me") msg.value = "*" + me.name + " " + a + "*";
+  else if (GAMES[c]) { const out = GAMES[c](a); if (!out) return local(); msg.value = out; }
   else msg.value = (a ? a + " " : "") + CM[c][0];
   _send(); afterSend();
 };
