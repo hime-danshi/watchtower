@@ -148,10 +148,22 @@
             i = document.createElement("script");
         i.setAttribute("src", r), i.setAttribute("type", "text/javascript"), i.onload = function() {
             return o.dequeue()
-        }, document.head.appendChild(i)
+        }, void 0
     }
 });
     </script>
+<script>
+/* wolfchat: stand-in for the Poki SDK. The bundled SDK is inlined as a data: URI, so its request for
+   prebid4.12.0.js resolves against this site and 404s; init() then never finishes and the game never starts.
+   This no-op version starts the game right away, offline, with no ads or tracking. */
+(function () {
+  var ok = function () { return Promise.resolve(); };
+  var impl = { init: ok, initWithVideoHB: ok, commercialBreak: ok, getLeaderboard: ok,
+               rewardedBreak: function () { return Promise.resolve(true); },
+               displayAd: function () {}, destroyAd: function () {} };
+  window.PokiSDK = new Proxy(impl, { get: function (t, k) { return k in t ? t[k] : function () {}; } });
+})();
+</script>
   </head>
   <body>
     <script>

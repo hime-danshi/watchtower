@@ -2690,7 +2690,9 @@ function openHub(t){stop();ldQ();hub.classList.add("on");$("hbT").replaceChildre
    Nothing is probed, filtered or hidden: all games stay listed in the tab at all times. */
 const EMBEDS=[
   {id:"bitlife",icon:"🎂",name:"bitlife",sub:"life simulator",url:"games/bitlife/index.html"},
-  {id:"uno",icon:"🃏",name:"uno",sub:"4 colors multiplayer",url:"https://showcase.codethislab.com/games/multiplayer/four_colors/"}
+  {id:"uno",icon:"🃏",name:"uno",sub:"4 colors multiplayer",url:"https://showcase.codethislab.com/games/multiplayer/four_colors/"},
+  {id:"stickman",icon:"🪢",name:"stickman hook",sub:"swing from the hooks",url:"games/stickman%20hook/Stickman%20Hook.html"},
+  {id:"singlefile",icon:"📦",name:"single-file",sub:"game launcher",url:"games/huge%20file/single-file%20(1).html"}
 ];
 let gmTimer=0,gmCurEmbed=null;
 const gmPaint=()=>{const B=J(K("wc_best"),{}),g=$("gmGrid");g.replaceChildren();
@@ -2706,7 +2708,7 @@ const gmArcade=g=>{gmStop();gmShow();const ar=$("gmArc"),out=$("gmOut");ar.hidde
   const go=()=>{stop();ar.replaceChildren();out.textContent="";cl=G[g](ar,sc=>finish(g,sc,out,()=>{const a=mk("button","wide","play again");a.onclick=go;ar.replaceChildren(a)}))};go()};
 const gmEmbed=e=>{gmStop();gmShow();gmCurEmbed=e;const w=$("gmWrap"),ld=$("gmLoad");w.hidden=$("gmFs").hidden=$("gmOpen").hidden=false;ld.classList.remove("done");$("gmLoadT").textContent="loading game...";
   const f=document.createElement("iframe");f.title=e.name;f.allow="fullscreen; autoplay; gamepad; clipboard-write";
-  f.setAttribute("sandbox","allow-scripts allow-same-origin allow-forms allow-popups allow-pointer-lock allow-modals allow-popups-to-escape-sandbox");
+  f.setAttribute("sandbox","allow-scripts allow-same-origin allow-forms allow-popups allow-pointer-lock allow-modals allow-downloads allow-popups-to-escape-sandbox");
   f.referrerPolicy="no-referrer";f.onload=()=>{clearTimeout(gmTimer);ld.classList.add("done")};
   /* a slow or blocked game never removes its card: just offer the new-tab link */
   gmTimer=setTimeout(()=>{if(gmCurEmbed===e&&!ld.classList.contains("done"))$("gmLoadT").textContent="taking a while... try \"open in new tab\""},15000);
