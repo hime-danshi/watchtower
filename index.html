@@ -281,6 +281,16 @@ header,footer,#rooms,.bubble,#card,.fc{transition:background .4s,border-color .4
 .sbar .tabs{width:100%;flex:1}
 .scont{flex:1;max-width:none;padding:28px 32px}
 #closePanel{align-self:flex-start;margin-top:12px}
+/* games tab */
+#gmGrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:10px;margin-top:8px}
+.gmcard{display:flex;flex-direction:column;align-items:center;gap:6px;padding:16px 10px;text-align:center;border:2px solid var(--bd);border-radius:10px;background:rgba(0,0,0,.35)}
+.gmcard:hover{border-color:var(--glow);box-shadow:0 0 14px color-mix(in srgb,var(--glow) 45%,transparent)}
+.gmcard b{font-size:30px;font-weight:normal;line-height:1}.gmcard span{font-size:12px}.gmcard small{opacity:.7;font-size:10px}
+#gmWrap{position:relative;margin-top:10px;width:100%;height:min(520px,62vh);min-height:320px;background:#000;border:2px solid var(--bd);border-radius:8px;overflow:hidden}
+#gmWrap iframe{position:absolute;inset:0;width:100%;height:100%;border:0;background:#000}
+#gmWrap:fullscreen{height:100vh;border:0;border-radius:0}
+#gmLoad{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;background:#000;z-index:1;transition:opacity .3s}
+#gmLoad.done{opacity:0;pointer-events:none}
 @media(max-width:700px){#panel{width:100vw;height:100vh;border-radius:0;border:none}.sbar{flex:none;flex-direction:row;padding:10px;align-items:center;gap:8px}.sbar .tabs{flex:1}#closePanel{order:-1;margin:0}.scont{padding:16px}}
 
 /* avatar decorations */
@@ -374,6 +384,7 @@ select{width:100%;padding:8px;background:#000;color:var(--tx);border:2px solid v
     <button class="tab" data-tab="custom">custom</button>
     <button class="tab" data-tab="misc">misc</button>
     <button class="tab" data-tab="look">look</button>
+    <button class="tab" data-tab="games">games</button>
     <button class="tab" data-tab="updates">updates</button>
     <button class="tab" data-tab="account">account</button>
   </nav><button id="closePanel" title="close (esc)">✕</button></div><div class="scont"><div class="ph"><b>settings</b></div>
@@ -479,6 +490,19 @@ select{width:100%;padding:8px;background:#000;color:var(--tx);border:2px solid v
     <div class="row"><button id="lkShare">copy theme code</button><button id="lkRnd">random theme</button></div>
     <div class="row"><input type="text" id="lkPaste" placeholder="paste a friend's theme code"><button id="lkLoad">load</button></div>
     <button class="wide" id="lkReset">reset look + fonts</button>
+  </section>
+
+  <section class="tc" id="tab-games">
+    <div id="gmList">
+      <h3>games</h3>
+      <div id="gmGrid"></div>
+    </div>
+    <div id="gmPlay" hidden>
+      <div class="row" style="margin-top:0"><button id="gmBack">← games</button><button id="gmFs" hidden>fullscreen</button><button id="gmOpen" hidden>open in new tab</button></div>
+      <div id="gmOut" style="margin:8px 0"></div>
+      <div id="gmArc" hidden></div>
+      <div id="gmWrap" hidden><div id="gmLoad"><div class="loader"></div><small id="gmLoadT">loading game...</small></div></div>
+    </div>
   </section>
 
   <section class="tc" id="tab-account">
@@ -2650,22 +2674,51 @@ function finish(g,sc,out,again){stop();const[nm,u,hi]=GM[g];if(sc<0){out.textCon
 /* ---- hub ---- */
 const hub=mk("div");hub.id="hub";hub.innerHTML='<div class="fc"><div class="ph"><b>🏆 hub</b><button id="hbX">✕</button></div><nav class="row" id="hbT"></nav><div id="hbB"></div></div>';document.body.append(hub);
 const closeHub=()=>{stop();hub.classList.remove("on")};hub.onclick=e=>{if(e.target===hub)closeHub()};$("hbX").onclick=closeHub;
-const hb=mk("button");hb.textContent="🏆";hb.title="hub: quests, arcade, ranks";hb.onclick=()=>openHub("you");document.querySelector(".hr").prepend(hb);tw(hb);
-const TABSH=[["you","you"],["arcade","arcade"],["ranks","ranks"],["badges","badges"]];
+const hb=mk("button");hb.textContent="🏆";hb.title="hub: quests, ranks, badges";hb.onclick=()=>openHub("you");document.querySelector(".hr").prepend(hb);tw(hb);
+const TABSH=[["you","you"],["ranks","ranks"],["badges","badges"]];
 function openHub(t){stop();ldQ();hub.classList.add("on");$("hbT").replaceChildren(...TABSH.map(([k,l])=>{const b=mk("button",k===t?"on":"",l);b.onclick=()=>openHub(k);return b}));const b=$("hbB");b.replaceChildren();
   if(t==="you"){const x=me.xp||0,l=lvl(x);b.innerHTML=`<div>level <b>${l}</b> · ${x} xp · 🔥 ${me.streak||0} day streak (log in daily for bonus coins)</div><div class="bar"><i style="width:${Math.min(100,(x-need(l-1))/(need(l)-need(l-1))*100)}%"></i></div><h3 style="margin:14px 0 6px">daily quests</h3>`;
     QS.forEach(([id,tx,g,c,xp])=>{const p=Math.min(Q.p[id]||0,g),r=mk("div","frow",`<span>${tx} (${p}/${g}) · 🪙${c} +${xp}xp</span>`);if(Q.c[id])r.append(mk("small","","✅"));else if(p>=g){const k=mk("button","","claim");k.onclick=()=>{Q.c[id]=1;svQ();__setCoins(me.coins+c);S.q=(S.q||0)+1;svS();gain(xp);openHub("you")};r.append(k)}b.append(r)});
-    b.append(mk("div","","<small style='opacity:.6'>tip: /poll, /trivia and the arcade all count for quests</small>"));}
-  else if(t==="arcade"){const bar=mk("div","row"),ar=mk("div"),out=mk("div");out.style.margin="8px 0";const B=J(K("wc_best"),{});
-    const go=g=>{stop();ar.replaceChildren();out.textContent="";cl=G[g](ar,sc=>finish(g,sc,out,()=>{const a=mk("button","wide","play again");a.onclick=()=>go(g);ar.replaceChildren(a)}))};
-    Object.entries(GM).forEach(([g,[n]])=>{const k=mk("button","",n+(B[g]!==undefined?` (${B[g]})`:""));k.onclick=()=>go(g);bar.append(k)});
-    const bl=mk("button","","🎂 bitlife");bl.onclick=()=>{stop();out.textContent="";const f=mk("iframe");f.src="games/bitlife/index.html";f.title="BitLife";f.allow="fullscreen";f.style.cssText="width:100%;height:60vh;min-height:360px;border:2px solid var(--bd);background:#000";ar.replaceChildren(f);cl=()=>f.remove()};bar.append(bl);b.append(bar,out,ar);tw(b)}
+    b.append(mk("div","","<small style='opacity:.6'>tip: /poll, /trivia and the games tab all count for quests</small>"));}
   else if(t==="ranks"){const sel=mk("select"),o=mk("div");[["level","level"],["messages","messages"],["streak","streak"],...Object.entries(GM).map(([g,[n]])=>[g,n])].forEach(([v,n])=>{const x=mk("option","",n);x.value=v;sel.append(x)});b.append(sel,o);
     const run=async()=>{const cat=sel.value;o.textContent="loading...";let rows;
       if(GM[cat]){try{rows=Object.entries((await get(ref(db,"scores/"+cat))).val()||{}).map(([n,v])=>[n,v.s])}catch{o.textContent='can\'t load (add a firebase rule for "scores")';return}rows.sort((a,b)=>GM[cat][2]?b[1]-a[1]:a[1]-b[1])}
       else{const f={level:p=>p.xp||0,messages:p=>p.messageCount||0,streak:p=>p.streak||0};rows=Object.entries(profiles).map(([n,p])=>[n,f[cat](n===me.name?me:p)]).filter(r=>r[1]>0).sort((a,b)=>b[1]-a[1])}
       o.replaceChildren(...rows.slice(0,10).map(([n,v],i)=>mk("div","frow",`<span>${["🥇","🥈","🥉"][i]||i+1+"."} ${esc(profiles[n]?.displayName||n)}</span><b>${cat==="level"?"lvl "+lvl(v):v}</b>`)));if(!rows.length)o.textContent="nobody yet, be the first!";tw(o)};sel.onchange=run;run()}
   else{const g=mk("div","bdgs");AC.forEach(([id,i,n])=>g.append(mk("div",(me.ach||[]).includes(id)?"":"lock",`${i} ${n}`)));b.append(g);tw(b)}}
+/* ---- games tab (settings): every arcade game + the embeds live here, permanently ----
+   Nothing is probed, filtered or hidden: all games stay listed in the tab at all times. */
+const EMBEDS=[
+  {id:"bitlife",icon:"🎂",name:"bitlife",sub:"life simulator",url:"games/bitlife/index.html"},
+  {id:"uno",icon:"🃏",name:"uno",sub:"4 colors multiplayer",url:"https://showcase.codethislab.com/games/multiplayer/four_colors/"}
+];
+let gmTimer=0,gmCurEmbed=null;
+const gmPaint=()=>{const B=J(K("wc_best"),{}),g=$("gmGrid");g.replaceChildren();
+  const card=(icon,name,sub,fn)=>{const c=mk("button","gmcard"),i=mk("b","",icon),n=mk("span","",esc(name)),d=mk("small","",esc(sub));c.append(i,n,d);c.onclick=fn;g.append(c)};
+  Object.entries(GM).forEach(([id,[nm]])=>{const sp=nm.indexOf(" ");card(nm.slice(0,sp),nm.slice(sp+1),B[id]!==undefined?"best: "+B[id]:"arcade",()=>gmArcade(id))});
+  EMBEDS.forEach(e=>card(e.icon,e.name,e.sub,()=>gmEmbed(e)));tw(g)};
+const gmStop=()=>{stop();clearTimeout(gmTimer);gmCurEmbed=null;
+  const w=$("gmWrap"),f=w.querySelector("iframe");if(f){f.src="about:blank";f.remove()}
+  if(document.fullscreenElement===w)document.exitFullscreen().catch(()=>{});
+  $("gmArc").replaceChildren();$("gmOut").textContent="";$("gmArc").hidden=w.hidden=$("gmFs").hidden=$("gmOpen").hidden=$("gmPlay").hidden=true;$("gmList").hidden=false;gmPaint()};
+const gmShow=()=>{$("gmList").hidden=true;$("gmPlay").hidden=false};
+const gmArcade=g=>{gmStop();gmShow();const ar=$("gmArc"),out=$("gmOut");ar.hidden=false;
+  const go=()=>{stop();ar.replaceChildren();out.textContent="";cl=G[g](ar,sc=>finish(g,sc,out,()=>{const a=mk("button","wide","play again");a.onclick=go;ar.replaceChildren(a)}))};go()};
+const gmEmbed=e=>{gmStop();gmShow();gmCurEmbed=e;const w=$("gmWrap"),ld=$("gmLoad");w.hidden=$("gmFs").hidden=$("gmOpen").hidden=false;ld.classList.remove("done");$("gmLoadT").textContent="loading game...";
+  const f=document.createElement("iframe");f.title=e.name;f.allow="fullscreen; autoplay; gamepad; clipboard-write";
+  f.setAttribute("sandbox","allow-scripts allow-same-origin allow-forms allow-popups allow-pointer-lock allow-modals allow-popups-to-escape-sandbox");
+  f.referrerPolicy="no-referrer";f.onload=()=>{clearTimeout(gmTimer);ld.classList.add("done")};
+  /* a slow or blocked game never removes its card: just offer the new-tab link */
+  gmTimer=setTimeout(()=>{if(gmCurEmbed===e&&!ld.classList.contains("done"))$("gmLoadT").textContent="taking a while... try \"open in new tab\""},15000);
+  f.src=e.url;w.appendChild(f);cl=()=>{f.src="about:blank";f.remove()}};
+$("gmBack").onclick=gmStop;
+$("gmOpen").onclick=()=>gmCurEmbed&&window.open(gmCurEmbed.url,"_blank","noopener");
+$("gmFs").onclick=()=>{const w=$("gmWrap");document.fullscreenElement?document.exitFullscreen():w.requestFullscreen&&w.requestFullscreen().catch(()=>toast("fullscreen blocked by your browser",2000))};
+/* leaving the tab or closing settings stops whatever is running (so bitlife/uno don't keep playing in the background) */
+document.querySelector(".tabs").addEventListener("click",e=>{const b=e.target.closest(".tab");if(!b)return;if(b.dataset.tab==="games")gmPaint();else gmStop()});
+$("closePanel").addEventListener("click",gmStop);$("scrim").addEventListener("click",gmStop);
+const openGames=()=>{if(!$("panel").classList.contains("open"))$("gear").click();document.querySelector('.tab[data-tab="games"]').click()};
+gmPaint();
 /* ---- polls + trivia ---- */
 const TQ=[["what's the largest planet?","jupiter","saturn","neptune","earth"],["how many sides does a hexagon have?","6","5","8","7"],["what's the capital of japan?","tokyo","kyoto","osaka","seoul"],["which animal is the largest on earth?","blue whale","elephant","giraffe","great white shark"],["what gas do plants absorb?","carbon dioxide","oxygen","nitrogen","helium"],["how many players on a soccer team on the field?","11","9","10","12"],["what's the chemical symbol for gold?","au","ag","go","gd"],["which ocean is the largest?","pacific","atlantic","indian","arctic"],["in minecraft, what do creepers do?","explode","shoot arrows","teleport","fly"],["how many days in a leap year?","366","365","364","367"],["what's the fastest land animal?","cheetah","lion","horse","greyhound"],["which planet is the red planet?","mars","venus","mercury","jupiter"],["what's 12 x 12?","144","124","132","142"],["which language runs in web browsers?","javascript","python","java","rust"],["how many continents are there?","7","6","5","8"],["what color do you get mixing blue and yellow?","green","purple","orange","brown"]];
 const post=o=>{o.name=me.name;o.ts=Date.now();push(ref(db,room.path),o).catch(()=>toast("message failed to send"));if(room.dm)update(ref(db),{[`dmIndex/${me.name}/${room.dm}`]:o.ts,[`dmIndex/${room.dm}/${me.name}`]:o.ts})};
@@ -2679,9 +2732,10 @@ function widget(el,key,m){const t=el.querySelector(".text");if(!t)return;
       const r=await runTransaction(ref(db,`${room.path}/${key}/win`),c=>c||me.name).catch(()=>null);if(r?.snapshot.val()===me.name){__setCoins(me.coins+100);S.tv=(S.tv||0)+1;svS();gain(10);__confetti();toast("first! +100 🪙",3000)}};
     w.append(b);if(m.win)sha(m.tv.s+i).then(h=>{if(h===m.tv.h)b.style.borderColor="#22c55e"})});if(m.win)w.append(mk("div","",`🏆 ${esc(m.win)} got it first`));t.after(w)}}
 /* ---- commands + send hook ---- */
-Object.assign(__wcCM,{poll:["","📊 /poll best pet? | dogs | cats | both"],trivia:["","🧠 first correct answer wins 100 coins"],arcade:["","🎮 snake, 2048, minesweeper, flappy, wordle + more"],hub:["","🏆 quests, ranks, badges"],level:["","📈 your level + streak"]});__wcTABS.games+=" trivia poll arcade hub level";
+Object.assign(__wcCM,{poll:["","📊 /poll best pet? | dogs | cats | both"],trivia:["","🧠 first correct answer wins 100 coins"],arcade:["","🎮 opens the games tab in settings"],hub:["","🏆 quests, ranks, badges"],level:["","📈 your level + streak"]});__wcTABS.games+=" trivia poll arcade hub level";
 const _s=send;send=function(){const t=msg.value.trim(),m=/^\/(\w+)\s*(.*)$/s.exec(t),c=m&&m[1].toLowerCase(),a=m?m[2]:"",local=()=>{msg.value="";msg.dispatchEvent(new Event("input"))};
-  if(c==="hub"||c==="arcade"||c==="level"){local();return openHub(c==="arcade"?"arcade":"you")}
+  if(c==="arcade"){local();return openGames()}
+  if(c==="hub"||c==="level"){local();return openHub("you")}
   if(c==="poll"){const p=a.split("|").map(s=>s.trim()).filter(Boolean);if(p.length<3||p.length>7){toast("usage: /poll best pet? | dogs | cats",3500);return}local();post({text:"📊 "+p[0].slice(0,150),poll:{o:p.slice(1).map(s=>s.slice(0,60))}});return bumpPoll()}
   if(c==="trivia"){local();return trivia()}
   _s();if(t&&!m){prog("msg");if(room.dm||room.group)prog("dm");const h=new Date().getHours();if(h>1&&h<5){S.owl=1;svS()}gain(2)}};
