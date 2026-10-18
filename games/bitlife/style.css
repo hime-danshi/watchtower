@@ -153,7 +153,7 @@ body {
         transform: translate(-50%, -50%);
     }
     .webgl-content .logo {
-        background: url(logo.png) no-repeat center/contain;
+        background: url(TemplateData/logo.png) no-repeat center/contain;
         width: 130px;
         height: 130px;
     }
@@ -177,7 +177,7 @@ body {
         display: inline-block;
     }
     .webgl-content .logo.Dark {
-        background-image: url(logo.png);
+        background-image: url(TemplateData/logo.png);
     }
     .webgl-content .progress.Dark .empty {
         background-image: url(TemplateData/progressEmpty.Dark.png);
