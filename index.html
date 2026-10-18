@@ -330,7 +330,7 @@ body.compact .bubble{padding:5px 10px;font-size:12px}body.compact .message{margi
 #slashBtn{padding:12px 14px}
 #gp{position:absolute;right:8px;bottom:58px;width:min(340px,94vw);max-height:55vh;overflow-y:auto;display:none;flex-direction:column;gap:8px;z-index:22}#gp.on{display:flex}
 .gc{background:var(--bg);border:2px solid var(--bd);padding:8px;font-size:11px;line-height:1.7;animation:pop .2s}.gc h4{font-size:12px;color:#fde68a;display:flex;justify-content:space-between;gap:6px}.gc .gb{display:flex;flex-wrap:wrap;gap:4px;margin-top:6px}.gc .hand{font-size:15px;letter-spacing:1px}
-.bd{display:grid;gap:3px;margin:6px 0}.bd button{aspect-ratio:1;padding:0;font-size:16px;min-width:0}.c4 button{font-size:13px}
+.bd{display:grid;gap:3px;margin:6px 0}.bd button{aspect-ratio:1;padding:0;font-size:16px;min-width:0}.c4 button{font-size:13px}.sm button{font-size:10px!important}#hbB .row{flex-wrap:wrap}
 #coinBtn{background:linear-gradient(#422006,#1c1917);border-color:#a16207;color:#fde68a}
 #coinBtn:hover{background:#713f12;box-shadow:0 0 10px rgba(250,204,21,.4)}
 /* ===== wolfchat+++ ===== */
@@ -1982,7 +1982,7 @@ const deck = () => { const d = [...Array(52).keys()]; for (let i = 51; i > 0; i-
 const cnt = o => Object.keys(o || {});
 function listenGames() {
   if (gKey === tkey()) return; gUn?.(); gKey = tkey(); gs = {}; gp.classList.remove("on");
-  gUn = onValue(gref(), sn => { gs = sn.val() || {}; Object.entries(gs).forEach(([id, g]) => claim2(id, g)); paintGames(); }, () => {});
+  gUn = onValue(gref(), sn => { const _o = gs; gs = sn.val() || {}; try { gNotify(_o, gs); } catch {} Object.entries(gs).forEach(([id, g]) => claim2(id, g)); paintGames(); }, () => {});
 }
 async function claim2(id, g) {
   if (g.st !== "done" || !g.pay || g.pay[me.name] === undefined || g.cl?.[me.name]) return;
@@ -2009,7 +2009,7 @@ function join() {
     Object.assign(up, { st: "done", res: r, win: w, pay: w ? { [w]: g.stake * 2 } : { [a]: g.stake, [b]: g.stake } });
   } else if (g.type === "tictactoe") Object.assign(up, { st: "live", bd: "         ", turn: g.host });
   else if (g.type === "connect4") Object.assign(up, { st: "live", bd: " ".repeat(42), turn: g.host });
-  else if (cnt(pl).length >= g.need) startBJ(up, pl);
+  else if (!NG[g.type] && cnt(pl).length >= g.need) startBJ(up, pl);
   update(gref(id), up).catch(() => toast("couldn't join", 2500)); gp.classList.add("on"); return `👥 **${me.name}** joined ${GN[g.type][0]}`;
 }
 function startBJ(up, pl) {
@@ -2036,6 +2036,7 @@ function paintGames() {
     c.append(mk("h4", "", "", `<span>${GN[g.type][0]}${g.stake ? " · 🪙 " + fm(g.stake) : ""}</span><small>${g.st}</small>`));
     const info = mk("div"); c.append(info); info.textContent = "players: " + cnt(g.pl).join(", ");
     if (g.st === "open") { if (!mineP) bar.append(b("join", () => { const o = join(); if (o) { msg.value = o; _send(); } })); if (g.host === me.name) { bar.append(b("cancel", () => { const pay = {}; cnt(g.pl).forEach(n => pay[n] = g.stake); update(gref(id), { st: "done", pay }); })); if (g.type === "blackjack" && cnt(g.pl).length >= 1) bar.append(b("deal now", () => { const up = {}; startBJ(up, g.pl); up.st = "live"; update(gref(id), up); })); } }
+    if (NG[g.type]) paintN(c, id, g, bar, b, info);
     if (g.type === "blackjack" && g.st !== "open") {
       const dv = g.st === "done" || !g.turn ? g.dl : [g.dl[0]], t = mk("div", "", "hand"); t.textContent = "dealer: " + dv.map(card).join(" ") + (g.st === "done" ? ` (${cval(g.dl)})` : " ??"); c.append(t);
       cnt(g.pl).forEach(n => { const h = mk("div", "", "hand"); h.textContent = `${n}${g.turn === n ? " ▶" : ""}: ${g.hd[n].map(card).join(" ")} (${cval(g.hd[n])})${g.pay ? " → " + fm(g.pay[n]) : ""}`; c.append(h); });
@@ -2054,6 +2055,350 @@ function paintGames() {
   gp.replaceChildren(...cards); if (!cards.length) gp.classList.remove("on");
 }
 Object.assign(GAMES, { blackjack: a => open("blackjack", a), duel: a => open("duel", a), dicewar: a => open("dicewar", a), highcard: a => open("highcard", a), tictactoe: a => open("tictactoe", a), connect4: a => open("connect4", a), join: () => join(), games: () => { listenGames(); gp.classList.toggle("on"); paintGames(); return null; } });
+/* ---- more table games: uno (2-6), rps table (2-6), race to 21 (2-6) ---- */
+const NG = { uno: 1, rpsw: 1, race21: 1 };
+Object.assign(GN, { uno: ["🟥 uno", 6], rpsw: ["✊ rps table", 6], race21: ["🔢 race to 21", 6] });
+const shuf = a => { for (let i = a.length - 1; i > 0; i--) { const j = ri(i + 1); [a[i], a[j]] = [a[j], a[i]]; } return a; };
+const UE = { R: "🟥", Y: "🟨", G: "🟩", B: "🟦", W: "🌈" };
+const uLbl = c => c === "WW" ? "🌈 wild" : c === "W4" ? "🌈 +4" : UE[c[0]] + ({ S: "⛔", R: "🔄", D: "+2" }[c[1]] || c[1]);
+const uDeck = () => { const d = []; [..."RYGB"].forEach(c => { d.push(c + "0"); for (let i = 0; i < 2; i++) [..."123456789SRD"].forEach(v => d.push(c + v)); }); for (let i = 0; i < 4; i++) d.push("WW", "W4"); return shuf(d); };
+const uOk = (c, g) => c[0] === "W" || c[0] === g.col || (g.top[0] !== "W" && c[1] === g.top[1]);
+const uNext = (g, n, k = 1) => g.ord[(g.ord.indexOf(n) + g.dir * k + g.ord.length * 9) % g.ord.length];
+function uDraw(st, k) { const o = []; for (let i = 0; i < k; i++) { if (!st.dk.length) { st.dk = shuf(st.ds); st.ds = []; } if (!st.dk.length) break; o.push(st.dk.pop()); } return o; }
+const uHand = (g, n) => [...(g.hd?.[n] || [])];
+function openN(type) {
+  if (Object.values(gs).some(g => g.host === me.name && g.st !== "done")) { toast("you already have a game open — finish or /games to cancel it", 3000); return null; }
+  const id = push(gref()).key;
+  set(gref(id), { type, host: me.name, stake: 0, st: "open", ts: Date.now(), pl: { [me.name]: true }, need: GN[type][1] }).catch(() => toast("couldn't open game — add a rule for \"games\" in your firebase database rules", 4500));
+  gp.classList.add("on"); return `${GN[type][0]} table opened by **${me.name}** · type **/join** (2-${GN[type][1]} players), then the host hits start`;
+}
+function startN(id, g) {
+  const ord = cnt(g.pl), up = { st: "live", ord, ts: Date.now(), turn: ord[0], log: "game started!" };
+  if (g.type === "uno") {
+    const d = uDeck(), hd = {}; ord.forEach(n => hd[n] = d.splice(0, 7));
+    const k = d.findIndex(c => /^[RYGB]\d$/.test(c)), t = d.splice(k, 1)[0];
+    Object.assign(up, { hd, dk: d, ds: [], top: t, col: t[0], dir: 1, drew: false });
+  } else if (g.type === "race21") Object.assign(up, { n: 0 });
+  else if (g.type === "rpsw") Object.assign(up, { rd: 1, sc: {}, turn: null });
+  else XG[g.type].start(up, g);
+  update(gref(id), up);
+}
+function uPlay(id, g, c, col) {
+  const ord = g.ord, hd = {}; ord.forEach(n => hd[n] = uHand(g, n));
+  const st = { dk: [...(g.dk || [])], ds: [...(g.ds || []), g.top] }, v = c[1], G = { ...g, dir: g.dir };
+  hd[me.name].splice(hd[me.name].indexOf(c), 1);
+  let t = uNext(G, me.name), log = `${me.name} played ${uLbl(c)}`;
+  if (v === "R" && c[0] !== "W") { if (ord.length === 2) t = me.name; else { G.dir = -G.dir; t = uNext(G, me.name); } }
+  else if (v === "S") { log += ` · ${t} skipped`; t = uNext(G, t); }
+  else if (v === "D" || c === "W4") { const k = c === "W4" ? 4 : 2; hd[t].push(...uDraw(st, k)); log += ` · ${t} draws ${k}`; t = uNext(G, t); }
+  const up = { top: c, col: c[0] === "W" ? col : c[0], dir: G.dir, hd, dk: st.dk, ds: st.ds, drew: false, turn: t, log };
+  if (!hd[me.name].length) Object.assign(up, { st: "done", win: me.name, turn: null, log: `${me.name} wins! 🏆` });
+  else if (hd[me.name].length === 1) up.log += " · UNO!!";
+  update(gref(id), up);
+}
+function uDrawBtn(id, g) {
+  const st = { dk: [...(g.dk || [])], ds: [...(g.ds || [])] }, h = uHand(g, me.name), [c] = uDraw(st, 1);
+  if (c) h.push(c);
+  const up = { [`hd/${me.name}`]: h, dk: st.dk, ds: st.ds, log: `${me.name} drew a card`, drew: !!c && uOk(c, g) };
+  if (!up.drew) up.turn = uNext(g, me.name); update(gref(id), up);
+}
+function rResolve(id) {
+  runTransaction(gref(id), cur => {
+    if (!cur || cur.st !== "live" || !cur.pk || cnt(cur.pk).length < cnt(cur.pl).length) return;
+    const ks = [...new Set(Object.values(cur.pk))], B = { r: "s", p: "r", s: "p" }; let w = [];
+    if (ks.length === 2) { const x = B[ks[0]] === ks[1] ? ks[0] : ks[1]; w = cnt(cur.pk).filter(n => cur.pk[n] === x); }
+    cur.sc = { ...(cur.sc || {}) }; w.forEach(n => cur.sc[n] = (cur.sc[n] || 0) + 1);
+    cur.lr = cur.pk; cur.pk = null; cur.rd++; cur.log = w.length ? `round won by ${w.join(", ")}` : "tie — go again";
+    const t = cnt(cur.sc).find(n => cur.sc[n] >= 3); if (t) Object.assign(cur, { st: "done", win: t, log: `${t} wins! 🏆` });
+    return cur;
+  }).catch(() => {});
+}
+let uW = null;
+function paintN(c, id, g, bar, b, info) {
+  const mineP = g.pl?.[me.name], D = (t, cls) => { const e = mk("div", "", cls || ""); e.textContent = t; c.append(e); return e; };
+  if (g.st === "open") { if (g.host === me.name && cnt(g.pl).length >= 2) bar.append(b("start ▶", () => startN(id, g))); return; }
+  if (g.st === "live") seenL.add(id);
+  if (g.st === "done" && g.win) { info.textContent += ` · ${g.win} wins 🏆`; if (seenL.delete(id) && g.win === me.name) { try { confetti(); } catch {} } }
+  if (g.log) D(g.log);
+  const my = g.st === "live" && g.turn === me.name;
+  if (g.type === "uno") {
+    D("top: " + uLbl(g.top) + (g.top[0] === "W" ? " · color " + UE[g.col] : ""), "hand");
+    D((g.ord || []).map(n => `${n === g.turn ? "▶" : ""}${n} (${uHand(g, n).length})`).join(" · "));
+    if (!mineP) return;
+    if (uW?.id === id && my) { D("pick a color:"); [..."RYGB"].forEach(k => bar.append(b(UE[k], () => { const w = uW; uW = null; uPlay(id, g, w.c, k); }))); return; }
+    const h = uHand(g, me.name).sort(), row = mk("div", "", "gb");
+    h.forEach(k => { const x = b(uLbl(k), () => { if (k[0] === "W") { uW = { id, c: k }; paintGames(); } else uPlay(id, g, k); }); x.disabled = !my || !uOk(k, g); row.append(x); }); c.append(row);
+    if (my) bar.append(g.drew ? b("pass", () => update(gref(id), { turn: uNext(g, me.name), drew: false })) : b("draw 🃏", () => uDrawBtn(id, g)));
+  } else if (g.type === "race21") {
+    D(`total: ${g.n} / 21 · first to hit 21 wins` + (g.st === "live" ? ` · turn: ${g.turn}` : ""), "hand");
+    if (my) [1, 2, 3].forEach(k => { const x = b("+" + k, () => { const n = g.n + k, up = { n, turn: uNext({ ord: g.ord, dir: 1 }, me.name), log: `${me.name} added ${k}` }; if (n >= 21) Object.assign(up, { st: "done", win: me.name, turn: null, log: `${me.name} hit 21! 🏆` }); update(gref(id), up); }); x.disabled = g.n + k > 21; bar.append(x); });
+  } else if (g.type === "rpsw") {
+    const E = { r: "✊", p: "✋", s: "✌️" };
+    D(`round ${g.rd} · first to 3 wins · ` + (g.ord || []).map(n => `${n}: ${g.sc?.[n] || 0}${g.pk?.[n] ? " ✔" : ""}`).join(" · "));
+    if (g.lr) D("last: " + cnt(g.lr).map(n => `${n} ${E[g.lr[n]]}`).join(" "), "hand");
+    if (g.st === "live" && mineP && !g.pk?.[me.name]) Object.keys(E).forEach(k => bar.append(b(E[k], () => update(gref(id), { [`pk/${me.name}`]: k }))));
+    if (g.st === "live" && g.pk && cnt(g.pk).length >= cnt(g.pl).length) rResolve(id);
+  } else XG[g.type]?.paint({ c, id, g, bar, b, D, my, mineP });
+}
+Object.assign(CM, { uno: ["", "🟥 /uno · 2-6 players, host hits start"], rpstable: ["", "✊ /rpstable · 2-6 players, first to 3"], race21: ["", "🔢 /race21 · 2-6 players, first to hit 21"] });
+TABS.games += " uno rpstable race21"; TABS["vs players"] += " uno rpstable race21";
+Object.assign(GAMES, { uno: () => openN("uno"), rpstable: () => openN("rpsw"), race21: () => openN("race21") });
+/* ---- round 2: memory, hangman, pig + effects + fun commands ---- */
+const pick = a => a[ri(a.length)], nxt = (g, n) => uNext({ ord: g.ord, dir: 1 }, n), seenL = new Set();
+Object.assign(NG, { memory: 1, hangman: 1, pig: 1 });
+Object.assign(GN, { memory: ["🧠 memory match", 6], hangman: ["🔤 hangman", 6], pig: ["🐷 pig", 6] });
+const XE = "🐺🦊🐸🐙🦄🍕🍩🚀🎸🌵🍉👾".match(/./gu), HW = "wolf pixel galaxy rocket jungle puzzle wizard castle banana dragon guitar planet pirate zombie coffee rainbow thunder shadow cookie volcano".split(" ");
+let mmT = 0;
+function memFlip(id, g, i) {
+  const fl = g.fl || []; if (!fl.length) return update(gref(id), { fl: [i] });
+  const a = fl[0], up = { fl: [a, i] };
+  if (g.cd[a] === g.cd[i]) {
+    const own = [...g.own]; own[a] = own[i] = me.name; Object.assign(up, { own, fl: null, log: `${me.name} matched ${g.cd[i]}` });
+    if (!own.includes("-")) { const sc = {}; own.forEach(o => sc[o] = (sc[o] || 0) + 1); const m = Math.max(...Object.values(sc)), ws = cnt(sc).filter(n => sc[n] === m); Object.assign(up, { st: "done", turn: null, win: ws.length === 1 ? ws[0] : null, log: ws.length === 1 ? `${ws[0]} wins! 🏆` : "it's a tie!" }); }
+  }
+  update(gref(id), up);
+}
+function hmGuess(id, g, l) {
+  const gu = g.gu + l, hit = g.w.includes(l), up = { gu, log: `${me.name} guessed ${l} — ${hit ? "hit ✅" : "miss ❌"}` };
+  if (!hit) { up.lv = g.lv - 1; up.turn = nxt(g, me.name); }
+  if (g.w.split("").every(ch => gu.includes(ch))) Object.assign(up, { st: "done", win: me.name, turn: null, log: `${me.name} solved it! 🏆` });
+  else if (up.lv === 0) Object.assign(up, { st: "done", turn: null, log: `out of lives 💀 the word was ${g.w}` });
+  update(gref(id), up);
+}
+const XG = {
+  memory: {
+    start: up => Object.assign(up, { cd: shuf([...XE, ...XE]), own: Array(24).fill("-") }),
+    paint: ({ c, id, g, my }) => {
+      const sc = {}; (g.own || []).forEach(o => { if (o !== "-") sc[o] = (sc[o] || 0) + .5; });
+      const h = mk("div", "", "hand"); h.textContent = g.ord.map(n => `${n === g.turn ? "▶" : ""}${n}: ${sc[n] || 0}`).join(" · "); c.append(h);
+      const fl = g.fl || [], grid = mk("div", "", "bd"); grid.style.gridTemplateColumns = "repeat(6,1fr)";
+      g.cd.forEach((e, i) => { const op = g.own[i] !== "-" || fl.includes(i), k = mk("button"); k.textContent = op ? e : "❓"; if (op) k.className = "flip"; k.disabled = !my || op || fl.length > 1; k.onclick = () => memFlip(id, g, i); grid.append(k); });
+      c.append(grid); if (fl.length === 2 && my) { clearTimeout(mmT); mmT = setTimeout(() => update(gref(id), { fl: null, turn: nxt(g, me.name) }), 1400); }
+    }
+  },
+  hangman: {
+    start: up => Object.assign(up, { w: pick(HW), gu: "-", lv: 6 }),
+    paint: ({ c, id, g, my, D }) => {
+      D(g.w.split("").map(ch => g.gu.includes(ch) || g.st === "done" ? ch : "_").join(" ") + "  " + "❤️".repeat(g.lv) + (g.lv ? "" : "💀"), "hand");
+      if (g.st !== "live") return; D(`turn: ${g.turn} · guessed: ${g.gu.slice(1) || "none"}`);
+      const row = mk("div", "", "gb"); [..."abcdefghijklmnopqrstuvwxyz"].forEach(l => { const k = mk("button"); k.textContent = l; k.disabled = !my || g.gu.includes(l); k.onclick = () => hmGuess(id, g, l); row.append(k); }); c.append(row);
+    }
+  },
+  pig: {
+    start: up => Object.assign(up, { tt: 0, last: 0 }),
+    paint: ({ id, g, my, bar, b, D }) => {
+      D(g.ord.map(n => `${n === g.turn ? "▶" : ""}${n}: ${g.sc?.[n] || 0}`).join(" · ") + " · first to 50", "hand");
+      if (g.st === "live") D(`turn total: ${g.tt}${g.last ? " · last roll 🎲" + g.last : ""}`);
+      if (my) bar.append(b("roll 🎲", () => { const d = ri(6) + 1, up = { last: d }; if (d === 1) Object.assign(up, { tt: 0, turn: nxt(g, me.name), log: `${me.name} rolled a 1 — bust! 💥` }); else Object.assign(up, { tt: g.tt + d, log: `${me.name} rolled ${d}` }); update(gref(id), up); }),
+        b("hold 💰", () => { const s = (g.sc?.[me.name] || 0) + g.tt, up = { [`sc/${me.name}`]: s, tt: 0, last: 0, turn: nxt(g, me.name), log: `${me.name} banked ${g.tt} (${s})` }; if (s >= 50) Object.assign(up, { st: "done", win: me.name, turn: null, log: `${me.name} wins with ${s}! 🏆` }); update(gref(id), up); }));
+    }
+  }
+};
+function gNotify(o, n) { Object.entries(n).forEach(([id, g]) => { if (!o[id] && g.st === "open" && g.host !== me.name && Date.now() - g.ts < 6e4) { toast(`🎮 ${g.host} opened ${GN[g.type]?.[0] || g.type} — type /join`, 4000); gbtn.classList.add("wob"); setTimeout(() => gbtn.classList.remove("wob"), 3000); } }); }
+/* effects */
+const fxs = document.createElement("style"); fxs.textContent = `.fxp{position:fixed;top:-40px;z-index:9999;pointer-events:none;animation:fxfall linear forwards}@keyframes fxfall{to{transform:translate(var(--dx,0),110vh) rotate(360deg)}}
+.fxp.hearts{top:auto;bottom:-40px;animation-name:fxrise}@keyframes fxrise{to{transform:translate(var(--dx,0),-110vh) rotate(20deg)}}
+.fxp.fireworks{top:var(--ty);animation:fxboom 1.2s ease-out forwards}@keyframes fxboom{0%{transform:scale(0);opacity:1}60%{transform:scale(2.4);opacity:1}100%{transform:scale(3) translateY(30px);opacity:0}}
+.fxp.spark{animation:fxspark .7s ease-out forwards}@keyframes fxspark{to{transform:translateY(22px) scale(.2);opacity:0}}
+.flip{animation:flipc .35s}@keyframes flipc{from{transform:rotateY(90deg)}}.wob{animation:wob .5s 3}@keyframes wob{25%{transform:rotate(-18deg) scale(1.25)}75%{transform:rotate(18deg) scale(1.25)}}
+.app.shk{animation:shk .5s}@keyframes shk{20%{transform:translate(-8px,4px)}40%{transform:translate(8px,-4px)}60%{transform:translate(-6px,2px)}80%{transform:translate(6px,-2px)}}
+body.disco .app{animation:disco 3s linear infinite}@keyframes disco{to{filter:hue-rotate(360deg)}}
+.gc{transition:transform .2s,box-shadow .2s}.gc:hover{transform:translateY(-2px);box-shadow:0 0 16px color-mix(in srgb,var(--glow) 45%,transparent)}.bubble{transition:box-shadow .2s}.bubble:hover{box-shadow:0 0 14px color-mix(in srgb,var(--glow) 40%,transparent)}`;
+document.head.append(fxs);
+function fx(k, e) {
+  const S = { rain: [e || "🌧️"], snow: ["❄️", "❄", "✨"], hearts: ["💖", "💗", "💕", "💘"], fireworks: ["🎆", "🎇", "✨", "💥"] }[k], fw = k === "fireworks";
+  for (let i = 0; i < (fw ? 40 : 60); i++) { const p = document.createElement("div"); p.className = "fxp " + k; p.textContent = pick(S); p.style.cssText = `left:${R() * 100}vw;--ty:${10 + R() * 60}vh;font-size:${14 + R() * 22}px;animation-duration:${fw ? 1.2 : 3 + R() * 3}s;animation-delay:${R() * (fw ? 2 : 2.5)}s;--dx:${(R() - .5) * (k === "rain" ? 6 : 40)}vw`; document.body.append(p); setTimeout(() => p.remove(), 9000); }
+}
+let trail = false; addEventListener("pointermove", e => { if (!trail || R() > .35) return; const p = document.createElement("div"); p.className = "fxp spark"; p.textContent = "✦"; p.style.cssText = `left:${e.clientX}px;top:${e.clientY}px;color:hsl(${ri(360)} 90% 70%)`; document.body.append(p); setTimeout(() => p.remove(), 700); });
+const KC = "ArrowUp,ArrowUp,ArrowDown,ArrowDown,ArrowLeft,ArrowRight,ArrowLeft,ArrowRight,b,a".split(","); let kp = [];
+addEventListener("keydown", e => { kp.push(e.key); kp = kp.slice(-10); if (kp.join() === KC.join()) { document.body.classList.add("disco"); fx("fireworks"); toast("🕹️ konami! disco mode on (/disco to stop)", 3500); } });
+const JK = ["why do programmers prefer dark mode? light attracts bugs 🐛", "i'd tell you a UDP joke but you might not get it", "there are 10 kinds of people: those who get binary and those who don't", "a wolf walks into a chat... and howls 🐺", "why did the scarecrow win an award? outstanding in his field", "i told my computer a joke. it had a byte 💾", "parallel lines have so much in common. shame they'll never meet", "what do you call a sleeping bull? a bulldozer"];
+const FT = ["a great message is coming your way 📩", "today you will win at uno 🟥", "someone is thinking of you 💭", "avoid the number 1 in pig 🐷", "your luck is about to spike 🍀", "howl and the pack will answer 🐺", "a surprise awaits in the games panel 🎮"];
+const arg = (a, f) => a.trim() ? f(a.trim()) : (toast("add some text after the command", 2500), null);
+Object.assign(GAMES, {
+  memory: () => openN("memory"), hangman: () => openN("hangman"), pig: () => openN("pig"),
+  rain: a => (fx("rain", a.trim() || "🌧️"), null), snow: () => (fx("snow"), null), hearts: () => (fx("hearts"), null), fireworks: () => (fx("fireworks"), null),
+  trail: () => { trail = !trail; toast(trail ? "✨ sparkle trail on" : "trail off", 2000); return null; },
+  disco: () => { document.body.classList.toggle("disco"); return null; },
+  shake: () => { const ap = document.querySelector(".app"); ap.classList.add("shk"); setTimeout(() => ap.classList.remove("shk"), 600); return null; },
+  hug: a => arg(a, x => `🤗 **${me.name}** gives ${x} a big hug`), bonk: a => arg(a, x => `🔨 **${me.name}** bonks ${x} — go to horny jail`.replace(" — go to horny jail", "")),
+  joke: () => "😂 " + pick(JK), fortune: () => "🔮 " + pick(FT),
+  clap: a => arg(a, x => x.split(/\s+/).join(" 👏 ") + " 👏"), mock: a => arg(a, x => [...x].map((ch, i) => i % 2 ? ch.toUpperCase() : ch.toLowerCase()).join("")), uwu: a => arg(a, x => x.replace(/[rl]/g, "w").replace(/[RL]/g, "W").replace(/n([aeiou])/g, "ny$1") + " uwu")
+});
+Object.assign(CM, { memory: ["", "🧠 /memory · 2-6 players, match the pairs"], hangman: ["", "🔤 /hangman · 2-6 players, take turns guessing"], pig: ["", "🐷 /pig · 2-6 players, push your luck to 50"],
+  rain: ["", "🌧️ /rain [emoji] · raining emoji"], snow: ["", "❄️ snowfall"], hearts: ["", "💖 floating hearts"], fireworks: ["", "🎆 fireworks"], trail: ["", "✨ sparkle cursor trail on/off"], disco: ["", "🪩 disco colors on/off"], shake: ["", "📳 shake the screen"],
+  hug: ["", "🤗 /hug name"], bonk: ["", "🔨 /bonk name"], joke: ["", "😂 random joke"], fortune: ["", "🔮 your fortune"], clap: ["", "👏 /clap some words"], mock: ["", "🧽 /mock sPoNgE tExT"], uwu: ["", "🥺 /uwu uwuify text"] });
+TABS.games += " memory hangman pig"; TABS["vs players"] += " memory hangman pig"; TABS.chat += " hug bonk joke fortune clap mock uwu"; TABS.effects = "rain snow hearts fireworks trail disco shake";
+/* ---- round 3: more gambling games ---- */
+Object.assign(GAMES, {
+  plinko: a => {
+    const [b, r] = a.trim().split(/\s+/), bet = parseBet(b); if (!okBet(bet, "usage: /plinko 100 low|med|high")) return null;
+    const T = { low: [5.6, 2.1, 1.1, 1, .5, 1, 1.1, 2.1, 5.6], med: [13, 3, 1.3, .7, .4, .7, 1.3, 3, 13], high: [29, 4, 1.5, .3, .2, .3, 1.5, 4, 29] }, k = /^m/i.test(r || "") ? "med" : /^h/i.test(r || "") ? "high" : "low";
+    let s = 0; for (let i = 0; i < 8; i++) s += ri(2); const m = T[k][s], net = settle(bet, m);
+    return `🔻 ${me.name} dropped a ${k}-risk plinko ball for ${fm(bet)} → slot ${s + 1}/9 **x${m}** — ${outcome(net)}${bal()}`;
+  },
+  mines: a => {
+    const [b, m, k] = a.trim().split(/\s+/), bet = parseBet(b), mi = Math.round(+m || 3), t = Math.round(+k || 3);
+    if (!okBet(bet, "usage: /mines 100 3 4 (3 mines hidden in 25 tiles, reveal 4 safe ones)")) return null;
+    if (!(mi >= 1 && mi <= 24 && t >= 1 && t <= 25 - mi)) { toast("mines: 1-24, tiles: 1 to (25 - mines)", 3000); return null; }
+    let p = 1; for (let i = 0; i < t; i++) p *= (25 - mi - i) / (25 - i);
+    const mult = Math.floor(97 / p) / 100, win = R() < p, net = settle(bet, win ? mult : 0);
+    return `⛏️ ${me.name} bet ${fm(bet)}: ${t} tiles, ${mi} mines (x${mult}) → ${win ? "💎".repeat(Math.min(t, 10)) + " all safe" : "💥 hit a mine"} — ${outcome(net)}${bal()}`;
+  },
+  horse: a => {
+    const [b, h] = a.trim().split(/\s+/), bet = parseBet(b), n = Math.round(+h); if (!okBet(bet, "usage: /horse 100 1-6")) return null;
+    if (!(n >= 1 && n <= 6)) { toast("pick a horse from 1 to 6", 2500); return null; }
+    const W = [30, 25, 20, 13, 8, 4], w = wpick(W.map((x, i) => [i + 1, x])), mult = Math.floor(9500 / W[n - 1]) / 100, net = settle(bet, w === n ? mult : 0);
+    return `🐎 ${me.name} backed horse #${n} (x${mult}) for ${fm(bet)} → 🏁 horse **#${w}** wins — ${outcome(net)}${bal()}`;
+  },
+  war: a => {
+    const bet = parseBet(a); if (!okBet(bet, "usage: /war 100 (higher card wins, tie = half back)")) return null;
+    const x = ri(13), y = ri(13), v = k => k === 0 ? 14 : k + 1, tie = x === y, win = v(x) > v(y), net = settle(bet, tie ? .5 : win ? 2 : 0);
+    return `⚔️ ${me.name} bet ${fm(bet)} · ${RK[x]} vs dealer ${RK[y]} — ${tie ? "tie (half back)" : win ? "**you win**" : "**dealer wins**"} — ${outcome(net)}${bal()}`;
+  },
+  craps: a => {
+    const bet = parseBet(a); if (!okBet(bet, "usage: /craps 100 (pass line bet)")) return null;
+    const d = () => 1 + ri(6), rl = []; let s = d() + d(), win; rl.push(s);
+    if (s === 7 || s === 11) win = true; else if (s === 2 || s === 3 || s === 12) win = false;
+    else { const pt = s; for (; ;) { s = d() + d(); rl.push(s); if (s === pt) { win = true; break; } if (s === 7) { win = false; break; } } }
+    const net = settle(bet, win ? 2 : 0);
+    return `🎲 ${me.name} bet ${fm(bet)} on the pass line → rolls ${rl.slice(0, 12).join(", ")} — ${outcome(net)}${bal()}`;
+  },
+  baccarat: a => {
+    const [b, s] = a.trim().split(/\s+/), bet = parseBet(b), w = (s || "").toLowerCase()[0] || ""; if (!okBet(bet, "usage: /baccarat 100 player|banker|tie")) return null;
+    if (!/^[pbt]/.test(w)) { toast("bet on player, banker or tie", 2500); return null; }
+    const d = deck(), v = c => { const r = c % 13; return r > 8 ? 0 : r + 1; }, tot = h => h.reduce((x, c) => x + v(c), 0) % 10, P = [d.pop(), d.pop()], B = [d.pop(), d.pop()]; let p3 = null;
+    if (tot(P) < 8 && tot(B) < 8) {
+      if (tot(P) <= 5) { p3 = d.pop(); P.push(p3); }
+      const bt = tot(B), t3 = p3 === null ? -1 : v(p3);
+      if (p3 === null ? bt <= 5 : bt <= 2 || (bt === 3 && t3 !== 8) || (bt === 4 && t3 >= 2 && t3 <= 7) || (bt === 5 && t3 >= 4 && t3 <= 7) || (bt === 6 && (t3 === 6 || t3 === 7))) B.push(d.pop());
+    }
+    const pv = tot(P), bv = tot(B), res = pv > bv ? "p" : bv > pv ? "b" : "t", net = settle(bet, w === res ? { p: 2, b: 1.95, t: 9 }[res] : res === "t" && w !== "t" ? 1 : 0);
+    return `🎴 ${me.name} bet ${fm(bet)} on ${{ p: "player", b: "banker", t: "tie" }[w]} → player ${P.map(card).join(" ")} (${pv}) vs banker ${B.map(card).join(" ")} (${bv}) — ${outcome(net)}${bal()}`;
+  }
+});
+/* ---- round 3: more table games (2-6 players): crazy eights, liar's dice, gomoku, reversi, number duel, click race ---- */
+Object.assign(NG, { crazy8: 1, liars: 1, gomoku: 1, reversi: 1, numguess: 1, clickrace: 1 });
+Object.assign(GN, { crazy8: ["8️⃣ crazy eights", 6], liars: ["🎲 liar's dice", 6], gomoku: ["⚫ gomoku", 2], reversi: ["⚪ reversi", 2], numguess: ["🔢 number duel", 6], clickrace: ["👆 click race", 6] });
+const c8Ok = (c, g) => c % 13 === 7 || (c / 13 | 0) === g.su || c % 13 === g.top % 13;
+let c8W = null, lb = null; const crN = {};
+function c8Play(id, g, c, su) {
+  const hd = {}; g.ord.forEach(n => hd[n] = [...(g.hd?.[n] || [])]); hd[me.name].splice(hd[me.name].indexOf(c), 1);
+  const up = { hd, top: c, su: c % 13 === 7 ? su : c / 13 | 0, ds: [...(g.ds || []), g.top], drew: false, turn: nxt(g, me.name), log: `${me.name} played ${card(c)}${c % 13 === 7 ? " · suit " + SU[su] : ""}` };
+  if (!hd[me.name].length) Object.assign(up, { st: "done", win: me.name, turn: null, log: `${me.name} wins! 🏆` });
+  update(gref(id), up);
+}
+function c8Draw(id, g) {
+  const st = { dk: [...(g.dk || [])], ds: [...(g.ds || [])] }, h = [...(g.hd?.[me.name] || [])], [c] = uDraw(st, 1);
+  if (c !== undefined) h.push(c);
+  const ok = c !== undefined && c8Ok(c, g), up = { [`hd/${me.name}`]: h, dk: st.dk, ds: st.ds, drew: ok, log: `${me.name} drew a card` };
+  if (!ok) up.turn = nxt(g, me.name); update(gref(id), up);
+}
+const lrRoll = dn => { const o = {}; cnt(dn).forEach(n => { if (dn[n] > 0) o[n] = Array.from({ length: dn[n] }, () => 1 + ri(6)); }); return o; };
+const lrAlive = (g, n) => { let k = n; for (let i = 0; i < g.ord.length; i++) { k = nxt(g, k); if (g.dn[k] > 0) return k; } return n; };
+function lrAct(id, g, q, f) {
+  if (q) return update(gref(id), { bid: { q, f }, by: me.name, turn: lrAlive(g, me.name), log: `${me.name} bids ${q} × ${f}s` });
+  const bq = g.bid.q, bf = g.bid.f, n = g.ord.reduce((t, p) => t + (g.dc?.[p] || []).filter(x => x === bf).length, 0), lose = n >= bq ? me.name : g.by, dn = { ...g.dn }; dn[lose]--;
+  const alive = g.ord.filter(p => dn[p] > 0), up = { dn, bid: null, by: null, log: `${me.name} calls liar on ${bq} × ${bf}s — there were ${n}! ${lose} loses a die · ` + g.ord.filter(p => g.dn[p] > 0).map(p => `${p}: ${(g.dc?.[p] || []).join("")}`).join(" | ") };
+  if (alive.length === 1) { Object.assign(up, { st: "done", win: alive[0], turn: null, dc: null }); up.log += ` · ${alive[0]} wins! 🏆`; }
+  else Object.assign(up, { dc: lrRoll(dn), turn: dn[lose] > 0 ? lose : lrAlive({ ...g, dn }, lose) });
+  update(gref(id), up);
+}
+function gmMove(id, g, i) {
+  const [a, z] = g.ord, m = me.name === a ? "X" : "O", bo = g.bo.split(""); if (bo[i] !== " ") return; bo[i] = m;
+  const x = i % 10, y = i / 10 | 0; let w = false;
+  for (const [dx, dy] of [[1, 0], [0, 1], [1, 1], [1, -1]]) { let n = 1; for (const s of [1, -1]) for (let k = 1; k < 5; k++) { const X = x + dx * s * k, Y = y + dy * s * k; if (X < 0 || X > 9 || Y < 0 || Y > 9 || bo[Y * 10 + X] !== m) break; n++; } if (n >= 5) w = true; }
+  const up = { bo: bo.join(""), turn: me.name === a ? z : a, log: `${me.name} played ${"abcdefghij"[x]}${y + 1}` };
+  if (w) Object.assign(up, { st: "done", win: me.name, turn: null, log: `${me.name} got five in a row! 🏆` }); else if (!bo.includes(" ")) Object.assign(up, { st: "done", turn: null, log: "board full — draw" });
+  update(gref(id), up);
+}
+const RV = [[1, 0], [-1, 0], [0, 1], [0, -1], [1, 1], [1, -1], [-1, 1], [-1, -1]];
+function rvFlips(bo, i, m) {
+  const x = i % 8, y = i / 8 | 0, o = m === "X" ? "O" : "X", out = []; if (bo[i] !== " ") return out;
+  for (const [dx, dy] of RV) { const t = []; let X = x + dx, Y = y + dy; while (X >= 0 && X < 8 && Y >= 0 && Y < 8 && bo[Y * 8 + X] === o) { t.push(Y * 8 + X); X += dx; Y += dy; } if (t.length && X >= 0 && X < 8 && Y >= 0 && Y < 8 && bo[Y * 8 + X] === m) out.push(...t); }
+  return out;
+}
+const rvCan = (bo, m) => bo.some((v, i) => v === " " && rvFlips(bo, i, m).length);
+function rvMove(id, g, i) {
+  const [a, z] = g.ord, m = me.name === a ? "X" : "O", bo = g.bo.split(""), f = rvFlips(bo, i, m); if (!f.length) return;
+  bo[i] = m; f.forEach(k => bo[k] = m);
+  const o = m === "X" ? "O" : "X", up = { bo: bo.join(""), turn: me.name === a ? z : a, log: `${me.name} flipped ${f.length}` };
+  if (!rvCan(bo, o)) {
+    if (rvCan(bo, m)) { up.turn = me.name; up.log += ` · ${o === "X" ? a : z} has no moves and passes`; }
+    else { const x = bo.filter(v => v === "X").length, y = bo.filter(v => v === "O").length; Object.assign(up, { st: "done", turn: null, win: x === y ? null : x > y ? a : z, log: `final: ${a} ${x} – ${y} ${z}${x === y ? " · draw" : ""}` }); }
+  }
+  update(gref(id), up);
+}
+Object.assign(XG, {
+  crazy8: {
+    start: up => { const d = deck(), hd = {}, n = up.ord.length > 2 ? 5 : 7; up.ord.forEach(p => hd[p] = d.splice(0, n)); const t = d.splice(d.findIndex(x => x % 13 !== 7), 1)[0]; Object.assign(up, { hd, dk: d, ds: [], top: t, su: t / 13 | 0, drew: false }); },
+    paint: ({ c, id, g, my, mineP, bar, b, D }) => {
+      D("top: " + card(g.top) + " · suit " + SU[g.su], "hand"); D(g.ord.map(n => `${n === g.turn ? "▶" : ""}${n} (${(g.hd?.[n] || []).length})`).join(" · "));
+      if (!mineP || g.st !== "live") return;
+      if (c8W?.id === id && my) { D("pick a suit:"); SU.forEach((s, i) => bar.append(b(s, () => { const w = c8W; c8W = null; c8Play(id, g, w.c, i); }))); return; }
+      const row = mk("div", "", "gb");
+      [...(g.hd?.[me.name] || [])].sort((x, y) => x - y).forEach(k => { const x = b(card(k), () => { if (k % 13 === 7) { c8W = { id, c: k }; paintGames(); } else c8Play(id, g, k); }); x.disabled = !my || !c8Ok(k, g); row.append(x); }); c.append(row);
+      if (my) bar.append(g.drew ? b("pass", () => update(gref(id), { turn: nxt(g, me.name), drew: false })) : b("draw 🃏", () => c8Draw(id, g)));
+    }
+  },
+  liars: {
+    start: up => { const dn = {}; up.ord.forEach(n => dn[n] = 3); Object.assign(up, { dn, dc: lrRoll(dn), bid: null }); },
+    paint: ({ c, id, g, my, mineP, bar, b, D }) => {
+      const tot = g.ord.reduce((t, p) => t + (g.dn[p] || 0), 0);
+      D(g.ord.map(p => `${p === g.turn ? "▶" : ""}${p} ${"🎲".repeat(g.dn[p] || 0) || "💀"}`).join(" · ")); if (g.st !== "live") return;
+      D(g.bid ? `current bid: ${g.bid.q} × ${g.bid.f}s by ${g.by}` : "no bid yet — open the bidding", "hand");
+      if (mineP && g.dc?.[me.name]) D("your dice: " + g.dc[me.name].join(" "), "hand"); if (!my) return;
+      const ok = (q, f) => q >= 1 && q <= tot && f >= 1 && f <= 6 && (!g.bid || q > g.bid.q || (q === g.bid.q && f > g.bid.f));
+      if (lb?.id !== id || !ok(lb.q, lb.f)) { let q = g.bid ? g.bid.q : 1, f = g.bid ? g.bid.f + 1 : 1; if (f > 6) { q++; f = 1; } lb = { id, q, f }; }
+      const t = (txt, q, f) => { const x = b(txt, () => { lb = { id, q, f }; paintGames(); }); x.disabled = !ok(q, f); return x; }, row = mk("div", "", "gb");
+      row.append(t("qty −", lb.q - 1, lb.f), mk("span", "", "", ` ${lb.q} × `)); [1, 2, 3, 4, 5, 6].forEach(f => { const x = t("" + f, lb.q, f); if (f === lb.f) x.style.borderColor = "var(--glow)"; row.append(x); }); row.append(t("qty +", lb.q + 1, lb.f)); c.append(row);
+      const bb = b(`bid ${lb.q} × ${lb.f}`, () => lrAct(id, g, lb.q, lb.f)); bb.disabled = !ok(lb.q, lb.f); bar.append(bb); if (g.bid) bar.append(b("liar! 🫵", () => lrAct(id, g)));
+    }
+  },
+  gomoku: {
+    start: up => up.bo = " ".repeat(100),
+    paint: ({ c, id, g, my, b }) => {
+      const grid = mk("div", "", "bd sm"); grid.style.gridTemplateColumns = "repeat(10,1fr)";
+      g.bo.split("").forEach((v, i) => { const k = b(v === " " ? "·" : v === "X" ? "⚫" : "⚪", () => gmMove(id, g, i)); k.disabled = !my || v !== " "; grid.append(k); }); c.append(grid);
+    }
+  },
+  reversi: {
+    start: up => { const bo = Array(64).fill(" "); bo[27] = bo[36] = "O"; bo[28] = bo[35] = "X"; up.bo = bo.join(""); },
+    paint: ({ c, id, g, my, b, D }) => {
+      const bo = g.bo.split(""), [a, z] = g.ord, m = g.turn === a ? "X" : "O"; D(`⚫ ${a}: ${bo.filter(v => v === "X").length} · ⚪ ${z}: ${bo.filter(v => v === "O").length}`, "hand");
+      const grid = mk("div", "", "bd sm"); grid.style.gridTemplateColumns = "repeat(8,1fr)";
+      bo.forEach((v, i) => { const can = my && v === " " && rvFlips(bo, i, m).length > 0, k = b(v === " " ? (can ? "•" : "·") : v === "X" ? "⚫" : "⚪", () => rvMove(id, g, i)); k.disabled = !can; grid.append(k); }); c.append(grid);
+    }
+  },
+  numguess: {
+    start: up => Object.assign(up, { t: 1 + ri(100), lo: 1, hi: 100 }),
+    paint: ({ id, g, my, bar, b, D }) => {
+      D(`find the secret number between ${g.lo} and ${g.hi}`, "hand"); if (!my) return;
+      const i = mk("input"); i.type = "number"; i.min = g.lo; i.max = g.hi; i.placeholder = g.lo + "–" + g.hi; i.style.cssText = "width:90px;padding:4px";
+      bar.append(i, b("guess", () => {
+        const v = Math.round(+i.value); if (!(v >= g.lo && v <= g.hi)) return toast(`pick ${g.lo}–${g.hi}`, 2000);
+        update(gref(id), v === g.t ? { st: "done", win: me.name, turn: null, log: `${me.name} guessed ${v} — correct! 🏆` } : v < g.t ? { lo: v + 1, turn: nxt(g, me.name), log: `${me.name} guessed ${v} — higher ⬆️` } : { hi: v - 1, turn: nxt(g, me.name), log: `${me.name} guessed ${v} — lower ⬇️` });
+      }));
+    }
+  },
+  clickrace: {
+    start: up => Object.assign(up, { turn: null, sc: {} }),
+    paint: ({ id, g, mineP, bar, b, D }) => {
+      D(g.ord.map(n => `${n}: ${g.sc?.[n] || 0}/30`).join(" · "), "hand");
+      if (g.st === "live" && mineP) bar.append(b("👆 CLICK!", () => {
+        if (g.st !== "live") return; const s = crN[id] = Math.max(crN[id] || 0, g.sc?.[me.name] || 0) + 1, up = { [`sc/${me.name}`]: s };
+        if (s >= 30) Object.assign(up, { st: "done", win: me.name, log: `${me.name} wins the race! 🏆` }); update(gref(id), up);
+      }));
+    }
+  }
+});
+Object.assign(CM, {
+  plinko: ["", "🔻 /plinko 100 low|med|high · drop a ball (up to x29)"], mines: ["", "⛏️ /mines 100 3 4 · 3 mines, reveal 4 safe tiles"], horse: ["", "🐎 /horse 100 1-6 · back a horse, longshots pay more"], war: ["", "⚔️ /war 100 · higher card beats the dealer"], craps: ["", "🎲 /craps 100 · pass line bet"], baccarat: ["", "🎴 /baccarat 100 player|banker|tie"],
+  crazy8: ["", "8️⃣ /crazy8 · 2-6 players, uno with a normal deck"], liarsdice: ["", "🎲 /liarsdice · 2-6 players, bluff with hidden dice"], gomoku: ["", "⚫ /gomoku · 2 players, five in a row"], reversi: ["", "⚪ /reversi · 2 players, flip the board"], numguess: ["", "🔢 /numguess · 2-6 players, find the secret number"], clickrace: ["", "👆 /clickrace · 2-6 players, first to 30 clicks"]
+});
+Object.assign(GAMES, { crazy8: () => openN("crazy8"), liarsdice: () => openN("liars"), gomoku: () => openN("gomoku"), reversi: () => openN("reversi"), numguess: () => openN("numguess"), clickrace: () => openN("clickrace") });
+TABS.gambling += " plinko mines horse war craps baccarat";
+TABS.games += " crazy8 liarsdice gomoku reversi numguess clickrace"; TABS["vs players"] += " crazy8 liarsdice gomoku reversi numguess clickrace";
 const gbtn = mk("button", "gamesBtn"); gbtn.textContent = "🎮"; gbtn.title = "games in this room"; gbtn.onclick = () => { listenGames(); gp.classList.toggle("on"); paintGames(); }; $("send").before(gbtn);
 const _send = send;
 send = function () {
@@ -2255,6 +2600,48 @@ reaction(b,done){const z=mk("button","wide","wait for green...");z.style.cssText
 typing(b,done){const T=["the quick brown fox jumps over the lazy dog","wolves howl at the moon every single night","a wolf pack is only as strong as its howl","practice makes perfect so keep on typing fast","never stop moving never stop growing"],s=T[rn(T.length)],p=mk("div","",esc(s)),i=mk("input");i.style.cssText="width:100%;margin-top:8px;padding:8px;background:#000;color:inherit;border:2px solid var(--bd);font-family:inherit";b.append(p,i);let t0=0;i.focus();i.oninput=()=>{if(!t0)t0=performance.now();p.style.color=s.startsWith(i.value)?"":"#f87171";if(i.value===s)done(Math.round(s.length/5/((performance.now()-t0)/6e4)))};return()=>{}},
 memory(b,done){const E=["🐺","🌙","⭐","🔥","💎","🍕"],c=[...E,...E].sort(()=>Math.random()-.5),g=mk("div");g.style.cssText="display:grid;grid-template-columns:repeat(4,1fr);gap:6px";let o=[],mv=0,ok=0,lock=0;
   c.forEach(e=>{const k=mk("button","","?");k.dataset.e=e;k.style.cssText="font-size:24px;aspect-ratio:1";k.onclick=()=>{if(lock||k.disabled||o.includes(k))return;k.textContent=e;tw(k);o.push(k);if(o.length<2)return;mv++;const[a,z]=o;if(a.dataset.e===z.dataset.e){a.disabled=z.disabled=true;o=[];if(++ok===6)done(mv)}else{lock=1;setTimeout(()=>{a.textContent=z.textContent="?";o=[];lock=0},700)}};g.append(k)});b.append(g);return()=>{}}};
+Object.assign(GM,{n2048:["🔢 2048","pts",1],msweep:["💣 minesweeper","pts",1],flappy:["🐺 flappy wolf","pipes",1],whack:["🔨 whack-a-wolf","hits",1],simon:["🟦 simon","rounds",1],wordle:["🟩 wordle","pts",1]});
+Object.assign(G,{
+n2048(b,done){const g=Array(16).fill(0),sc={v:0},add=()=>{const e=g.map((v,i)=>v?-1:i).filter(i=>i>=0);if(e.length)g[e[rn(e.length)]]=Math.random()<.9?2:4};add();add();
+  const bd=mk("div"),info=mk("div","","arrows / wasd, or swipe");bd.style.cssText="display:grid;grid-template-columns:repeat(4,1fr);gap:4px;max-width:260px;touch-action:none;margin-top:6px";b.append(info,bd);
+  const draw=()=>{bd.replaceChildren(...g.map(v=>{const e=mk("div","",v||"");e.style.cssText=`aspect-ratio:1;display:flex;align-items:center;justify-content:center;font-size:${v>999?13:18}px;background:${v?`hsl(${220-Math.log2(v)*15} 70% ${25+Math.log2(v)*3}%)`:"#0f172a"};border:1px solid var(--bd)`;return e}));info.textContent="score "+sc.v},
+  can=()=>g.some((v,i)=>!v||(i%4<3&&v===g[i+1])||(i<12&&v===g[i+4])),
+  mv=(dx,dy)=>{let ch=0;for(let r=0;r<4;r++){const ix=[0,1,2,3].map(k=>dx?r*4+(dx>0?3-k:k):(dy>0?3-k:k)*4+r),l=ix.map(i=>g[i]).filter(Boolean);for(let i=0;i<l.length-1;i++)if(l[i]===l[i+1]){l[i]*=2;sc.v+=l[i];l.splice(i+1,1)}while(l.length<4)l.push(0);ix.forEach((i,k)=>{if(g[i]!==l[k]){ch=1;g[i]=l[k]}})}return ch},
+  go=m=>{if(mv(...m)){add();draw();if(!can())done(sc.v)}},
+  key=e=>{const m={ArrowLeft:[-1,0],a:[-1,0],ArrowRight:[1,0],d:[1,0],ArrowUp:[0,-1],w:[0,-1],ArrowDown:[0,1],s:[0,1]}[e.key];if(m){e.preventDefault();go(m)}};
+  let sx,sy;bd.onpointerdown=e=>{sx=e.clientX;sy=e.clientY};bd.onpointerup=e=>{const dx=e.clientX-sx,dy=e.clientY-sy;if(Math.max(Math.abs(dx),Math.abs(dy))>20)go(Math.abs(dx)>Math.abs(dy)?[Math.sign(dx),0]:[0,Math.sign(dy)])};
+  document.addEventListener("keydown",key);draw();return()=>document.removeEventListener("keydown",key)},
+msweep(b,done){const M=10;let mn=null,rv=Array(81).fill(0),fl=Array(81).fill(0),over=0,tap=0;
+  const bd=mk("div"),info=mk("div","","tap to reveal · right-click or flag mode to flag"),fb=mk("button","wide","🚩 flag mode: off");bd.style.cssText="display:grid;grid-template-columns:repeat(9,1fr);gap:2px;max-width:300px;margin-top:6px";fb.onclick=()=>{tap^=1;fb.textContent="🚩 flag mode: "+(tap?"on":"off")};b.append(info,fb,bd);
+  const nb=i=>{const x=i%9,y=i/9|0,o=[];for(let a=-1;a<2;a++)for(let c=-1;c<2;c++){const X=x+a,Y=y+c;if((a||c)&&X>=0&&X<9&&Y>=0&&Y<9)o.push(Y*9+X)}return o},n=i=>nb(i).filter(k=>mn[k]).length,
+  open=i=>{if(rv[i]||fl[i])return;rv[i]=1;if(!mn[i]&&!n(i))nb(i).forEach(open)},safe=()=>rv.filter((v,k)=>v&&!mn[k]).length,
+  draw=()=>{bd.replaceChildren(...rv.map((r,i)=>{const k=mk("button","",r?(mn[i]?"💥":n(i)||""):fl[i]?"🚩":"");k.style.cssText=`aspect-ratio:1;padding:0;font-size:12px;min-width:0${r?";background:#0f172a":""}`;k.onclick=()=>click(i);k.oncontextmenu=e=>{e.preventDefault();if(!over&&!rv[i]){fl[i]^=1;draw()}};return k}))},
+  click=i=>{if(over)return;if(tap){if(!rv[i])fl[i]^=1;return draw()}if(fl[i]||rv[i])return;
+    if(!mn){mn=Array(81).fill(0);const bad=new Set([i,...nb(i)]);let c=0;while(c<M){const k=rn(81);if(!mn[k]&&!bad.has(k)){mn[k]=1;c++}}}
+    if(mn[i]){over=1;const s=safe();mn.forEach((m,k)=>m&&(rv[k]=1));draw();return done(s)}
+    open(i);draw();if(safe()===81-M){over=1;done(81-M+50)}};
+  draw();return()=>{over=1}},
+flappy(b,done){const c=mk("canvas");c.width=300;c.height=400;c.style.cssText="border:2px solid var(--bd);background:#020617;max-width:100%;touch-action:none";b.append(c,mk("div","","tap / click / space to flap"));
+  const x=c.getContext("2d"),gl=getComputedStyle(root).getPropertyValue("--glow")||"#3b82f6";let y=200,v=0,p=[],f=0,sc=0,run=0;
+  const flap=e=>{if(e&&e.preventDefault)e.preventDefault();v=-5.2;run=1},key=e=>{if(e.key===" ")flap(e)};document.addEventListener("keydown",key);c.onpointerdown=flap;
+  const t=setInterval(()=>{if(run){v+=.35;y+=v;f++;if(f%80===1)p.push({x:300,g:110+rn(180),s:0});p.forEach(q=>q.x-=2.2);p=p.filter(q=>q.x>-40);
+      for(const q of p){if(!q.s&&q.x<20){q.s=1;sc++}if(q.x<80&&q.x>20&&(y-10<q.g-50||y+10>q.g+50))return done(sc)}if(y>390||y<10)return done(sc)}
+    x.fillStyle="#020617";x.fillRect(0,0,300,400);x.fillStyle=gl;p.forEach(q=>{x.fillRect(q.x,0,40,q.g-50);x.fillRect(q.x,q.g+50,40,400)});
+    x.font="22px serif";x.fillText("🐺",58,y+8);x.fillStyle="#fff";x.font="16px monospace";x.fillText(sc,10,24)},16);
+  return()=>{clearInterval(t);document.removeEventListener("keydown",key)}},
+whack(b,done){const g=mk("div"),info=mk("div","","hit the 🐺 — 20 seconds");g.style.cssText="display:grid;grid-template-columns:repeat(3,1fr);gap:6px;max-width:240px;margin-top:6px";let sc=0,u=-1,left=20;
+  const ks=[...Array(9)].map((_,i)=>{const k=mk("button");k.style.cssText="aspect-ratio:1;font-size:26px";k.onclick=()=>{if(i===u){sc++;u=-1;k.textContent="";info.textContent=`${left}s · ${sc} hits`}};g.append(k);return k});b.append(info,g);
+  const m=setInterval(()=>{if(u>=0)ks[u].textContent="";u=rn(9);ks[u].textContent="🐺"},650),t=setInterval(()=>{info.textContent=`${--left}s · ${sc} hits`;if(!left){clearInterval(m);clearInterval(t);done(sc)}},1000);return()=>{clearInterval(m);clearInterval(t)}},
+simon(b,done){const C=["#ef4444","#22c55e","#3b82f6","#eab308"],g=mk("div"),info=mk("div","","watch the pattern, then repeat it");g.style.cssText="display:grid;grid-template-columns:1fr 1fr;gap:8px;max-width:240px;margin-top:6px";let q=[],i=0,lock=1,dead=0;
+  const lit=k=>{ks[k].style.opacity=1;setTimeout(()=>ks[k].style.opacity=.45,300)},
+  nx=()=>{if(dead)return;q.push(rn(4));i=0;lock=1;info.textContent="round "+q.length;q.forEach((k,j)=>setTimeout(()=>lit(k),j*600));setTimeout(()=>{lock=0},q.length*600)},
+  ks=C.map((c,k)=>{const e=mk("button");e.style.cssText=`height:80px;background:${c};opacity:.45`;e.onclick=()=>{if(lock||dead)return;lit(k);if(k!==q[i]){dead=1;return done(q.length-1)}if(++i===q.length){lock=1;setTimeout(nx,800)}};g.append(e);return e});
+  b.append(info,g);const t0=setTimeout(nx,600);return()=>{dead=1;clearTimeout(t0)}},
+wordle(b,done){const W="apple brave candy dream eagle flame ghost happy jelly knife lemon magic night ocean pixel queen river storm tiger unity vivid water pizza zebra claim wolfs plane crown beach".split(" "),s=W[rn(W.length)],o=mk("div"),i=mk("input");i.maxLength=5;i.placeholder="5-letter guess + enter";i.style.cssText="width:100%;margin-top:8px;padding:8px;background:#000;color:inherit;border:2px solid var(--bd);font-family:inherit";b.append(mk("div","","guess the word in 6 tries"),o,i);let n=0;i.focus();
+  i.onkeydown=e=>{if(e.key!=="Enter")return;const w=i.value.toLowerCase();if(!/^[a-z]{5}$/.test(w))return toast("type a 5-letter word",1500);i.value="";const r=[...w].map(()=>"⬛"),u=[...s];
+    [...w].forEach((c,k)=>{if(c===s[k]){r[k]="🟩";u[k]=0}});[...w].forEach((c,k)=>{if(r[k]==="⬛"&&u.includes(c)){r[k]="🟨";u[u.indexOf(c)]=0}});
+    o.append(mk("div","",`${r.join("")} ${esc(w)}`));n++;tw(o);if(w===s)done(7-n);else if(n>=6){toast("the word was "+s,4000);done(0)}};return()=>{}}
+});
 let cl=null;const stop=()=>{cl&&cl();cl=null};
 function finish(g,sc,out,again){stop();const[nm,u,hi]=GM[g];if(sc<0){out.textContent="too early! 😅";return again()}
   const B=J(K("wc_best"),{}),old=B[g],better=old===undefined||(hi?sc>old:sc<old);out.textContent=`${nm}: ${sc} ${u}`+(better?" 🏆 new best!":` (best ${old})`);
@@ -2291,7 +2678,7 @@ function widget(el,key,m){const t=el.querySelector(".text");if(!t)return;
       const r=await runTransaction(ref(db,`${room.path}/${key}/win`),c=>c||me.name).catch(()=>null);if(r?.snapshot.val()===me.name){__setCoins(me.coins+100);S.tv=(S.tv||0)+1;svS();gain(10);__confetti();toast("first! +100 🪙",3000)}};
     w.append(b);if(m.win)sha(m.tv.s+i).then(h=>{if(h===m.tv.h)b.style.borderColor="#22c55e"})});if(m.win)w.append(mk("div","",`🏆 ${esc(m.win)} got it first`));t.after(w)}}
 /* ---- commands + send hook ---- */
-Object.assign(__wcCM,{poll:["","📊 /poll best pet? | dogs | cats | both"],trivia:["","🧠 first correct answer wins 100 coins"],arcade:["","🎮 snake, reaction, typing, memory"],hub:["","🏆 quests, ranks, badges"],level:["","📈 your level + streak"]});__wcTABS.games+=" trivia poll arcade hub level";
+Object.assign(__wcCM,{poll:["","📊 /poll best pet? | dogs | cats | both"],trivia:["","🧠 first correct answer wins 100 coins"],arcade:["","🎮 snake, 2048, minesweeper, flappy, wordle + more"],hub:["","🏆 quests, ranks, badges"],level:["","📈 your level + streak"]});__wcTABS.games+=" trivia poll arcade hub level";
 const _s=send;send=function(){const t=msg.value.trim(),m=/^\/(\w+)\s*(.*)$/s.exec(t),c=m&&m[1].toLowerCase(),a=m?m[2]:"",local=()=>{msg.value="";msg.dispatchEvent(new Event("input"))};
   if(c==="hub"||c==="arcade"||c==="level"){local();return openHub(c==="arcade"?"arcade":"you")}
   if(c==="poll"){const p=a.split("|").map(s=>s.trim()).filter(Boolean);if(p.length<3||p.length>7){toast("usage: /poll best pet? | dogs | cats",3500);return}local();post({text:"📊 "+p[0].slice(0,150),poll:{o:p.slice(1).map(s=>s.slice(0,60))}});return bumpPoll()}
