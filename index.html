@@ -323,9 +323,22 @@ header,footer,#rooms,.bubble,#card,.fc{transition:background .4s,border-color .4
 #sug{position:absolute;left:8px;bottom:58px;min-width:200px;background:var(--bg);border:2px solid var(--bd);z-index:21;display:none;animation:pop .15s}#sug.on{display:block}
 #sug div{padding:7px 10px;font-size:11px;cursor:pointer}#sug div.on,#sug div:hover{background:var(--bd)}
 body.compact .bubble{padding:5px 10px;font-size:12px}body.compact .message{margin-bottom:6px}body.compact .avatar,body.compact .avw{width:26px;height:26px}body.compact .message.grp{margin-top:-3px}
-#cmds{max-height:45vh;overflow-y:auto}
+#cmds{max-height:45vh;overflow-y:auto;min-width:min(430px,94vw)}
+#cmds .ct{position:sticky;top:0;background:var(--bg);display:flex;flex-wrap:wrap;gap:3px;padding:6px;cursor:default;justify-content:flex-start;border-bottom:1px solid var(--bd);z-index:2}#cmds .ct:hover{background:var(--bg)}
+#cmds .ct button{padding:4px 8px;font-size:10px}#cmds .ct button.on{background:var(--bd);box-shadow:0 0 8px var(--glow)}
+#cmds .cl{padding:0;display:block;cursor:default}#cmds .cl:hover{background:none}
+#slashBtn{padding:12px 14px}
+#gp{position:absolute;right:8px;bottom:58px;width:min(340px,94vw);max-height:55vh;overflow-y:auto;display:none;flex-direction:column;gap:8px;z-index:22}#gp.on{display:flex}
+.gc{background:var(--bg);border:2px solid var(--bd);padding:8px;font-size:11px;line-height:1.7;animation:pop .2s}.gc h4{font-size:12px;color:#fde68a;display:flex;justify-content:space-between;gap:6px}.gc .gb{display:flex;flex-wrap:wrap;gap:4px;margin-top:6px}.gc .hand{font-size:15px;letter-spacing:1px}
+.bd{display:grid;gap:3px;margin:6px 0}.bd button{aspect-ratio:1;padding:0;font-size:16px;min-width:0}.c4 button{font-size:13px}
 #coinBtn{background:linear-gradient(#422006,#1c1917);border-color:#a16207;color:#fde68a}
 #coinBtn:hover{background:#713f12;box-shadow:0 0 10px rgba(250,204,21,.4)}
+/* ===== wolfchat+++ ===== */
+select{width:100%;padding:8px;background:#000;color:var(--tx);border:2px solid var(--bd);font-family:inherit;font-size:11px;margin-top:4px}
+#hub{position:fixed;inset:0;background:rgba(0,0,0,.75);display:none;justify-content:center;align-items:center;z-index:600}#hub.on{display:flex}#hub .fc{width:min(460px,94vw);max-height:90vh;overflow-y:auto}
+#hbT button.on{background:var(--bd)}#hbB{margin-top:10px;font-size:12px;line-height:1.6}
+.bar{height:10px;background:#000;border:1px solid var(--bd);margin:6px 0}.bar i{display:block;height:100%;background:var(--glow);transition:width .4s}
+.bdgs{display:grid;grid-template-columns:repeat(2,1fr);gap:6px}.bdgs div{padding:8px;border:1px solid var(--bd);font-size:11px}.bdgs .lock{opacity:.35;filter:grayscale(1)}
 </style>
 </head>
 <body>
@@ -356,6 +369,7 @@ body.compact .bubble{padding:5px 10px;font-size:12px}body.compact .message{margi
     <button class="tab active" data-tab="music">music</button>
     <button class="tab" data-tab="custom">custom</button>
     <button class="tab" data-tab="misc">misc</button>
+    <button class="tab" data-tab="look">look</button>
     <button class="tab" data-tab="updates">updates</button>
     <button class="tab" data-tab="account">account</button>
   </nav><button id="closePanel" title="close (esc)">✕</button></div><div class="scont"><div class="ph"><b>settings</b></div>
@@ -423,6 +437,32 @@ body.compact .bubble{padding:5px 10px;font-size:12px}body.compact .message{margi
     <div id="themeList"></div>
   </section>
 
+  <section class="tc" id="tab-look">
+    <h3>fonts</h3>
+    <label>ui font</label><select id="lkUi"></select>
+    <label>message font</label><select id="lkMsg"></select>
+    <label>text size (<span id="lkSzV">100</span>%)</label><input type="range" id="lkSz" min="80" max="150" step="5" value="100">
+    <label>add your own font (file, google font, or link)</label>
+    <input type="text" id="lkFn" maxlength="40" placeholder="font name (optional for files)">
+    <input type="file" id="lkFile" accept=".ttf,.otf,.woff,.woff2">
+    <button class="wide" id="lkFileBtn">add font file</button>
+    <div class="row"><input type="text" id="lkG" placeholder="google font, e.g. Pacifico"><button id="lkGBtn">add</button></div>
+    <div class="row"><input type="text" id="lkU" placeholder="https://.../font.woff2"><button id="lkUBtn">add</button></div>
+    <div id="lkList"></div>
+    <h3 style="margin-top:20px">look</h3>
+    <label>bubble roundness</label><input type="range" id="lkRad" min="0" max="24" value="0">
+    <label>avatar shape</label><select id="lkAv"><option value="">square</option><option value="round">round</option></select>
+    <label>background effect</label><select id="lkFx"><option value="">none</option><option>snow</option><option>rain</option><option>fireflies</option><option>matrix</option></select>
+    <label>background image</label><input type="file" id="lkBgF" accept="image/*">
+    <div class="row"><input type="text" id="lkBgU" placeholder="https://.../bg.jpg"><button id="lkBgBtn">use</button></div>
+    <button class="wide" id="lkBgClr">remove background image</button>
+    <label>custom css (advanced)</label><textarea id="lkCss" placeholder=".bubble{...}"></textarea><button class="wide" id="lkCssBtn">apply css</button>
+    <h3 style="margin-top:20px">share themes</h3>
+    <div class="row"><button id="lkShare">copy theme code</button><button id="lkRnd">random theme</button></div>
+    <div class="row"><input type="text" id="lkPaste" placeholder="paste a friend's theme code"><button id="lkLoad">load</button></div>
+    <button class="wide" id="lkReset">reset look + fonts</button>
+  </section>
+
   <section class="tc" id="tab-account">
     <h3 style="margin-top:20px">account</h3>
     <div class="box" id="acctMail"></div>
@@ -450,7 +490,7 @@ body.compact .bubble{padding:5px 10px;font-size:12px}body.compact .message{margi
       <span class="u">(u)</span> bottom-left user panel + status picker (online / idle / dnd / invisible)<br>
       <span class="u">(u)</span> casino: 🪙 coins + /slots /crash /roulette /scratch /bet /daily /rich<br>
       <span class="u">(u)</span> fun commands: /8ball /choose /rps /rate<br>
-      <br>u = updated, a = i want to add<br>- wolf/owner
+      <br>      <span class="u">(u)</span> blackjack + duel/dicewar/highcard/tictactoe/connect4 vs players (🎮 button), /dice /hilo /wheel /guess, clickable command tabs, uncapped coins (1.1k, 12.6T, 128.7qd)<br>      <span class="u">(u)</span> removed wolf bias from all games<br>      <span class="u">(u)</span> look tab: custom fonts (file / google / link), size, bubble roundness, bg image, snow/rain/matrix effects, custom css, theme share codes<br>      <span class="u">(u)</span> 🏆 hub: levels, daily streaks, quests, achievements, arcade (snake/reaction/typing/memory), leaderboards, /poll, /trivia<br>u = updated, a = i want to add<br>- wolf/owner
     </div>
   </section>
 </div></aside>
@@ -648,8 +688,8 @@ function cleanProfile(d) {
     favSong: s("favSong", 80) || s("favoriteSong", 80),
     website: safeUrl(s("website", 200)), github: safeUrl(s("github", 200)),
     messageCount: +d.messageCount || 0,
-    coins: d.coins === undefined ? 1000 : Math.max(0, Math.min(1e12, Math.floor(+d.coins) || 0)),
-    secret: s("secret", 64),
+    coins: d.coins === undefined ? 1000 : (Number.isFinite(+d.coins) ? Math.max(0, Math.floor(+d.coins)) : 0),
+    secret: s("secret", 64), xp: Math.max(0, Math.floor(+d.xp) || 0), streak: Math.max(0, Math.floor(+d.streak) || 0), lastDay: s("lastDay", 10), ach: Array.isArray(d.ach) ? d.ach.slice(0, 40).map(x => String(x).slice(0, 20)) : [],
     location: s("location", 40), birthday: s("birthday", 10), interests: s("interests", 80), nameColor: hex(s("nameColor", 7)),
     bubColor: hex(s("bubColor", 7)), bubText: hex(s("bubText", 7)), bubImg: im("bubImg"), textColor: hex(s("textColor", 7)),
     songs: Array.isArray(d.songs) ? d.songs.slice(0, 10).map(x => ({ title: String(x.title || "").slice(0, 60), artist: String(x.artist || "").slice(0, 60), len: String(x.len || "").slice(0, 8), cover: typeof x.cover === "string" && x.cover.length < 60000 ? safeImg(x.cover) : "" })).filter(x => x.title) : []
@@ -1729,6 +1769,7 @@ function confetti() {
     if (++f < 150) requestAnimationFrame(step); else x.clearRect(0, 0, cv.width, cv.height);
   })();
 }
+window.__confetti = confetti;
 /* sounds */
 let mute = localStorage.getItem("wc_mute") === "1", ac;
 const blip = (f = 660) => { if (mute) return; try { ac ||= new AudioContext(); const o = ac.createOscillator(), g = ac.createGain(); o.type = "square"; o.frequency.value = f; g.gain.value = .04; g.gain.exponentialRampToValueAtTime(.0001, ac.currentTime + .15); o.connect(g).connect(ac.destination); o.start(); o.stop(ac.currentTime + .15); } catch {} };
@@ -1755,14 +1796,24 @@ const CM = { shrug: ["¯\\_(ツ)_/¯", "add a shrug"], tableflip: ["(╯°□°)
   slots: ["", "🎰 /slots 100 · 7️⃣7️⃣7️⃣ = x100"], crash: ["", "🚀 /crash 100 5 · cash out at 5x (up to 1000x)"], roulette: ["", "🎡 /roulette 100 red · or 0-36 for x36"], scratch: ["", "🎟️ /scratch 100 · 🐺🐺🐺 = x500"], bet: ["", "🪙 /bet 100 heads · double or nothing"],
   daily: ["", "🎁 claim 500 free coins"], beg: ["", "🥺 when you're broke"], balance: ["", "see your coins"], rich: ["", "💰 richest wolves leaderboard"],
   "8ball": ["", "🎱 ask the magic 8 ball"], choose: ["", "🤔 /choose pizza | tacos"], rps: ["", "✂️ /rps rock vs the bot"], rate: ["", "⭐ rate anything out of 10"] };
-const cm = mk("div", "cmds"); foot.append(cm); const cc = mk("div", "cc"); foot.append(cc); let sel = 0, list = [];
+Object.assign(CM, { dice: ["", "🎲 /dice 100 over|under 7 · 2d6 vs a number"], hilo: ["", "🃏 /hilo 100 higher|lower · beat the next card"], wheel: ["", "🎡 /wheel 100 · spin the prize wheel (up to x50)"],
+  blackjack: ["", "🂡 /blackjack 100 · open a table, others /join it"], duel: ["", "⚔️ /duel 100 · coin flip duel, first to /join gets it"], dicewar: ["", "🎲 /dicewar 100 · higher roll wins the pot"], highcard: ["", "🃏 /highcard 100 · highest card takes the pot"],
+  tictactoe: ["", "⭕ /tictactoe [bet] · 2 players"], connect4: ["", "🔴 /connect4 [bet] · 2 players"], join: ["", "👥 join the open game in this room"], games: ["", "👥 show games in this room"],
+  truth: ["", "😇 random truth question"], dare: ["", "😈 random dare"], wyr: ["", "🤷 would you rather"], ship: ["", "💘 /ship name1 name2"], guess: ["", "🔢 /guess 1-100 number (new number each day)"] });
+const TABS = { chat: "shrug tableflip unflip me confetti truth dare wyr ship", games: "roll flip rps guess tictactoe connect4 join games 8ball", gambling: "slots crash roulette scratch bet dice hilo wheel", "vs players": "blackjack duel dicewar highcard join games", money: "daily beg balance rich", tools: "search shortcuts mute export notify compact choose rate" };
+window.__wcCM = CM; window.__wcTABS = TABS;
+let curTab = "all"; const cm = mk("div", "cmds"); foot.append(cm); const cc = mk("div", "cc"); foot.append(cc); let sel = 0, list = [];
+const ctEl = mk("div", "", "ct"), clEl = mk("div", "", "cl"); cm.append(ctEl, clEl);
 function cmdUi() {
-  const v = msg.value, m = /^\/(\w*)$/.exec(v);
-  list = m ? Object.keys(CM).filter(k => k.startsWith(m[1].toLowerCase())) : []; sel = Math.min(sel, Math.max(list.length - 1, 0));
-  cm.classList.toggle("on", list.length > 0); cm.replaceChildren(...list.map((k, i) => { const d = mk("div", "", i === sel ? "on" : "", `<b>/${k}</b><small>${CM[k][1]}</small>`); d.onmousedown = e => { e.preventDefault(); msg.value = "/" + k + " "; caretEnd(); cmdUi(); }; return d; }));
-  cm.children[sel]?.scrollIntoView({ block: "nearest" });
+  const v = msg.value, m = /^\/(\w*)$/.exec(v), pool = curTab === "all" ? Object.keys(CM) : TABS[curTab].split(" ");
+  list = m ? pool.filter(k => CM[k] && k.startsWith(m[1].toLowerCase())) : []; sel = Math.min(sel, Math.max(list.length - 1, 0));
+  cm.classList.toggle("on", !!m);
+  ctEl.replaceChildren(...["all", ...Object.keys(TABS)].map(t => { const b = mk("button", "", t === curTab ? "on" : "", t); b.onmousedown = e => { e.preventDefault(); curTab = t; sel = 0; cmdUi(); }; return b; }));
+  clEl.replaceChildren(...(list.length ? list.map((k, i) => { const d = mk("div", "", i === sel ? "on" : "", `<b>/${k}</b><small>${CM[k][1]}</small>`); d.onmousedown = e => { e.preventDefault(); msg.value = "/" + k + " "; caretEnd(); cmdUi(); }; return d; }) : [mk("div", "", "", "<small>no commands here</small>")]));
+  clEl.children[sel]?.scrollIntoView({ block: "nearest" });
   const n = v.length; cc.textContent = 500 - n; cc.classList.toggle("on", n > 400); cc.classList.toggle("over", n > 500);
 }
+const sb2 = mk("button", "slashBtn"); sb2.textContent = "/"; sb2.title = "commands"; sb2.onclick = () => { msg.value = "/"; cmdUi(); msg.focus(); caretEnd(); }; $("send").before(sb2);
 msg.addEventListener("input", () => { cmdUi(); try { localStorage.setItem("wc_draft_" + tkey(), msg.value); } catch {} });
 msg.addEventListener("keydown", e => {
   if (list.length && cm.classList.contains("on")) {
@@ -1774,20 +1825,22 @@ msg.addEventListener("keydown", e => {
   }
 }, true);
 /* ---- casino: coins + gambling games ---- */
-const fm = n => Math.floor(n).toLocaleString();
+const SFX = ["", "k", "M", "B", "T", "qd", "qn", "sx", "sp", "oc", "no", "dc"], SM = { k: 3, m: 6, b: 9, t: 12, qd: 15, qn: 18, sx: 21, sp: 24, oc: 27, no: 30, dc: 33 };
+const fm = n => { n = Math.floor(n); if (!isFinite(n)) return "∞"; if (n < 1e3) return "" + n; let i = Math.min(Math.floor(Math.log10(n) / 3), 11), v = n / 10 ** (3 * i); if (+v.toFixed(1) >= 1000 && i < 11) { i++; v = n / 10 ** (3 * i); } return (+v.toFixed(1)) + SFX[i]; };
 const R = () => crypto.getRandomValues(new Uint32Array(1))[0] / 4294967296;
 const ri = n => Math.floor(R() * n);
 const wpick = t => { let r = R() * t.reduce((a, x) => a + x[1], 0); for (const x of t) { if ((r -= x[1]) < 0) return x[0]; } return t[t.length - 1][0]; };
 const coinBtn = mk("button", "coinBtn"); coinBtn.title = "your coins (try /slots 100)"; document.querySelector(".hr").prepend(coinBtn);
 window.__paintCoins = () => { if (me) { coinBtn.textContent = "🪙 " + fm(me.coins); tw(coinBtn); } };
+window.__setCoins = n => setCoins(n);
 coinBtn.onclick = () => toast(`🪙 ${fm(me.coins)} coins · try /slots, /crash, /roulette, /scratch`, 3500);
 const setCoins = n => {
-  me.coins = Math.max(0, Math.min(1e12, Math.floor(n)));
+  me.coins = Math.max(0, Number.isFinite(n) ? Math.floor(n) : 1.7e308);
   try { localStorage.setItem(PKEY, JSON.stringify(me)); } catch {}
   set(ref(db, `profiles/${me.name}/coins`), me.coins).catch(() => {});
   window.__paintCoins();
 };
-const parseBet = s => { s = (s || "").trim().toLowerCase(); if (s === "all" || s === "allin") return me.coins; if (s === "half") return Math.floor(me.coins / 2); const m = /^(\d+(?:\.\d+)?)([km])?$/.exec(s); return m ? Math.floor(+m[1] * ({ k: 1e3, m: 1e6 }[m[2]] || 1)) : NaN; };
+const parseBet = s => { s = (s || "").trim().toLowerCase(); if (s === "all" || s === "allin") return me.coins; if (s === "half") return Math.floor(me.coins / 2); const m = /^(\d+(?:\.\d+)?)(k|m|b|t|qd|qn|sx|sp|oc|no|dc)?$/.exec(s); return m ? Math.floor(+m[1] * 10 ** (SM[m[2]] || 0)) : NaN; };
 const okBet = (b, usage) => {
   if (me.coins < 1) { toast("you're broke 💀 try /daily or /beg", 3000); return false; }
   if (!(b >= 1)) { toast(usage, 4000); return false; }
@@ -1818,22 +1871,22 @@ const GAMES = {
     return "💰 **richest wolves:** " + e.map(([n, c], i) => `${["🥇", "🥈", "🥉", "4.", "5."][i]} ${n} ${fm(c)}`).join(" · ");
   },
   slots: a => {
-    const bet = parseBet(a); if (!okBet(bet, "usage: /slots 100 (or all, half, 5k)")) return null;
+    const bet = parseBet(a); if (!okBet(bet, "usage: /slots 100 (or all, half, 5k, 2.5M, 1T)")) return null;
     const S = [["🍒", 30], ["🍋", 25], ["🔔", 20], ["💎", 15], ["7️⃣", 10]], PAY = { "🍒": 5, "🍋": 8, "🔔": 15, "💎": 40, "7️⃣": 100 };
-    const w1 = wpick(S), r = me.name === OWNER ? [w1, w1, w1] : [w1, wpick(S), wpick(S)], u = new Set(r).size, mult = u === 1 ? PAY[r[0]] : u === 2 ? .5 : 0;
+    const w1 = wpick(S), r = [w1, wpick(S), wpick(S)], u = new Set(r).size, mult = u === 1 ? PAY[r[0]] : u === 2 ? .5 : 0;
     const net = settle(bet, mult);
     return `🎰 ${me.name} bet ${fm(bet)} → ${r.join(" ")} ${u === 1 ? `**x${mult}**` : ""} — ${outcome(net)}${bal()}`;
   },
   bet: a => {
     const [b, s] = a.trim().split(/\s+/), bet = parseBet(b); if (!okBet(bet, "usage: /bet 100 heads (or tails)")) return null;
-    const pick = /^t/i.test(s || "") ? "tails" : "heads", res = me.name === OWNER ? pick : R() < .5 ? "heads" : "tails", net = settle(bet, res === pick ? 2 : 0);
+    const pick = /^t/i.test(s || "") ? "tails" : "heads", res = R() < .5 ? "heads" : "tails", net = settle(bet, res === pick ? 2 : 0);
     return `🪙 ${me.name} bet ${fm(bet)} on ${pick} → **${res}** — ${outcome(net)}${bal()}`;
   },
   crash: a => {
     const [b, t] = a.trim().split(/\s+/), bet = parseBet(b), tg = Math.round(parseFloat(String(t || "2").replace(/x$/i, "")) * 100) / 100;
     if (!okBet(bet, "usage: /crash 100 2.5 (cash out at 2.5x, up to 1000x)")) return null;
     if (!(tg >= 1.1 && tg <= 1000)) { toast("cash out target must be between 1.1x and 1000x", 3000); return null; }
-    const pt0 = Math.max(1, Math.floor(99 / (1 - R())) / 100), pt = me.name === OWNER ? Math.max(pt0, Math.round(tg * (1 + R()) * 100) / 100) : pt0, net = settle(bet, pt >= tg ? tg : 0);
+    const pt0 = Math.max(1, Math.floor(99 / (1 - R())) / 100), pt = pt0, net = settle(bet, pt >= tg ? tg : 0);
     return `🚀 ${me.name} bet ${fm(bet)}, cashing out @ **${tg.toFixed(2)}x** → rocket crashed at **${pt.toFixed(2)}x** 💥 — ${outcome(net)}${bal()}`;
   },
   roulette: a => {
@@ -1842,7 +1895,7 @@ const GAMES = {
     if (!num && !["red", "black", "green", "odd", "even"].includes(w)) { toast("pick red, black, green, odd, even or a number 0-36", 3000); return null; }
     const RED = [1, 3, 5, 7, 9, 12, 14, 16, 18, 19, 21, 23, 25, 27, 30, 32, 34, 36], colOf = k => k === 0 ? "green" : RED.includes(k) ? "red" : "black";
     const wins = k => num ? +w === k : w === colOf(k) || (w === "odd" && k % 2 === 1) || (w === "even" && k > 0 && k % 2 === 0);
-    let n = ri(37); if (me.name === OWNER) while (!wins(n)) n = ri(37);
+    let n = ri(37);
     const col = colOf(n), win = wins(n);
     const net = settle(bet, !win ? 0 : num || w === "green" ? 36 : 2);
     return `🎡 ${me.name} bet ${fm(bet)} on ${w} → ball landed on ${{ red: "🔴", black: "⚫", green: "🟢" }[col]} **${n}** — ${outcome(net)}${bal()}`;
@@ -1850,7 +1903,7 @@ const GAMES = {
   scratch: a => {
     const bet = parseBet(a); if (!okBet(bet, "usage: /scratch 100 (match 3 to win, 🐺🐺🐺 = x500)")) return null;
     const T = [[0, 76.52], [2, 17], [5, 5], [10, 1.2], [50, .25], [500, .03]], IC = { 2: "🍀", 5: "⭐", 10: "💎", 50: "👑", 500: "🐺" }, F = ["🍀", "⭐", "💎", "👑", "🐺", "🍒", "🍋"];
-    const m = wpick(me.name === OWNER ? T.slice(1) : T); let cells;
+    const m = wpick(T); let cells;
     if (m) cells = [IC[m], IC[m], IC[m]]; else { do { cells = [0, 1, 2].map(() => F[ri(F.length)]); } while (new Set(cells).size === 1); }
     const net = settle(bet, m);
     return `🎟️ ${me.name} bet ${fm(bet)} on a scratch card → ${cells.join(" ")} ${m ? `**x${m}**` : ""} — ${outcome(net)}${bal()}`;
@@ -1876,6 +1929,120 @@ const GAMES = {
     return `⭐ i rate **${a.trim().slice(0, 100)}** a **${ri(11)}/10**`;
   }
 };
+
+/* ---- more solo games ---- */
+Object.assign(GAMES, {
+  dice: a => {
+    const [b, d, n] = a.trim().split(/\s+/), bet = parseBet(b), t = Math.round(+n); if (!okBet(bet, "usage: /dice 100 over 7 (or under)")) return null;
+    if (!/^(o|u)/i.test(d || "") || !(t >= 3 && t <= 11)) { toast("usage: /dice 100 over|under 3-11", 3000); return null; }
+    const over = /^o/i.test(d), r = [1 + ri(6), 1 + ri(6)], sum = r[0] + r[1], ways = over ? Math.max(0, sum >= 0 ? 0 : 0) : 0;
+    let w = 0; for (let x = 1; x <= 6; x++) for (let y = 1; y <= 6; y++) if (over ? x + y > t : x + y < t) w++;
+    const mult = Math.floor(36 / w * 95) / 100, win = over ? sum > t : sum < t, net = settle(bet, win ? mult : 0);
+    return `🎲 ${me.name} bet ${fm(bet)} on ${over ? "over" : "under"} ${t} (x${mult}) → 🎲${r[0]} 🎲${r[1]} = **${sum}** — ${outcome(net)}${bal()}`;
+  },
+  hilo: a => {
+    const [b, d] = a.trim().split(/\s+/), bet = parseBet(b); if (!okBet(bet, "usage: /hilo 100 higher|lower")) return null;
+    const hi = /^h/i.test(d || ""); if (!/^[hl]/i.test(d || "")) { toast("pick higher or lower", 2500); return null; }
+    const N = ["", "A", "2", "3", "4", "5", "6", "7", "8", "9", "10", "J", "Q", "K"], c1 = 1 + ri(13), c2 = 1 + ri(13), win = hi ? c2 > c1 : c2 < c1, net = settle(bet, win ? 1.9 : c1 === c2 ? 1 : 0);
+    return `🃏 ${me.name} bet ${fm(bet)} on ${hi ? "higher" : "lower"} than **${N[c1]}** → drew **${N[c2]}** — ${outcome(net)}${bal()}`;
+  },
+  wheel: a => {
+    const bet = parseBet(a); if (!okBet(bet, "usage: /wheel 100")) return null;
+    const m = wpick([[0, 40], [.5, 25], [1.5, 18], [2, 10], [5, 5], [10, 1.7], [50, .3]]), net = settle(bet, m);
+    return `🎡 ${me.name} spun the wheel for ${fm(bet)} → **x${m}** — ${outcome(net)}${bal()}`;
+  },
+  guess: a => {
+    const [g, n] = [(a.trim().split(/\s+/)[0]), +a.trim().split(/\s+/)[0]]; if (!(n >= 1 && n <= 100)) { toast("usage: /guess 1-100", 2500); return null; }
+    const d = new Date().toDateString(), k = "wc_guess_" + ACTIVE, st = JSON.parse(localStorage.getItem(k) || "{}"); if (st.d !== d) { st.d = d; st.t = 1 + ri(100); st.n = 0; }
+    st.n++; localStorage.setItem(k, JSON.stringify(st)); if (n === st.t) { st.t = 1 + ri(100); st.n = 0; localStorage.setItem(k, JSON.stringify(st)); confetti(); return `🔢 ${me.name} guessed **${n}** and got it right! 🎉`; }
+    toast(n < st.t ? `${n} is too low ⬆️ (try ${st.n})` : `${n} is too high ⬇️ (try ${st.n})`, 2500); return null;
+  },
+  truth: () => { const q = ["what's your most embarrassing moment?", "who was your first crush?", "what's the last lie you told?", "what's a secret talent you have?", "what app do you waste the most time on?", "what's the weirdest thing you've googled?"]; return `😇 truth for ${me.name}: **${q[ri(q.length)]}**`; },
+  dare: () => { const q = ["send the last emoji you used 10 times", "talk in all caps for 5 messages", "change your status to something silly", "type a message with your elbows", "compliment the next person who talks", "say 'wolf' in 3 languages"]; return `😈 dare for ${me.name}: **${q[ri(q.length)]}**`; },
+  wyr: () => { const q = ["be able to fly or be invisible", "never use social media again or never watch a movie again", "have infinite money or infinite time", "always be 10 min late or 20 min early", "fight 1 horse-sized duck or 100 duck-sized horses"]; return `🤷 would you rather **${q[ri(q.length)]}**?`; },
+  ship: a => { const [x, y] = a.trim().split(/\s+/); if (!y) { toast("usage: /ship alice bob", 2500); return null; } const h = [...(x + y).toLowerCase().split("").sort().join("")].reduce((t, c) => (t * 31 + c.charCodeAt(0)) % 101, 7); return `💘 **${x}** + **${y}** = **${h}%** compatible`; }
+});
+/* ---- player vs player tables (stored at games/<room>/<id>) ---- */
+const gp = mk("div", "gp"); foot.append(gp); let gs = {}, gUn = null, gKey = "";
+const gref = id => ref(db, `games/${tkey()}${id ? "/" + id : ""}`), SU = ["♠", "♥", "♦", "♣"], RK = ["A", "2", "3", "4", "5", "6", "7", "8", "9", "10", "J", "Q", "K"];
+const card = c => RK[c % 13] + SU[c / 13 | 0], cval = h => { let t = 0, a = 0; h.forEach(c => { const r = c % 13; t += r === 0 ? 11 : r > 9 ? 10 : r + 1; if (r === 0) a++; }); while (t > 21 && a-- > 0) t -= 10; return t; };
+const deck = () => { const d = [...Array(52).keys()]; for (let i = 51; i > 0; i--) { const j = ri(i + 1); [d[i], d[j]] = [d[j], d[i]]; } return d; };
+const cnt = o => Object.keys(o || {});
+function listenGames() {
+  if (gKey === tkey()) return; gUn?.(); gKey = tkey(); gs = {}; gp.classList.remove("on");
+  gUn = onValue(gref(), sn => { gs = sn.val() || {}; Object.entries(gs).forEach(([id, g]) => claim2(id, g)); paintGames(); }, () => {});
+}
+async function claim2(id, g) {
+  if (g.st !== "done" || !g.pay || g.pay[me.name] === undefined || g.cl?.[me.name]) return;
+  const r = await runTransaction(ref(db, `games/${tkey()}/${id}/cl/${me.name}`), c => c ? undefined : true).catch(() => null);
+  if (r?.committed) { const x = +g.pay[me.name]; if (x > 0) { setCoins(me.coins + x); if (x > (g.stake || 0) * 1.5 && g.stake) confetti(); } toast(`game over: ${x > (g.stake || 0) ? "+" + fm(x - (g.stake || 0)) : x < (g.stake || 0) ? "-" + fm((g.stake || 0) - x) : "even"} 🪙`, 3000); }
+}
+const GN = { blackjack: ["🂡 blackjack", 5], duel: ["⚔️ duel", 2], dicewar: ["🎲 dice war", 2], highcard: ["🃏 high card", 2], tictactoe: ["⭕ tic-tac-toe", 2], connect4: ["🔴 connect 4", 2] };
+function open(type, a) {
+  const [b] = a.trim().split(/\s+/), free = type === "tictactoe" || type === "connect4", stake = b ? parseBet(b) : 0;
+  if (!free || b) { if (!okBet(stake, `usage: /${type} 100`)) return null; }
+  if (Object.values(gs).some(g => g.host === me.name && g.st !== "done")) { toast("you already have a game open — finish or /games to cancel it", 3000); return null; }
+  const id = push(gref()).key, g = { type, host: me.name, stake, st: "open", ts: Date.now(), pl: { [me.name]: true }, need: GN[type][1] };
+  if (stake) setCoins(me.coins - stake); set(gref(id), g).catch(() => { if (stake) setCoins(me.coins + stake); toast("couldn't open game — add a rule for \"games\" in your firebase database rules", 4500); });
+  gp.classList.add("on"); return `${GN[type][0]} table opened by **${me.name}**${stake ? ` — stake 🪙 ${fm(stake)}` : ""} · type **/join** (up to ${GN[type][1]} players)`;
+}
+function join() {
+  const e = Object.entries(gs).find(([, g]) => g.st === "open" && !g.pl[me.name] && cnt(g.pl).length < g.need);
+  if (!e) { toast("no open game to join here", 2500); return null; } const [id, g] = e;
+  if (g.stake) { if (me.coins < g.stake) { toast(`you need 🪙 ${fm(g.stake)} to join`, 2500); return null; } setCoins(me.coins - g.stake); }
+  const pl = { ...g.pl, [me.name]: true }, up = { pl };
+  if (g.type === "duel" || g.type === "dicewar" || g.type === "highcard") {
+    const [a, b] = cnt(pl); let r = {}, w;
+    if (g.type === "duel") w = R() < .5 ? a : b; else { do { r = { [a]: g.type === "highcard" ? ri(13) + 13 * ri(4) : 1 + ri(6) + 1 + ri(6), [b]: g.type === "highcard" ? ri(13) + 13 * ri(4) : 1 + ri(6) + 1 + ri(6) }; } while (false); const v = n => g.type === "highcard" ? (r[n] % 13 || 13) : r[n]; w = v(a) === v(b) ? null : v(a) > v(b) ? a : b; }
+    Object.assign(up, { st: "done", res: r, win: w, pay: w ? { [w]: g.stake * 2 } : { [a]: g.stake, [b]: g.stake } });
+  } else if (g.type === "tictactoe") Object.assign(up, { st: "live", bd: "         ", turn: g.host });
+  else if (g.type === "connect4") Object.assign(up, { st: "live", bd: " ".repeat(42), turn: g.host });
+  else if (cnt(pl).length >= g.need) startBJ(up, pl);
+  update(gref(id), up).catch(() => toast("couldn't join", 2500)); gp.classList.add("on"); return `👥 **${me.name}** joined ${GN[g.type][0]}`;
+}
+function startBJ(up, pl) {
+  const d = deck(), h = {}; cnt(pl).forEach(n => h[n] = [d.pop(), d.pop()]); Object.assign(up, { st: "live", dk: d, hd: h, dl: [d.pop(), d.pop()], turn: cnt(pl)[0], stood: {} });
+}
+const pay = (g, f) => update(gref(g.id), f);
+function bjAct(id, g, hit) {
+  const d = [...(g.dk || [])], h = { ...g.hd }, mine = [...h[me.name]], up = {}; let stood = { ...(g.stood || {}) };
+  if (hit) { mine.push(d.pop()); h[me.name] = mine; } if (!hit || cval(mine) >= 21) stood[me.name] = true;
+  const order = cnt(g.pl), nxt = order.find(n => !stood[n]); up.hd = h; up.dk = d; up.stood = stood; up.turn = nxt || null;
+  if (!nxt) { let dl = [...g.dl]; while (cval(dl) < 17) dl.push(d.pop()); const dv = cval(dl), py = {}; order.forEach(n => { const v = cval(h[n]), nat = h[n].length === 2 && v === 21; py[n] = v > 21 ? 0 : nat && !(dl.length === 2 && dv === 21) ? Math.floor(g.stake * 2.5) : dv > 21 || v > dv ? g.stake * 2 : v === dv ? g.stake : 0; }); Object.assign(up, { dl, st: "done", pay: py }); }
+  update(gref(id), up);
+}
+const LN = [[0, 1, 2], [3, 4, 5], [6, 7, 8], [0, 3, 6], [1, 4, 7], [2, 5, 8], [0, 4, 8], [2, 4, 6]];
+function move(id, g, i) {
+  const [a, b] = cnt(g.pl), mk1 = me.name === a ? "X" : "O", bd = g.bd.split(""), up = {};
+  if (g.type === "tictactoe") { if (bd[i] !== " ") return; bd[i] = mk1; const w = LN.some(l => l.every(k => bd[k] === mk1)); up.bd = bd.join(""); up.turn = me.name === a ? b : a; if (w || !bd.includes(" ")) Object.assign(up, { st: "done", win: w ? me.name : null, pay: w ? { [me.name]: g.stake * 2 } : { [a]: g.stake, [b]: g.stake } }); }
+  else { let r = 5; while (r >= 0 && bd[r * 7 + i] !== " ") r--; if (r < 0) return; bd[r * 7 + i] = mk1; let w = false; for (let y = 0; y < 6; y++) for (let x = 0; x < 7; x++) for (const [dx, dy] of [[1, 0], [0, 1], [1, 1], [1, -1]]) { let k = 0; for (; k < 4; k++) { const X = x + dx * k, Y = y + dy * k; if (X < 0 || X > 6 || Y < 0 || Y > 5 || bd[Y * 7 + X] !== mk1) break; } if (k === 4) w = true; } up.bd = bd.join(""); up.turn = me.name === a ? b : a; if (w || !bd.includes(" ")) Object.assign(up, { st: "done", win: w ? me.name : null, pay: w ? { [me.name]: g.stake * 2 } : { [a]: g.stake, [b]: g.stake } }); }
+  update(gref(id), up);
+}
+function paintGames() {
+  const cards = Object.entries(gs).filter(([, g]) => g.st !== "done" || Date.now() - g.ts < 36e5).sort((x, y) => y[1].ts - x[1].ts).slice(0, 4).map(([id, g]) => {
+    const c = mk("div", "", "gc"), mineP = g.pl?.[me.name], b = (t, f) => { const x = mk("button"); x.textContent = t; x.onclick = f; return x; }, bar = mk("div", "", "gb");
+    c.append(mk("h4", "", "", `<span>${GN[g.type][0]}${g.stake ? " · 🪙 " + fm(g.stake) : ""}</span><small>${g.st}</small>`));
+    const info = mk("div"); c.append(info); info.textContent = "players: " + cnt(g.pl).join(", ");
+    if (g.st === "open") { if (!mineP) bar.append(b("join", () => { const o = join(); if (o) { msg.value = o; _send(); } })); if (g.host === me.name) { bar.append(b("cancel", () => { const pay = {}; cnt(g.pl).forEach(n => pay[n] = g.stake); update(gref(id), { st: "done", pay }); })); if (g.type === "blackjack" && cnt(g.pl).length >= 1) bar.append(b("deal now", () => { const up = {}; startBJ(up, g.pl); up.st = "live"; update(gref(id), up); })); } }
+    if (g.type === "blackjack" && g.st !== "open") {
+      const dv = g.st === "done" || !g.turn ? g.dl : [g.dl[0]], t = mk("div", "", "hand"); t.textContent = "dealer: " + dv.map(card).join(" ") + (g.st === "done" ? ` (${cval(g.dl)})` : " ??"); c.append(t);
+      cnt(g.pl).forEach(n => { const h = mk("div", "", "hand"); h.textContent = `${n}${g.turn === n ? " ▶" : ""}: ${g.hd[n].map(card).join(" ")} (${cval(g.hd[n])})${g.pay ? " → " + fm(g.pay[n]) : ""}`; c.append(h); });
+      if (g.st === "live" && g.turn === me.name) bar.append(b("hit", () => bjAct(id, g, true)), b("stand", () => bjAct(id, g, false)));
+    }
+    if (g.type === "duel" || g.type === "dicewar" || g.type === "highcard") if (g.st === "done" && g.win !== undefined) info.textContent += ` · ${g.res && Object.keys(g.res).length ? cnt(g.res).map(n => `${n}: ${g.type === "highcard" ? card(g.res[n]) : g.res[n]}`).join(" vs ") + " · " : ""}${g.win ? g.win + " wins 🏆" : "tie"}`;
+    if (g.bd) {
+      const w = g.type === "tictactoe" ? 3 : 7, grid = mk("div", "", "bd" + (w === 7 ? " c4" : "")); grid.style.gridTemplateColumns = `repeat(${w},1fr)`;
+      if (w === 3) g.bd.split("").forEach((x, i) => { const k = b(x === " " ? "·" : x === "X" ? "❌" : "⭕", () => move(id, g, i)); k.disabled = g.st !== "live" || g.turn !== me.name; grid.append(k); });
+      else for (let y = 0; y < 6; y++) for (let x = 0; x < 7; x++) { const v = g.bd[y * 7 + x], k = b(v === " " ? "·" : v === "X" ? "🔴" : "🟡", () => move(id, g, x)); k.disabled = g.st !== "live" || g.turn !== me.name; grid.append(k); }
+      c.append(grid); if (g.st === "live") info.textContent += ` · turn: ${g.turn}`; if (g.st === "done") info.textContent += g.win ? ` · ${g.win} wins 🏆` : " · draw";
+    }
+    if (g.st === "live" && mineP && g.host === me.name && Date.now() - g.ts > 18e5) bar.append(b("abort", () => { const pay = {}; cnt(g.pl).forEach(n => pay[n] = g.stake); update(gref(id), { st: "done", pay }); }));
+    if (bar.children.length) c.append(bar); tw(c); return c;
+  });
+  gp.replaceChildren(...cards); if (!cards.length) gp.classList.remove("on");
+}
+Object.assign(GAMES, { blackjack: a => open("blackjack", a), duel: a => open("duel", a), dicewar: a => open("dicewar", a), highcard: a => open("highcard", a), tictactoe: a => open("tictactoe", a), connect4: a => open("connect4", a), join: () => join(), games: () => { listenGames(); gp.classList.toggle("on"); paintGames(); return null; } });
+const gbtn = mk("button", "gamesBtn"); gbtn.textContent = "🎮"; gbtn.title = "games in this room"; gbtn.onclick = () => { listenGames(); gp.classList.toggle("on"); paintGames(); }; $("send").before(gbtn);
 const _send = send;
 send = function () {
   const m = /^\/(\w+)\s*(.*)$/s.exec(msg.value.trim()); if (!m || !CM[m[1].toLowerCase()]) { _send(); return afterSend(); }
@@ -1895,7 +2062,7 @@ function afterSend() { cmdUi(); try { localStorage.removeItem("wc_draft_" + tkey
 const _enter = enterRoom;
 enterRoom = function (r) {
   try { localStorage.setItem("wc_draft_" + tkey(), msg.value); } catch {}
-  _enter(r); openSearch(false);
+  _enter(r); openSearch(false); try { listenGames(); } catch {}
   let d = ""; try { d = localStorage.getItem("wc_draft_" + tkey()) || ""; } catch {} msg.value = d; cmdUi();
 };
 /* day dividers, sounds, confetti, jump button */
@@ -1992,6 +2159,133 @@ const exportRoom = () => {
 };
 window.__wc = { export: exportRoom, notify, compact };
 document.addEventListener("keydown", e => { if (e.key === "Escape") lb.classList.remove("on"); });
+}
+/* ===== wolfchat+++: fonts, look, levels, quests, arcade, polls, trivia ===== */
+{
+const mk=(t,c,h)=>{const e=document.createElement(t);if(c)e.className=c;if(h!==undefined)e.innerHTML=h;return e;};
+const esc=s=>String(s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+const J=(k,d)=>{try{return JSON.parse(localStorage.getItem(k))??d}catch{return d}},W=(k,v)=>localStorage.setItem(k,JSON.stringify(v));
+const K=k=>k+"_"+ACTIVE,today=()=>new Date().toISOString().slice(0,10),rn=n=>Math.floor(Math.random()*n);
+/* ---- storage for font files / bg ---- */
+const idb=()=>new Promise((r,j)=>{const q=indexedDB.open("wc_kv",1);q.onupgradeneeded=()=>q.result.createObjectStore("kv");q.onsuccess=()=>r(q.result);q.onerror=()=>j();});
+const kv=async(m,k,v)=>{const d=await idb();return new Promise((r,j)=>{const s=d.transaction("kv",m==="get"?"readonly":"readwrite").objectStore("kv"),q=m==="get"?s.get(k):m==="put"?s.put(v,k):s.delete(k);q.onsuccess=()=>r(q.result);q.onerror=()=>j();});};
+/* ---- look: fonts, size, roundness, bg, fx, css ---- */
+let L=J("wc_look",{}),FM=J("wc_fonts",[]),bgU="";
+const css=mk("style"),ccss=mk("style");document.head.append(css,ccss);
+const cvx=mk("canvas");cvx.style.cssText="position:fixed;inset:0;width:100%;height:100%;pointer-events:none;z-index:0";document.body.prepend(cvx);let fxr=0;
+function fx(){cancelAnimationFrame(fxr);const x=cvx.getContext("2d"),m=L.fx;cvx.width=innerWidth;cvx.height=innerHeight;x.clearRect(0,0,cvx.width,cvx.height);if(!m||matchMedia("(prefers-reduced-motion:reduce)").matches)return;
+  const n=m==="matrix"?Math.ceil(innerWidth/16):90,P=Array.from({length:n},(_,i)=>({x:m==="matrix"?i*16:Math.random()*innerWidth,y:Math.random()*innerHeight,v:.5+Math.random()*2,r:1+Math.random()*2,a:Math.random()*6})),gl=getComputedStyle(root).getPropertyValue("--glow")||"#3b82f6";
+  (function f(){if(m==="matrix"){x.globalCompositeOperation="destination-out";x.fillStyle="rgba(0,0,0,.12)";x.fillRect(0,0,cvx.width,cvx.height);x.globalCompositeOperation="source-over"}else x.clearRect(0,0,cvx.width,cvx.height);x.fillStyle=gl;
+    P.forEach(p=>{p.a+=.03;if(m==="snow"){p.y+=p.v;p.x+=Math.sin(p.a);x.globalAlpha=.8;x.beginPath();x.arc(p.x,p.y,p.r,0,7);x.fill()}
+      else if(m==="rain"){p.y+=p.v*9;x.globalAlpha=.5;x.fillRect(p.x,p.y,1,12)}
+      else if(m==="fireflies"){p.y-=p.v*.4;p.x+=Math.sin(p.a)*.8;x.globalAlpha=.3+.6*Math.abs(Math.sin(p.a));x.beginPath();x.arc(p.x,p.y,p.r+1,0,7);x.fill()}
+      else{p.y+=p.v*4;x.globalAlpha=.9;x.font="14px monospace";x.fillText(String.fromCharCode(0x30A0+Math.random()*60),p.x,p.y)}
+      if(p.y>innerHeight+20)p.y=-10;if(p.y<-20)p.y=innerHeight+10;});x.globalAlpha=1;fxr=requestAnimationFrame(f)})();}
+addEventListener("resize",()=>{if(L.fx)fx()});
+function applyLook(){const f=v=>v?`"${v}",`:"";let c="";
+  if(L.ui)c+=`body,body *{font-family:${f(L.ui)}Minecraftia,monospace!important}`;
+  if(L.msg)c+=`.bubble,.bubble *,#msg{font-family:${f(L.msg)}Minecraftia,monospace!important}`;
+  if(L.size&&L.size!=100)c+=`.bubble,#msg{font-size:${13*L.size/100}px!important}`;
+  if(L.rad)c+=`.bubble{border-radius:${L.rad}px}`;
+  if(L.av==="round")c+=`.avatar{border-radius:50%}`;
+  if(bgU)c+=`body{background:url("${bgU}") center/cover fixed!important;animation:none!important}`;
+  css.textContent=c;ccss.textContent=L.css||"";fx();}
+const sv=()=>{W("wc_look",L);applyLook()},okN=n=>/^[\w .-]{1,40}$/.test(n),BUILT=["monospace","sans-serif","serif","cursive","system-ui"];
+async function useFont(o){try{
+  if(o.t==="g"){if(!document.querySelector(`link[data-f="${o.n}"]`)){const l=mk("link");l.rel="stylesheet";l.dataset.f=o.n;l.href=`https://fonts.googleapis.com/css2?family=${encodeURIComponent(o.n).replace(/%20/g,"+")}:wght@400;700&display=swap`;document.head.append(l)}}
+  else{const ff=new FontFace(o.n,o.t==="url"?`url("${o.u}")`:await(await kv("get","f:"+o.n)).arrayBuffer());await ff.load();document.fonts.add(ff)}
+}catch{toast("couldn't load font "+o.n,3000)}}
+function drawFonts(){const opt=(s,v)=>[mk("option","","default"),...[...FM.map(f=>f.n),...BUILT].map(n=>{const o=mk("option","",esc(n));o.value=n;return o})].map((o,i)=>(o.selected=(i?o.value:"")===(v||""),o));
+  $("lkUi").replaceChildren(...opt(0,L.ui));$("lkMsg").replaceChildren(...opt(0,L.msg));
+  $("lkList").replaceChildren(...FM.map(f=>{const r=mk("div","frow",`<span>${esc(f.n)} <small style="opacity:.5">${f.t}</small></span>`),b=mk("button","","✕");b.onclick=async()=>{FM=FM.filter(x=>x!==f);W("wc_fonts",FM);if(f.t==="file")kv("del","f:"+f.n).catch(()=>{});if(L.ui===f.n)L.ui="";if(L.msg===f.n)L.msg="";sv();drawFonts()};r.append(b);return r}));}
+async function addFont(o,blob){if(!okN(o.n))return toast("font name: letters, numbers, spaces (max 40)",3000);
+  if(blob)await kv("put","f:"+o.n,blob);FM=FM.filter(x=>x.n!==o.n);FM.push(o);W("wc_fonts",FM);await useFont(o);drawFonts();toast("font added ✅ pick it in the dropdowns")}
+$("lkFileBtn").onclick=()=>{const f=$("lkFile").files[0];if(!f)return toast("choose a .ttf .otf .woff or .woff2 file");addFont({n:$("lkFn").value.trim()||f.name.replace(/\.\w+$/,"").slice(0,40),t:"file"},f);$("lkFile").value=$("lkFn").value=""};
+$("lkGBtn").onclick=()=>{const n=$("lkG").value.trim();addFont({n,t:"g"});$("lkG").value=""};
+$("lkUBtn").onclick=()=>{const u=safeUrl($("lkU").value.trim());if(!u)return toast("enter a full http(s) link");addFont({n:$("lkFn").value.trim()||u.split("/").pop().replace(/\.\w+(\?.*)?$/,"").slice(0,40),t:"url",u});$("lkU").value=""};
+$("lkUi").onchange=e=>{L.ui=e.target.value;sv()};$("lkMsg").onchange=e=>{L.msg=e.target.value;sv()};
+$("lkSz").oninput=e=>{L.size=+e.target.value;$("lkSzV").textContent=L.size;sv()};$("lkRad").oninput=e=>{L.rad=+e.target.value;sv()};
+$("lkAv").onchange=e=>{L.av=e.target.value;sv()};$("lkFx").onchange=e=>{L.fx=e.target.value;sv()};
+$("lkCssBtn").onclick=()=>{L.css=$("lkCss").value.slice(0,5000);sv();toast("css applied ✅")};
+$("lkBgF").onchange=async e=>{const f=e.target.files[0];e.target.value="";if(!f)return;try{await kv("put","bg",f);L.bgT="file";bgU=URL.createObjectURL(f);sv();toast("background set ✅")}catch{toast("couldn't save image")}};
+$("lkBgBtn").onclick=()=>{const u=safeUrl($("lkBgU").value.trim());if(!u)return toast("enter a full http(s) link");L.bgT="url";L.bgUrl=u;bgU=u;sv()};
+$("lkBgClr").onclick=()=>{L.bgT="";bgU="";sv()};
+$("lkShare").onclick=()=>{const c=btoa(JSON.stringify(curTh));navigator.clipboard.writeText(c).then(()=>toast("theme code copied ✅ send it to a friend")).catch(()=>prompt("theme code:",c))};
+$("lkLoad").onclick=()=>{try{const t=JSON.parse(atob($("lkPaste").value.trim())),o={};Object.keys(TV).forEach(k=>{if(hex(t[k]))o[k]=t[k]});applyTheme(o);toast("theme loaded ✅")}catch{toast("that code doesn't look right")}};
+$("lkRnd").onclick=()=>{const h=rn(360),c=(s,l)=>{const a=s*Math.min(l,1-l)/100,f=n=>{const k=(n+h/30)%12;return Math.round(255*(l-a*Math.max(-1,Math.min(k-3,9-k,1)))).toString(16).padStart(2,"0")};return"#"+f(0)+f(8)+f(4)};
+  applyTheme({bg1:c(60,.02*100/100),bg2:c(50,.07),bg:c(50,.06),bd:c(60,.3),ac:c(75,.5),glow:c(80,.6),tx:c(60,.88),react:c(80,.5)});fx()};
+$("lkReset").onclick=()=>{L={};FM.forEach(f=>f.t==="file"&&kv("del","f:"+f.n).catch(()=>{}));FM=[];bgU="";W("wc_fonts",FM);sv();drawFonts();$("lkCss").value="";toast("look reset")};
+$("lkSz").value=L.size||100;$("lkSzV").textContent=L.size||100;$("lkRad").value=L.rad||0;$("lkAv").value=L.av||"";$("lkFx").value=L.fx||"";$("lkCss").value=L.css||"";
+(async()=>{await Promise.all(FM.map(useFont));if(L.bgT==="file")try{const b=await kv("get","bg");if(b)bgU=URL.createObjectURL(b)}catch{}else if(L.bgT==="url")bgU=L.bgUrl||"";drawFonts();applyLook()})();
+
+/* ---- levels, streaks, quests, achievements ---- */
+const lvl=x=>Math.floor(Math.sqrt((x||0)/40))+1,need=l=>40*l*l;let S=J(K("wc_st"),{}),Q;
+const svS=()=>W(K("wc_st"),S),ldQ=()=>{Q=J(K("wc_q"),{});if(Q.d!==today())Q={d:today(),p:{},c:{}}},svQ=()=>W(K("wc_q"),Q),prog=id=>{ldQ();Q.p[id]=(Q.p[id]||0)+1;svQ()};
+const QS=[["msg","send 10 messages",10,40,20],["dm","send 3 dm / group messages",3,30,15],["arc","play 3 arcade games",3,50,25],["poll","post a poll or trivia",1,40,20]];
+const AC=[["first","💬","first words",()=>me.messageCount>=1],["c100","🗣️","100 messages",()=>me.messageCount>=100],["c1k","📢","1000 messages",()=>me.messageCount>=1000],["l5","⭐","level 5",()=>lvl(me.xp)>=5],["l10","🌟","level 10",()=>lvl(me.xp)>=10],["s3","🔥","3 day streak",()=>me.streak>=3],["s7","🚀","7 day streak",()=>me.streak>=7],["rich","💰","10k coins",()=>me.coins>=1e4],["gm","🎮","played 10 games",()=>S.arc>=10],["q5","📜","5 quests done",()=>S.q>=5],["poll","📊","poll starter",()=>S.poll>=1],["tv","🧠","trivia winner",()=>S.tv>=1],["owl","🦉","night owl",()=>S.owl]];
+function chk(){if(!me)return;AC.forEach(([id,i,n,f])=>{if(!(me.ach||[]).includes(id)&&f()){me.ach=[...(me.ach||[]),id];update(ref(db,"profiles/"+me.name),{ach:me.ach}).catch(()=>{});localStorage.setItem(PKEY,JSON.stringify(me));toast(`${i} achievement: ${n}`,3500)}})}
+function gain(x){const a=lvl(me.xp);me.xp=(me.xp||0)+x;localStorage.setItem(PKEY,JSON.stringify(me));set(ref(db,`profiles/${me.name}/xp`),me.xp).catch(()=>{});if(lvl(me.xp)>a){toast(`level up! you're level ${lvl(me.xp)} 🎉`,3500);__confetti()}paintUbar();chk()}
+async function daily(){const d=today();if(me.lastDay===d)return;const y=new Date(Date.now()-864e5).toISOString().slice(0,10);me.streak=me.lastDay===y?(me.streak||0)+1:1;me.lastDay=d;const c=25*Math.min(me.streak,10);__setCoins(me.coins+c);await pushProfile();gain(10);toast(`🔥 day ${me.streak} streak! +${c} coins`,4500)}
+const iv=setInterval(()=>{if(me&&started){clearInterval(iv);daily().catch(()=>{})}},1500);
+const _pu=paintUbar;paintUbar=function(){_pu();if(me)$("ubSt").textContent+=" · lvl "+lvl(me.xp)};
+const _rp=renderPTabs;renderPTabs=function(){_rp();if(pTab!=="activity"||!pCtx)return;const p=pCtx.name===me.name?me:pCtx.p,d=mk("div","rev",`<b>level ${lvl(p.xp)}</b> · 🔥 ${p.streak||0} day streak<br>${(p.ach||[]).map(id=>AC.find(a=>a[0]===id)?.[1]).filter(Boolean).join(" ")||"no achievements yet"}`);$("pBody").prepend(d);tw(d)};
+
+/* ---- arcade ---- */
+const GM={snake:["🐍 snake","pts",1],reaction:["⚡ reaction","ms",0],typing:["⌨️ typing","wpm",1],memory:["🧠 memory","moves",0]};
+const G={
+snake(b,done){const c=mk("canvas");c.width=c.height=300;c.style.cssText="border:2px solid var(--bd);background:#000;max-width:100%;touch-action:none";b.append(c,mk("div","","arrows / wasd, or swipe"));const x=c.getContext("2d");let s=[[7,7]],d=[1,0],nd=d,f=[3,3],sc=0,sx,sy;
+  const key=e=>{const m={ArrowUp:[0,-1],w:[0,-1],ArrowDown:[0,1],s:[0,1],ArrowLeft:[-1,0],a:[-1,0],ArrowRight:[1,0],d:[1,0]}[e.key];if(m&&(m[0]!==-d[0]||m[1]!==-d[1])){nd=m;e.preventDefault()}};document.addEventListener("keydown",key);
+  c.onpointerdown=e=>{sx=e.clientX;sy=e.clientY};c.onpointerup=e=>{const dx=e.clientX-sx,dy=e.clientY-sy,m=Math.abs(dx)>Math.abs(dy)?[Math.sign(dx),0]:[0,Math.sign(dy)];if(Math.max(Math.abs(dx),Math.abs(dy))>20&&(m[0]!==-d[0]||m[1]!==-d[1]))nd=m};
+  const t=setInterval(()=>{d=nd;const h=[s[0][0]+d[0],s[0][1]+d[1]];if(h[0]<0||h[1]<0||h[0]>14||h[1]>14||s.some(p=>p[0]===h[0]&&p[1]===h[1]))return done(sc);s.unshift(h);if(h[0]===f[0]&&h[1]===f[1]){sc++;f=[rn(15),rn(15)]}else s.pop();
+    x.fillStyle="#000";x.fillRect(0,0,300,300);x.fillStyle="#ef4444";x.fillRect(f[0]*20,f[1]*20,18,18);x.fillStyle=getComputedStyle(root).getPropertyValue("--glow");s.forEach(p=>x.fillRect(p[0]*20,p[1]*20,18,18))},110);
+  return()=>{clearInterval(t);document.removeEventListener("keydown",key)}},
+reaction(b,done){const z=mk("button","wide","wait for green...");z.style.cssText="height:160px;background:#7f1d1d";b.append(z);let t0=0;const to=setTimeout(()=>{z.style.background="#166534";z.textContent="CLICK!";t0=performance.now()},1500+Math.random()*3000);z.onclick=()=>done(t0?Math.round(performance.now()-t0):-1);return()=>clearTimeout(to)},
+typing(b,done){const T=["the quick brown fox jumps over the lazy dog","wolves howl at the moon every single night","a wolf pack is only as strong as its howl","practice makes perfect so keep on typing fast","never stop moving never stop growing"],s=T[rn(T.length)],p=mk("div","",esc(s)),i=mk("input");i.style.cssText="width:100%;margin-top:8px;padding:8px;background:#000;color:inherit;border:2px solid var(--bd);font-family:inherit";b.append(p,i);let t0=0;i.focus();i.oninput=()=>{if(!t0)t0=performance.now();p.style.color=s.startsWith(i.value)?"":"#f87171";if(i.value===s)done(Math.round(s.length/5/((performance.now()-t0)/6e4)))};return()=>{}},
+memory(b,done){const E=["🐺","🌙","⭐","🔥","💎","🍕"],c=[...E,...E].sort(()=>Math.random()-.5),g=mk("div");g.style.cssText="display:grid;grid-template-columns:repeat(4,1fr);gap:6px";let o=[],mv=0,ok=0,lock=0;
+  c.forEach(e=>{const k=mk("button","","?");k.dataset.e=e;k.style.cssText="font-size:24px;aspect-ratio:1";k.onclick=()=>{if(lock||k.disabled||o.includes(k))return;k.textContent=e;tw(k);o.push(k);if(o.length<2)return;mv++;const[a,z]=o;if(a.dataset.e===z.dataset.e){a.disabled=z.disabled=true;o=[];if(++ok===6)done(mv)}else{lock=1;setTimeout(()=>{a.textContent=z.textContent="?";o=[];lock=0},700)}};g.append(k)});b.append(g);return()=>{}}};
+let cl=null;const stop=()=>{cl&&cl();cl=null};
+function finish(g,sc,out,again){stop();const[nm,u,hi]=GM[g];if(sc<0){out.textContent="too early! 😅";return again()}
+  const B=J(K("wc_best"),{}),old=B[g],better=old===undefined||(hi?sc>old:sc<old);out.textContent=`${nm}: ${sc} ${u}`+(better?" 🏆 new best!":` (best ${old})`);
+  if(better){B[g]=sc;W(K("wc_best"),B);set(ref(db,`scores/${g}/${me.name}`),{s:sc,ts:Date.now()}).catch(()=>{})}
+  const c=g==="snake"?Math.min(sc*3,150):g==="typing"?Math.min(sc,100):20;__setCoins(me.coins+c);out.textContent+=` · +${c} 🪙`;S.arc=(S.arc||0)+1;svS();prog("arc");gain(5);again()}
+/* ---- hub ---- */
+const hub=mk("div");hub.id="hub";hub.innerHTML='<div class="fc"><div class="ph"><b>🏆 hub</b><button id="hbX">✕</button></div><nav class="row" id="hbT"></nav><div id="hbB"></div></div>';document.body.append(hub);
+const closeHub=()=>{stop();hub.classList.remove("on")};hub.onclick=e=>{if(e.target===hub)closeHub()};$("hbX").onclick=closeHub;
+const hb=mk("button");hb.textContent="🏆";hb.title="hub: quests, arcade, ranks";hb.onclick=()=>openHub("you");document.querySelector(".hr").prepend(hb);tw(hb);
+const TABSH=[["you","you"],["arcade","arcade"],["ranks","ranks"],["badges","badges"]];
+function openHub(t){stop();ldQ();hub.classList.add("on");$("hbT").replaceChildren(...TABSH.map(([k,l])=>{const b=mk("button",k===t?"on":"",l);b.onclick=()=>openHub(k);return b}));const b=$("hbB");b.replaceChildren();
+  if(t==="you"){const x=me.xp||0,l=lvl(x);b.innerHTML=`<div>level <b>${l}</b> · ${x} xp · 🔥 ${me.streak||0} day streak (log in daily for bonus coins)</div><div class="bar"><i style="width:${Math.min(100,(x-need(l-1))/(need(l)-need(l-1))*100)}%"></i></div><h3 style="margin:14px 0 6px">daily quests</h3>`;
+    QS.forEach(([id,tx,g,c,xp])=>{const p=Math.min(Q.p[id]||0,g),r=mk("div","frow",`<span>${tx} (${p}/${g}) · 🪙${c} +${xp}xp</span>`);if(Q.c[id])r.append(mk("small","","✅"));else if(p>=g){const k=mk("button","","claim");k.onclick=()=>{Q.c[id]=1;svQ();__setCoins(me.coins+c);S.q=(S.q||0)+1;svS();gain(xp);openHub("you")};r.append(k)}b.append(r)});
+    b.append(mk("div","","<small style='opacity:.6'>tip: /poll, /trivia and the arcade all count for quests</small>"));}
+  else if(t==="arcade"){const bar=mk("div","row"),ar=mk("div"),out=mk("div");out.style.margin="8px 0";const B=J(K("wc_best"),{});
+    const go=g=>{stop();ar.replaceChildren();out.textContent="";cl=G[g](ar,sc=>finish(g,sc,out,()=>{const a=mk("button","wide","play again");a.onclick=()=>go(g);ar.replaceChildren(a)}))};
+    Object.entries(GM).forEach(([g,[n]])=>{const k=mk("button","",n+(B[g]!==undefined?` (${B[g]})`:""));k.onclick=()=>go(g);bar.append(k)});b.append(bar,out,ar);tw(b)}
+  else if(t==="ranks"){const sel=mk("select"),o=mk("div");[["level","level"],["messages","messages"],["streak","streak"],...Object.entries(GM).map(([g,[n]])=>[g,n])].forEach(([v,n])=>{const x=mk("option","",n);x.value=v;sel.append(x)});b.append(sel,o);
+    const run=async()=>{const cat=sel.value;o.textContent="loading...";let rows;
+      if(GM[cat]){try{rows=Object.entries((await get(ref(db,"scores/"+cat))).val()||{}).map(([n,v])=>[n,v.s])}catch{o.textContent='can\'t load (add a firebase rule for "scores")';return}rows.sort((a,b)=>GM[cat][2]?b[1]-a[1]:a[1]-b[1])}
+      else{const f={level:p=>p.xp||0,messages:p=>p.messageCount||0,streak:p=>p.streak||0};rows=Object.entries(profiles).map(([n,p])=>[n,f[cat](n===me.name?me:p)]).filter(r=>r[1]>0).sort((a,b)=>b[1]-a[1])}
+      o.replaceChildren(...rows.slice(0,10).map(([n,v],i)=>mk("div","frow",`<span>${["🥇","🥈","🥉"][i]||i+1+"."} ${esc(profiles[n]?.displayName||n)}</span><b>${cat==="level"?"lvl "+lvl(v):v}</b>`)));if(!rows.length)o.textContent="nobody yet, be the first!";tw(o)};sel.onchange=run;run()}
+  else{const g=mk("div","bdgs");AC.forEach(([id,i,n])=>g.append(mk("div",(me.ach||[]).includes(id)?"":"lock",`${i} ${n}`)));b.append(g);tw(b)}}
+/* ---- polls + trivia ---- */
+const TQ=[["what's the largest planet?","jupiter","saturn","neptune","earth"],["how many sides does a hexagon have?","6","5","8","7"],["what's the capital of japan?","tokyo","kyoto","osaka","seoul"],["which animal is the largest on earth?","blue whale","elephant","giraffe","great white shark"],["what gas do plants absorb?","carbon dioxide","oxygen","nitrogen","helium"],["how many players on a soccer team on the field?","11","9","10","12"],["what's the chemical symbol for gold?","au","ag","go","gd"],["which ocean is the largest?","pacific","atlantic","indian","arctic"],["in minecraft, what do creepers do?","explode","shoot arrows","teleport","fly"],["how many days in a leap year?","366","365","364","367"],["what's the fastest land animal?","cheetah","lion","horse","greyhound"],["which planet is the red planet?","mars","venus","mercury","jupiter"],["what's 12 x 12?","144","124","132","142"],["which language runs in web browsers?","javascript","python","java","rust"],["how many continents are there?","7","6","5","8"],["what color do you get mixing blue and yellow?","green","purple","orange","brown"]];
+const post=o=>{o.name=me.name;o.ts=Date.now();push(ref(db,room.path),o).catch(()=>toast("message failed to send"));if(room.dm)update(ref(db),{[`dmIndex/${me.name}/${room.dm}`]:o.ts,[`dmIndex/${room.dm}/${me.name}`]:o.ts})};
+const bumpPoll=()=>{S.poll=(S.poll||0)+1;svS();prog("poll");gain(5)};
+async function trivia(){const[q,r,...w]=TQ[rn(TQ.length)],o=[r,...w].sort(()=>Math.random()-.5),s=rnd();post({text:"🧠 trivia: "+q,tv:{o,s,h:await sha(s+o.indexOf(r))}});bumpPoll()}
+const _f=fill;fill=function(el,key,m){_f(el,key,m);try{widget(el,key,m)}catch{}};
+function widget(el,key,m){const t=el.querySelector(".text");if(!t)return;
+  if(m.poll){const v=m.votes||{},n=Object.keys(v).length,w=mk("div");m.poll.o.forEach((o,i)=>{const c=Object.values(v).filter(x=>x===i).length,pc=n?Math.round(c/n*100):0,b=mk("button","wide",`${esc(o)} · ${c} (${pc}%)`);b.style.cssText=`background:linear-gradient(90deg,var(--bd) ${pc}%,transparent ${pc}%);margin-top:4px;text-align:left`;if(v[me.name]===i)b.style.borderColor="var(--glow)";b.onclick=()=>set(ref(db,`${room.path}/${key}/votes/${me.name}`),i).catch(()=>toast("couldn't vote"));w.append(b)});t.after(w);tw(w)}
+  if(m.tv){const w=mk("div");m.tv.o.forEach((o,i)=>{const b=mk("button","wide",esc(o));b.style.cssText="margin-top:4px;text-align:left";b.disabled=!!m.win||!!m.tried?.[me.name];
+    b.onclick=async()=>{w.querySelectorAll("button").forEach(x=>x.disabled=true);if(await sha(m.tv.s+i)!==m.tv.h){set(ref(db,`${room.path}/${key}/tried/${me.name}`),1).catch(()=>{});return toast("nope! ❌")}
+      const r=await runTransaction(ref(db,`${room.path}/${key}/win`),c=>c||me.name).catch(()=>null);if(r?.snapshot.val()===me.name){__setCoins(me.coins+100);S.tv=(S.tv||0)+1;svS();gain(10);__confetti();toast("first! +100 🪙",3000)}};
+    w.append(b);if(m.win)sha(m.tv.s+i).then(h=>{if(h===m.tv.h)b.style.borderColor="#22c55e"})});if(m.win)w.append(mk("div","",`🏆 ${esc(m.win)} got it first`));t.after(w)}}
+/* ---- commands + send hook ---- */
+Object.assign(__wcCM,{poll:["","📊 /poll best pet? | dogs | cats | both"],trivia:["","🧠 first correct answer wins 100 coins"],arcade:["","🎮 snake, reaction, typing, memory"],hub:["","🏆 quests, ranks, badges"],level:["","📈 your level + streak"]});__wcTABS.games+=" trivia poll arcade hub level";
+const _s=send;send=function(){const t=msg.value.trim(),m=/^\/(\w+)\s*(.*)$/s.exec(t),c=m&&m[1].toLowerCase(),a=m?m[2]:"",local=()=>{msg.value="";msg.dispatchEvent(new Event("input"))};
+  if(c==="hub"||c==="arcade"||c==="level"){local();return openHub(c==="arcade"?"arcade":"you")}
+  if(c==="poll"){const p=a.split("|").map(s=>s.trim()).filter(Boolean);if(p.length<3||p.length>7){toast("usage: /poll best pet? | dogs | cats",3500);return}local();post({text:"📊 "+p[0].slice(0,150),poll:{o:p.slice(1).map(s=>s.slice(0,60))}});return bumpPoll()}
+  if(c==="trivia"){local();return trivia()}
+  _s();if(t&&!m){prog("msg");if(room.dm||room.group)prog("dm");const h=new Date().getHours();if(h>1&&h<5){S.owl=1;svS()}gain(2)}};
+$("send").onclick=send;
 }
 onAuthStateChanged(auth, gate);
 </script>
