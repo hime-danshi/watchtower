@@ -339,6 +339,10 @@ select{width:100%;padding:8px;background:#000;color:var(--tx);border:2px solid v
 #hbT button.on{background:var(--bd)}#hbB{margin-top:10px;font-size:12px;line-height:1.6}
 .bar{height:10px;background:#000;border:1px solid var(--bd);margin:6px 0}.bar i{display:block;height:100%;background:var(--glow);transition:width .4s}
 .bdgs{display:grid;grid-template-columns:repeat(2,1fr);gap:6px}.bdgs div{padding:8px;border:1px solid var(--bd);font-size:11px}.bdgs .lock{opacity:.35;filter:grayscale(1)}
+/* ===== mp3 player ===== */
+#mpCard{display:flex;gap:12px;align-items:center;margin:8px 0}#mpCov{width:84px;height:84px;border-radius:10px;object-fit:cover;background:#000;border:2px solid var(--bd);flex:none}
+#mpInfo{display:flex;flex-direction:column;min-width:0;gap:3px}#mpInfo b{font-size:13px;font-weight:normal;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}#mpInfo small{opacity:.65;font-size:10px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+#mpSeek,#mpVol{width:100%}#mpList{margin-top:8px;max-height:260px;overflow-y:auto}.mpr{cursor:pointer}.mpr img{border-radius:6px!important}.mpr.on{background:var(--bd)}#mpPlay{flex:1.5}.row button.on{background:var(--bd);box-shadow:0 0 8px var(--glow)}
 </style>
 </head>
 <body>
@@ -375,6 +379,20 @@ select{width:100%;padding:8px;background:#000;color:var(--tx);border:2px solid v
   </nav><button id="closePanel" title="close (esc)">✕</button></div><div class="scont"><div class="ph"><b>settings</b></div>
 
   <section class="tc active" id="tab-music">
+    <h3>mp3 player</h3>
+    <div id="mpCard"><img id="mpCov" alt=""><div id="mpInfo"><b id="mpT">nothing playing</b><small id="mpA"></small><small id="mpAl"></small></div></div>
+    <input type="range" id="mpSeek" min="0" max="1000" value="0">
+    <div class="row" style="justify-content:space-between"><small id="mpCur">0:00</small><small id="mpDur">0:00</small></div>
+    <div class="row"><button id="mpShuf" title="shuffle">🔀</button><button id="mpPrev">⏮</button><button id="mpPlay">▶</button><button id="mpNext">⏭</button><button id="mpLoop" title="loop: off / all / one">🔁</button></div>
+    <div class="row"><button id="mpMute" style="flex:0 0 44px">🔊</button><input type="range" id="mpVol" min="0" max="100" value="80"></div>
+    <div class="row"><button id="mpReact" title="make the background react to the music">background reacts: on</button></div>
+    <input type="file" id="mpFile" accept="audio/*" multiple hidden>
+    <div class="row"><button id="mpAdd">＋ add music</button><button id="mpNew">new playlist</button></div>
+    <select id="mpPl"></select>
+    <div class="row"><button id="mpRen">rename playlist</button><button id="mpDel">delete playlist</button></div>
+    <div id="mpList"></div>
+    <audio id="mpAud" preload="metadata"></audio>
+    <h3 style="margin-top:24px">last.fm + other audio</h3>
     <h3>last.fm rich presence</h3>
     <label>last.fm username or profile link</label>
     <input type="text" id="lfInput" placeholder="username">
@@ -403,10 +421,10 @@ select{width:100%;padding:8px;background:#000;color:var(--tx);border:2px solid v
     <label>name color</label><input type="color" id="fNameColor" value="#93c5fd">
     <label>badges (comma separated)</label><input type="text" id="fBadges" placeholder="beta, cool">
     <label>join date</label><input type="date" id="fJoin">
-    <label>profile picture (upload or link, then crop)</label><input type="file" accept="image/*" id="fPfp">
+    <label>profile picture (upload or link, gifs stay animated)</label><input type="file" accept="image/*" id="fPfp">
     <div class="row"><input type="text" id="fPfpUrl" placeholder="https://.../pic.png"><button id="pfpUrlBtn">use link</button></div>
     <label>avatar decoration</label><div class="row" style="margin-top:0"><button id="decBtn">change avatar decoration</button></div>
-    <label>banner image</label><input type="file" accept="image/*" id="fBanner">
+    <label>banner image (gifs work too)</label><input type="file" accept="image/*" id="fBanner">
     <div class="row"><input type="text" id="fBannerUrl" placeholder="https://.../banner.png"><button id="bannerUrlBtn">use link</button></div>
     <label>border color</label><input type="color" id="fColor" value="#1e3a8a">
     <label>card background</label><input type="color" id="fBg" value="#111827">
@@ -472,25 +490,10 @@ select{width:100%;padding:8px;background:#000;color:var(--tx);border:2px solid v
   <section class="tc" id="tab-updates">
     <h3>updates</h3>
     <div class="box">
-      <span class="u">(u)</span> email login + verification<br>
-      <span class="u">(u)</span> dms + servers with channels<br>
-      <span class="u">(u)</span> typing animations<br>
-      <span class="u">(u)</span> mentions (@name)<br>
-      <span class="u">(u)</span> edit + pin messages<br>
-      <span class="u">(u)</span> reactions + replies<br>
-      <span class="u">(u)</span> custom themes (misc tab)<br>
-      <span class="u">(u)</span> misc tab: tab name, favicon, cloak<br>
-      <span class="u">(u)</span> markdown, custom bubbles<br>
-      <span class="u">(u)</span> discord-style settings + profile cards<br>
-      <span class="u">(u)</span> server pictures, banners, kick<br>
-      <span class="u">(u)</span> thought bubble statuses<br>
-      <span class="u">(u)</span> more profile options<br>
-      <span class="u">(u)</span> transparent red favicon<br>
-      <span class="u">(u)</span> avatar decorations (profile card + settings > custom)<br>
-      <span class="u">(u)</span> bottom-left user panel + status picker (online / idle / dnd / invisible)<br>
-      <span class="u">(u)</span> casino: 🪙 coins + /slots /crash /roulette /scratch /bet /daily /rich<br>
-      <span class="u">(u)</span> fun commands: /8ball /choose /rps /rate<br>
-      <br>      <span class="u">(u)</span> blackjack + duel/dicewar/highcard/tictactoe/connect4 vs players (🎮 button), /dice /hilo /wheel /guess, clickable command tabs, uncapped coins (1.1k, 12.6T, 128.7qd)<br>      <span class="u">(u)</span> removed wolf bias from all games<br>      <span class="u">(u)</span> look tab: custom fonts (file / google / link), size, bubble roundness, bg image, snow/rain/matrix effects, custom css, theme share codes<br>      <span class="u">(u)</span> 🏆 hub: levels, daily streaks, quests, achievements, arcade (snake/reaction/typing/memory), leaderboards, /poll, /trivia<br>u = updated, a = i want to add<br>- wolf/owner
+      <span class="u">(u)</span> gif profile pictures + banners (upload a gif up to ~700kb, or paste an https gif link)<br>
+      <span class="u">(u)</span> mp3 player in settings &gt; music: add songs, playlists, loop / shuffle / skip, volume, id3 metadata + album covers, header play button<br>
+      <span class="u">(u)</span> music makes the background react (toggle in the player)<br>
+      u = updated, a = i want to add
     </div>
   </section>
 </div></aside>
@@ -675,7 +678,7 @@ let me = null, started = false, profiles = {};
 
 function cleanProfile(d) {
   const s = (k, n = 300) => typeof d[k] === "string" ? d[k].slice(0, n) : "";
-  const im = k => typeof d[k] === "string" && d[k].length < 500000 ? safeImg(d[k]) : "";
+  const im = k => typeof d[k] === "string" && d[k].length < (/^data:image\/gif/.test(d[k]) ? 1000000 : 500000) ? safeImg(d[k]) : "";
   return {
     name: (s("name", 20) || s("username", 20)).replace(/[^\w-]/g, ""),
     displayName: s("displayName", 32), pronouns: s("pronouns", 20), decor: okDecor(d.decor) ? d.decor : "", bio: s("bio"), status: s("status", 60),
@@ -774,12 +777,21 @@ function cropImage(src, w, h) {
   });
 }
 
-async function applyImg(src, w, h, key) {
+async function setGif(src, key, file) {
+  let v = src;
+  if (file) {
+    if (file.size > 700000) return toast("that gif is too big (max ~700kb). try a smaller one or paste a link", 4500);
+    v = await new Promise(r => { const fr = new FileReader(); fr.onload = () => r(fr.result); fr.readAsDataURL(file); });
+  } else if (!/^https:\/\//i.test(src)) return toast("gif links need to be https", 3500);
+  me[key] = v; await pushProfile(); toast("gif saved ✅");
+}
+async function applyImg(src, w, h, key, file) {
+  if (key !== "bubImg" && (file ? file.type === "image/gif" : /\.gif(\?|#|$)/i.test(src))) return setGif(src, key, file);
   const d = await cropImage(src, w, h);
   if (d) { me[key] = d; await pushProfile(); toast("saved ✅"); }
 }
 [["Pfp", 192, 192, "pfp", "pfpUrlBtn"], ["Banner", 480, 160, "banner", "bannerUrlBtn"], ["BubImg", 480, 240, "bubImg", "bubImgUrlBtn"]].forEach(([n, w, h, k, btn]) => {
-  $("f" + n).onchange = e => { const f = e.target.files[0]; e.target.value = ""; if (f) applyImg(URL.createObjectURL(f), w, h, k); };
+  $("f" + n).onchange = e => { const f = e.target.files[0]; e.target.value = ""; if (f) applyImg(URL.createObjectURL(f), w, h, k, f); };
   $(btn).onclick = () => { const u = safeUrl($("f" + n + "Url").value.trim()); u ? applyImg(u, w, h, k) : toast("enter a full http(s) link"); };
 });
 
@@ -2286,6 +2298,73 @@ const _s=send;send=function(){const t=msg.value.trim(),m=/^\/(\w+)\s*(.*)$/s.exe
   if(c==="trivia"){local();return trivia()}
   _s();if(t&&!m){prog("msg");if(room.dm||room.group)prog("dm");const h=new Date().getHours();if(h>1&&h<5){S.owl=1;svS()}gain(2)}};
 $("send").onclick=send;
+}
+/* ===== mp3 player ===== */
+{
+const mk=(t,c,h)=>{const e=document.createElement(t);if(c)e.className=c;if(h!==undefined)e.innerHTML=h;return e;};
+const esc=s=>String(s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+const J=(k,d)=>{try{return JSON.parse(localStorage.getItem(k))??d}catch{return d}},W=(k,v)=>localStorage.setItem(k,JSON.stringify(v));
+const ft=s=>isFinite(s)?Math.floor(s/60)+":"+String(Math.floor(s%60)).padStart(2,"0"):"0:00";
+const NO="data:image/svg+xml,"+encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" width="84" height="84"><rect width="84" height="84" fill="#0b1f4b"/><text x="42" y="56" font-size="40" text-anchor="middle" fill="#93c5fd">♪</text></svg>');
+const au=$("mpAud"),T=new Map();let PL=J("wc_playlists",{}),P=J("wc_mp",{vol:80,loop:0,shuf:0,react:1}),sel="all",cur=null,ac,an,dat,raf=0,sm=0;
+const dbp=new Promise((r,j)=>{const q=indexedDB.open("wc_music",1);q.onupgradeneeded=()=>q.result.createObjectStore("t",{keyPath:"id"});q.onsuccess=()=>r(q.result);q.onerror=()=>j()});
+const st=async(m,f)=>{const d=await dbp;return new Promise((r,j)=>{const q=f(d.transaction("t",m).objectStore("t"));q.onsuccess=()=>r(q.result);q.onerror=()=>j()})};
+const svP=()=>W("wc_playlists",PL),svM=()=>W("wc_mp",P);
+/* ---- id3 reader (v2.2 / 2.3 / 2.4): title, artist, album, cover ---- */
+async function meta(f){const o={title:f.name.replace(/\.\w+$/,""),artist:"",album:"",cover:null};try{
+  const b=new Uint8Array(await f.slice(0,6e6).arrayBuffer());if(b[0]!==73||b[1]!==68||b[2]!==51)return o;
+  const v=b[3],ss=(i)=>(b[i]&127)<<21|(b[i+1]&127)<<14|(b[i+2]&127)<<7|(b[i+3]&127),end=Math.min(b.length,10+ss(6)),hl=v===2?6:10;let p=10;
+  if(v>2&&b[5]&64)p+=v===4?ss(p):((b[p]<<24|b[p+1]<<16|b[p+2]<<8|b[p+3])>>>0)+4;
+  const dec=(e,a)=>{let l=e===1||e===2?"utf-16le":e===3?"utf-8":"windows-1252";if(e===1||e===2){if(a[0]===254&&a[1]===255){l="utf-16be";a=a.subarray(2)}else if(a[0]===255&&a[1]===254)a=a.subarray(2);else if(e===2)l="utf-16be"}return new TextDecoder(l).decode(a).split("\0")[0].trim()};
+  while(p+hl<=end&&b[p]){const id=String.fromCharCode(...b.subarray(p,p+(v===2?3:4))),sz=v===2?b[p+3]<<16|b[p+4]<<8|b[p+5]:v===4?ss(p+4):((b[p+4]<<24|b[p+5]<<16|b[p+6]<<8|b[p+7])>>>0),d=b.subarray(p+hl,Math.min(end,p+hl+sz));p+=hl+sz;if(!d.length)continue;
+    const k={TIT2:"title",TT2:"title",TPE1:"artist",TP1:"artist",TALB:"album",TAL:"album"}[id];
+    if(k){const t=dec(d[0],d.subarray(1));if(t)o[k]=t}
+    else if((id==="APIC"||id==="PIC")&&!o.cover){const e=d[0],w=e===1||e===2;let q;if(v===2)q=5;else{let z=1;while(z<d.length&&d[z])z++;q=z+2}
+      while(q<d.length&&(w?(d[q]||d[q+1]):d[q]))q+=w?2:1;q+=w?2:1;const c=d.subarray(q);if(c.length>100)o.cover=new Blob([c],{type:c[0]===137?"image/png":c[0]===71?"image/gif":"image/jpeg"})}}
+}catch{}return o}
+/* ---- library ---- */
+function hydrate(r){const o={...r,url:URL.createObjectURL(r.blob),cu:r.cover?URL.createObjectURL(r.cover):""};T.set(r.id,o);return o}
+async function addFiles(fs){let n=0;for(const f of fs){if(!/^audio\//.test(f.type)&&!/\.(mp3|m4a|wav|ogg|flac|aac|opus)$/i.test(f.name))continue;
+  const m=await meta(f),r={id:Date.now().toString(36)+Math.random().toString(36).slice(2,6),t:Date.now()+n,blob:f,...m};
+  try{await st("readwrite",s=>s.put(r))}catch{toast("couldn't save music (private mode?)",3000);return}hydrate(r);if(sel!=="all")PL[sel].push(r.id);n++}
+  svP();drawList();toast(n?`added ${n} song${n>1?"s":""} ✅`:"no audio files found")}
+const view=()=>sel==="all"?[...T.values()].sort((a,b)=>a.t-b.t).map(x=>x.id):(PL[sel]||[]).filter(id=>T.has(id));
+function drawPl(){const s=$("mpPl");s.replaceChildren(...[["all","all songs"],...Object.keys(PL).map(n=>[n,"💿 "+n])].map(([v,l])=>{const o=mk("option","",esc(l));o.value=v;o.selected=v===sel;return o}));$("mpRen").hidden=$("mpDel").hidden=sel==="all"}
+function drawList(){drawPl();const l=$("mpList"),ids=view();l.replaceChildren(...ids.map(id=>{const x=T.get(id),r=mk("div","frow mpr"+(cur===id?" on":""),`<img src="${x.cu||NO}" alt=""><span>${esc(x.title)}<small style="opacity:.55"> ${esc(x.artist)}</small></span>`);r.onclick=()=>play(id);
+  const b=(t,ti,f)=>{const k=mk("button","",t);k.title=ti;k.onclick=e=>{e.stopPropagation();f()};r.append(k)};
+  if(sel==="all")b("＋","add to playlist",()=>addTo(id));
+  b("✕",sel==="all"?"delete from library":"remove from playlist",()=>sel==="all"?delTrack(id):(PL[sel]=PL[sel].filter(z=>z!==id),svP(),drawList()));return r}));
+  if(!ids.length)l.textContent=sel==="all"?"no music yet. add some mp3s!":"this playlist is empty. add songs from 'all songs'.";}
+function addTo(id){const n=Object.keys(PL);if(!n.length)return toast("make a playlist first");let t=n[0];if(n.length>1){const i=+prompt("add to which playlist?\n"+n.map((x,i)=>`${i+1}. ${x}`).join("\n"));if(!(i>=1&&i<=n.length))return;t=n[i-1]}
+  if(!PL[t].includes(id))PL[t].push(id);svP();toast("added to "+t+" ✅")}
+async function delTrack(id){if(!confirm("delete this song from your library?"))return;if(cur===id){au.pause();au.removeAttribute("src");cur=null;paint()}const x=T.get(id);URL.revokeObjectURL(x.url);x.cu&&URL.revokeObjectURL(x.cu);T.delete(id);Object.keys(PL).forEach(n=>PL[n]=PL[n].filter(z=>z!==id));svP();await st("readwrite",s=>s.delete(id)).catch(()=>{});drawList()}
+/* ---- playback ---- */
+function paint(){const x=cur&&T.get(cur);$("mpT").textContent=x?x.title:"nothing playing";$("mpA").textContent=x?.artist||"";$("mpAl").textContent=x?.album||"";$("mpCov").src=x?.cu||NO;
+  $("mpPlay").textContent=au.paused?"▶":"⏸";hb.textContent=au.paused?"♪":"⏸";hb.title=x?x.title+(x.artist?" — "+x.artist:""):"mp3 player (settings > music)";
+  if("mediaSession"in navigator&&x){navigator.mediaSession.metadata=new MediaMetadata({title:x.title,artist:x.artist,album:x.album,artwork:x.cu?[{src:x.cu}]:[]});}}
+function play(id){const x=T.get(id);if(!x)return;cur=id;au.src=x.url;au.play().catch(()=>{});paint();drawList()}
+function step(d){const q=view();if(!q.length)return;let i=q.indexOf(cur);if(P.shuf&&q.length>1){let j;do j=Math.floor(Math.random()*q.length);while(j===i);return play(q[j])}i+=d;if(i>=q.length){if(!P.loop)return;i=0}if(i<0)i=q.length-1;play(q[i])}
+const toggle=()=>{if(!cur){const q=view();return q.length?play(q[0]):toast("add music in settings > music",3000)}au.paused?au.play().catch(()=>{}):au.pause()};
+function loop(){if(au.paused||!P.react){document.documentElement.style.setProperty("--lvl",0);raf=0;return}an.getByteFrequencyData(dat);let t=0;for(let i=0;i<12;i++)t+=dat[i];sm+=(t/12/255-sm)*.25;document.documentElement.style.setProperty("--lvl",sm.toFixed(3));raf=requestAnimationFrame(loop)}
+au.onplay=()=>{paint();if(!P.react)return;try{if(!ac){ac=new AudioContext();const s=ac.createMediaElementSource(au);an=ac.createAnalyser();an.fftSize=256;s.connect(an);an.connect(ac.destination);dat=new Uint8Array(an.frequencyBinCount)}ac.resume();audioStop();if(!raf)loop()}catch{}};
+au.onpause=paint;au.onloadedmetadata=()=>$("mpDur").textContent=ft(au.duration);
+au.ontimeupdate=()=>{$("mpCur").textContent=ft(au.currentTime);if(document.activeElement!==$("mpSeek")&&au.duration)$("mpSeek").value=au.currentTime/au.duration*1000};
+au.onended=()=>{if(P.loop===2)return;step(1)};
+$("mpSeek").oninput=e=>{if(au.duration)au.currentTime=e.target.value/1000*au.duration};
+$("mpPlay").onclick=toggle;$("mpNext").onclick=()=>step(1);$("mpPrev").onclick=()=>au.currentTime>3?au.currentTime=0:step(-1);
+const ui=()=>{au.volume=P.vol/100;au.loop=P.loop===2;$("mpVol").value=P.vol;$("mpMute").textContent=au.muted||!P.vol?"🔇":"🔊";$("mpShuf").classList.toggle("on",!!P.shuf);$("mpLoop").textContent=["🔁","🔁","🔂"][P.loop];$("mpLoop").classList.toggle("on",P.loop>0);$("mpLoop").title=["loop: off","loop: all","loop: one"][P.loop];$("mpReact").textContent="background reacts: "+(P.react?"on":"off");svM()};
+$("mpVol").oninput=e=>{P.vol=+e.target.value;au.muted=false;ui()};$("mpMute").onclick=()=>{au.muted=!au.muted;ui()};
+$("mpShuf").onclick=()=>{P.shuf=P.shuf?0:1;ui()};$("mpLoop").onclick=()=>{P.loop=(P.loop+1)%3;ui()};
+$("mpReact").onclick=()=>{P.react=P.react?0:1;ui();if(P.react&&!au.paused)au.onplay();else if(!P.react)document.documentElement.style.setProperty("--lvl",0)};
+$("mpAdd").onclick=()=>$("mpFile").click();$("mpFile").onchange=e=>{addFiles([...e.target.files]);e.target.value=""};
+$("mpPl").onchange=e=>{sel=e.target.value;drawList()};
+$("mpNew").onclick=()=>{const n=prompt("playlist name")?.trim().slice(0,30);if(!n||PL[n])return n&&toast("you already have that playlist");PL[n]=[];sel=n;svP();drawList()};
+$("mpRen").onclick=()=>{const n=prompt("new name",sel)?.trim().slice(0,30);if(!n||n===sel||PL[n])return;PL[n]=PL[sel];delete PL[sel];sel=n;svP();drawList()};
+$("mpDel").onclick=()=>{if(confirm(`delete playlist "${sel}"? (songs stay in your library)`)){delete PL[sel];sel="all";svP();drawList()}};
+const hb=mk("button");hb.textContent="♪";hb.onclick=toggle;document.querySelector(".hr").prepend(hb);
+if("mediaSession"in navigator)[["play",toggle],["pause",toggle],["previoustrack",()=>step(-1)],["nexttrack",()=>step(1)]].forEach(([a,f])=>{try{navigator.mediaSession.setActionHandler(a,f)}catch{}});
+ui();paint();
+(async()=>{try{(await st("readonly",s=>s.getAll())).sort((a,b)=>a.t-b.t).forEach(hydrate)}catch{}Object.keys(PL).forEach(n=>PL[n]=PL[n].filter(id=>T.has(id)));drawList()})();
 }
 onAuthStateChanged(auth, gate);
 </script>
