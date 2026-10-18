@@ -54,9 +54,18 @@ footer input{flex:1;padding:12px;background:transparent;border:none;color:#e0e7f
 #msg img.emoji{height:1.3em;width:1.3em;vertical-align:-.25em}
 #send{background:var(--bd);padding:12px 20px;animation:pulse 3s infinite}
 @keyframes pulse{50%{box-shadow:0 0 14px var(--glow)}}
-#picker{position:absolute;bottom:56px;right:90px;width:260px;display:none;flex-wrap:wrap;gap:2px;padding:8px;background:var(--bg);border:2px solid var(--bd);z-index:20;animation:pop .2s ease}
+#picker{position:absolute;bottom:56px;right:8px;width:340px;max-width:calc(100% - 16px);height:400px;max-height:62vh;display:none;flex-direction:column;background:var(--bg);border:2px solid var(--bd);z-index:20;animation:pop .2s ease}
 #picker.open{display:flex}
 #picker button{background:none;border:none;padding:4px;font-size:18px}
+#picker [hidden]{display:none!important}
+#picker .ptabs{display:flex;gap:4px;padding:6px 6px 0;flex:none}#picker .ptabs button{flex:1;font-size:12px;padding:6px;border-bottom:2px solid transparent}#picker .ptabs button.on{border-bottom-color:var(--glow)}
+#pEmo{display:flex;flex-direction:column;flex:1;min-height:0}#pGif{flex:1;min-height:0;overflow-y:auto;padding:8px;display:flex;flex-direction:column;gap:6px}
+#picker .psr{display:flex;gap:6px;padding:6px;flex:none}#picker .psr input{flex:1;min-width:0;box-sizing:border-box}#pTone{flex:none;font-size:16px}
+#pCats{display:flex;overflow-x:auto;padding:0 6px;flex:none}#pCats button{flex:none;font-size:15px;opacity:.55;padding:4px 6px}#pCats button.on{opacity:1}
+#pScroll{flex:1;min-height:0;overflow-y:auto;padding:0 6px 6px;position:relative}
+#pScroll h5{margin:0;padding:6px 0 3px;font-size:11px;text-transform:uppercase;letter-spacing:.04em;opacity:.7;position:sticky;top:0;background:var(--bg);z-index:1}
+.pgrid{display:grid;grid-template-columns:repeat(8,1fr);gap:2px}.pgrid button{padding:3px;aspect-ratio:1;display:flex;align-items:center;justify-content:center;cursor:pointer}.pgrid img.emoji{width:24px;height:24px;margin:0;vertical-align:baseline}
+#picker .phint{opacity:.6;font-size:11px;display:block;padding:6px 0}
 @keyframes pop{from{opacity:0;transform:translateY(8px) scale(.95)}}
 /* loading */
 #loading{position:absolute;inset:0;background:rgba(0,0,0,.88);display:flex;flex-direction:column;justify-content:center;align-items:center;gap:12px;font-size:13px;text-align:center;padding:20px;z-index:50;transition:opacity .5s}
@@ -94,6 +103,12 @@ textarea{resize:vertical;min-height:60px}
 .ps{margin-top:12px;font-size:12px;line-height:1.6}
 .ps h4{font-size:10px;opacity:.6;margin-bottom:3px}
 .ps a{color:#93c5fd}
+.act{margin-top:8px;padding:8px 10px;border-radius:10px;background:rgba(255,255,255,.07);font-size:12px;line-height:1.5;word-break:break-word}.act div+div{margin-top:3px}.actl{display:block;opacity:.65;font-size:11px;font-weight:400;margin-top:1px}
+.embw{position:relative;display:block;width:fit-content;max-width:100%;margin-top:6px}.embw .emb{margin-top:0}
+.embs{position:absolute;top:4px;right:4px;width:28px;height:28px;padding:0;border-radius:50%;background:rgba(0,0,0,.6);color:#fde047;border:none;font-size:16px;line-height:28px;cursor:pointer;opacity:0;transition:opacity .15s}.embw:hover .embs,.embs.on{opacity:1}@media(hover:none){.embs{opacity:1}}
+#mediaP{position:absolute;bottom:56px;right:8px;width:320px;max-width:calc(100% - 16px);display:none;flex-direction:column;gap:8px;padding:10px;background:var(--bg);border:2px solid var(--bd);z-index:20;animation:pop .2s ease}#mediaP.open{display:flex}
+#mediaP .mt{display:flex;gap:6px}#mediaP .mt button{flex:1}#mediaP .mt button.on{outline:2px solid var(--glow)}#mediaP input[type=text]{width:100%;box-sizing:border-box}#mediaP .mdc{font-size:12px;display:flex;gap:6px;align-items:center}#mediaP small{opacity:.65;font-size:11px}
+.gifg{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;max-height:230px;overflow:auto}.gifg small{grid-column:1/-1}.gifg .mi{position:relative;aspect-ratio:1;border:2px solid var(--bd);border-radius:6px;overflow:hidden;cursor:pointer}.gifg .mi img{width:100%;height:100%;object-fit:cover;display:block}.gifg .mx{position:absolute;top:2px;right:2px;width:22px;height:22px;padding:0;border-radius:50%;background:rgba(0,0,0,.65);color:#fff;border:none;font-size:11px}
 .trk{display:flex;gap:10px;align-items:center;margin-top:6px}.trk img.cov{width:50px;height:50px;border-radius:6px}
 /* first launch */
 #first{position:fixed;inset:0;background:rgba(0,0,0,.96);display:none;justify-content:center;align-items:center;z-index:500}
@@ -182,7 +197,7 @@ header{animation:dropIn .6s cubic-bezier(.2,.8,.2,1)}footer{animation:riseIn .6s
 .bubble{animation:bpop .35s cubic-bezier(.2,1.4,.4,1);transition:transform .2s,box-shadow .2s}.message:hover .bubble{transform:translateY(-2px);box-shadow:0 4px 14px rgba(0,0,0,.4)}
 .message.pinged .bubble{animation:ping 2s infinite}.rx button{animation:bpop .25s}
 .conn{animation:cp 2.4s infinite}#loadTxt{animation:blink 1.4s infinite}.logo:hover{animation:shake .4s}
-#picker button{transition:.15s}#picker button:hover{transform:scale(1.35) rotate(-6deg)}
+.pgrid button{transition:.15s}.pgrid button:hover{transform:scale(1.35) rotate(-6deg)}
 #send:active{transform:scale(.9) rotate(-2deg)}#toast{transition:.35s cubic-bezier(.2,1.5,.4,1)}
 header,footer,#rooms,.bubble,#card,.fc{transition:background .4s,border-color .4s,color .4s}
 .tc.active>*{animation:slideUp .35s both}.tc.active>*:nth-child(2){animation-delay:.04s}.tc.active>*:nth-child(3){animation-delay:.08s}.tc.active>*:nth-child(n+4){animation-delay:.12s}
@@ -410,6 +425,9 @@ select{width:100%;padding:8px;background:#000;color:var(--tx);border:2px solid v
     <button class="wide" id="lfBtn">connect</button>
     <div id="lfStatus" class="box">not connected.</div>
     <div id="lfNow"></div>
+    <h3 style="margin-top:20px">rich presence</h3>
+    <div class="box">friends see what you're playing (arcade, embeds, the single-file launcher, table + casino games) and what you're listening to in the mp3 player, on your profile and in the friends list.</div>
+    <button class="wide" id="actBtn"></button>
     <h3 style="margin-top:20px">audio reactive background</h3>
     <div class="row"><button id="audMic">microphone</button><button id="audSys">device audio</button></div>
     <button class="wide" id="audOff">turn off</button>
@@ -566,6 +584,7 @@ select{width:100%;padding:8px;background:#000;color:var(--tx);border:2px solid v
     <div id="mDisplay"></div>
     <div class="prow"><span id="mUser" style="opacity:.7"></span><span id="mPro" style="opacity:.7"></span></div>
     <div id="mBadges" class="prow" style="margin-top:6px"></div>
+    <div id="mAct" class="act" hidden></div>
     <div id="mSt" hidden><button id="mStBtn" type="button"><i id="mStDot" class="dot"></i><span id="mStTx"></span><b>▾</b></button><div id="mStMenu" hidden></div></div>
     <button class="link" id="mDecBtn" hidden>✨ change avatar decoration</button>
     <div id="mMut" class="mut" hidden></div>
@@ -582,6 +601,7 @@ select{width:100%;padding:8px;background:#000;color:var(--tx);border:2px solid v
     <div class="pc">
       <div id="pDisplay" style="font-size:20px"></div>
       <div class="prow"><span id="pUser" style="opacity:.7"></span><span id="pPro" style="opacity:.7"></span><span id="pBadges" class="prow"></span></div>
+      <div id="pAct" class="act" hidden></div>
       <div id="pReq" class="box" hidden><b id="pReqN"></b> sent you a friend request.<div class="row"><button id="pAcc">accept</button><button id="pIgn">ignore</button></div></div>
       <div class="row" id="pBtns"><button id="pDm">💬 message</button><button id="pFr">add friend</button><button id="pDots" title="more">⋯</button></div>
       <div id="pMenu" hidden><button id="pUnf">remove friend</button><button id="pBlk">block</button></div>
@@ -917,6 +937,7 @@ function paint(el) {
   bb.style.color = hex(p.bubText);
 }
 
+function plainT(t) { return String(t || "").replace(/\[(?:gif|img):[a-f0-9]{20,32}\]/g, "🖼️"); }
 function fill(el, key, m) {
   msgs[key] = m;
   const mine = m.name === me.name, b = el.querySelector(".bubble");
@@ -946,15 +967,16 @@ function fill(el, key, m) {
 
 const react = (key, h) => { const r = ref(db, `${room.path}/${key}/reactions/${h}/${me.name}`); msgs[key]?.reactions?.[h]?.[me.name] ? remove(r) : set(r, true); };
 const edit = (key, m) => { const v = prompt("edit message", m.text); if (v && v.trim() && v !== m.text) update(ref(db, `${room.path}/${key}`), { text: v.trim().slice(0, 500), edited: true }); };
-const pin = (key, m) => { const r = ref(db, `pins/${tkey()}/${key}`); pins[key] ? remove(r) : set(r, { name: m.name, text: (m.text || "").slice(0, 80) }); };
+const pin = (key, m) => { const r = ref(db, `pins/${tkey()}/${key}`); pins[key] ? remove(r) : set(r, { name: m.name, text: plainT(m.text).slice(0, 80) }); };
 function quick(b, key) {
   b.querySelector(".quick")?.remove();
   const q = div("quick");
   ["👍", "❤️", "😂", "😮", "😢", "🔥"].forEach(e => { const x = document.createElement("button"); x.textContent = e; x.onclick = () => { react(key, ecode(e)); q.remove(); }; q.append(x); });
+  const more = document.createElement("button"); more.textContent = "➕"; more.title = "more emojis"; more.onclick = ev => { ev.stopPropagation(); q.remove(); window.__emojiPick?.(em => react(key, ecode(em))); }; q.append(more);
   b.append(q); tw(q);
 }
 function setReply(key, m) {
-  replyTo = { key, name: m.name, text: (m.text || "").slice(0, 60) };
+  replyTo = { key, name: m.name, text: plainT(m.text).slice(0, 60) };
   $("replyTxt").textContent = "replying to " + m.name + ": " + replyTo.text; $("replyBar").hidden = false; msg.focus();
 }
 $("replyX").onclick = () => { replyTo = null; $("replyBar").hidden = true; };
@@ -1080,6 +1102,39 @@ let friends = {}, blocks = {}, presence = {}, dmTs = {}, rd = {}, dmInit = false
 const ST = { online: ["#22c55e", "online"], idle: ["#eab308", "idle"], dnd: ["#ef4444", "do not disturb"], invisible: ["#6b7280", "invisible"] };
 let myStatus = localStorage.getItem("wc_status"); if (!ST[myStatus]) myStatus = "online";
 let presRef = null;
+/* ---------- rich presence: activity/<name> = { game:{n,d}, music:{n,d}, ts } ---------- */
+let acts = {}, actRef = null, actShare = localStorage.getItem("wc_act") !== "0", pushT = 0, cmdT = 0;
+const mineAct = { arc: null, tbl: null, cmd: null, mus: null }; // arc = arcade/embed, tbl = table game, cmd = solo command, mus = mp3 player
+const cutA = (s, n) => String(s ?? "").slice(0, n);
+const myGame = () => mineAct.arc || mineAct.tbl || mineAct.cmd;
+function pushActivity(now) {
+  clearTimeout(pushT);
+  if (!now) { pushT = setTimeout(() => pushActivity(true), 400); return; }
+  if (!actRef) return;
+  const g = myGame(), m = mineAct.mus, on = actShare && myStatus !== "invisible" && (g || m);
+  const q = on ? set(actRef, { ...(g && { game: g }), ...(m && { music: m }), ts: Date.now() }) : remove(actRef);
+  q.catch(() => { if (!pushActivity.warned) { pushActivity.warned = 1; toast("couldn't share activity (add a rule for \"activity\" in your firebase database rules)", 4500); } });
+}
+function setAct(slot, v) {
+  const n = v ? { n: cutA(v.n, 60), ...(v.d ? { d: cutA(v.d, 60) } : {}) } : null;
+  if (JSON.stringify(mineAct[slot]) === JSON.stringify(n)) return;
+  mineAct[slot] = n; pushActivity(); if (me) paintUbar();
+}
+function cmdAct(c) { setAct("cmd", { n: c, d: "in chat" }); clearTimeout(cmdT); cmdT = setTimeout(() => setAct("cmd", null), 12e4); }
+const actLines = u => {
+  const a = acts[u]; if (!a) return [];
+  if (me && u === me.name ? (myStatus === "invisible" || !actShare) : !presence[u]) return [];
+  return [a.game && `🎮 playing ${a.game.n}` + (a.game.d ? ` · ${a.game.d}` : ""), a.music && `🎧 ${a.music.n}` + (a.music.d ? ` — ${a.music.d}` : "")].filter(Boolean);
+};
+function paintAct(el, u) { if (!el) return; const l = actLines(u); el.replaceChildren(...l.map(t => mk("div", "", t))); el.hidden = !l.length; }
+function paintActs() {
+  if ($("fr").classList.contains("active")) renderFr();
+  if (pCtx) paintAct($("pAct"), pCtx.name);
+  if (mCtx) paintAct($("mAct"), mCtx.name);
+}
+const paintActBtn = () => { $("actBtn").textContent = "share activity: " + (actShare ? "on" : "off"); };
+$("actBtn").onclick = () => { actShare = !actShare; localStorage.setItem("wc_act", actShare ? "1" : "0"); paintActBtn(); pushActivity(true); if (me) paintUbar(); toast(actShare ? "activity visible to friends" : "activity hidden"); };
+paintActBtn();
 // presence/<name>: true = online, "idle", "dnd"; node removed = offline (invisible looks the same to others)
 const stOf = u => {
   if (me && u === me.name) return myStatus === "invisible" ? "offline" : myStatus;
@@ -1092,7 +1147,7 @@ function paintUbar() {
   window.__paintCoins?.();
   $("ubAv").src = safeImg(me.pfp) || avatar(me.name);
   $("ubName").textContent = me.displayName || me.name; setDecor($("ubDecor"), me.decor);
-  $("ubSt").textContent = ST[myStatus][1];
+  { const g = myGame(), m = mineAct.mus; $("ubSt").textContent = ST[myStatus][1] + (actShare && myStatus !== "invisible" ? (g ? " · 🎮 " + g.n : m ? " · 🎧 " + m.n : "") : ""); }
   $("ubDot").className = dotCls(me.name);
 }
 function paintMiniSt() {
@@ -1106,6 +1161,7 @@ function applyPresence() {
   if (!presRef) return;
   const p = myStatus === "invisible" ? remove(presRef) : set(presRef, myStatus === "online" ? true : myStatus);
   p.catch(() => toast("couldn't update status (check firebase rules)", 3000));
+  pushActivity(true);
 }
 function setMyStatus(s) {
   myStatus = s; localStorage.setItem("wc_status", s);
@@ -1181,6 +1237,7 @@ function frRow(u, btns) {
   const r = div("frow"), a = document.createElement("img"), n = document.createElement("span"), sm = document.createElement("small");
   a.src = safeImg(profiles[u]?.pfp) || avatar(u); a.onclick = () => openProfile(u);
   n.textContent = profiles[u]?.displayName || u; sm.style.opacity = .55; sm.textContent = " @" + u; n.append(sm);
+  { const al = actLines(u); if (al.length) { const s = document.createElement("small"); s.className = "actl"; s.textContent = al.join(" · "); n.append(s); } }
   r.append(a, div(dotCls(u)), n);
   btns.forEach(([t, f]) => { const b = document.createElement("button"); b.textContent = t; b.onclick = f; r.append(b); });
   return r;
@@ -1276,18 +1333,138 @@ async function newDm() {
   goDm(u);
 }
 
-/* ---------- emoji picker ---------- */
-const EMOJIS = "😀😂🥹😍😎🤔😭😡🥳😴🤯🫡👍👎👏🙏💪🔥✨💯❤️💙🖤💀👀🎵🎮🐺🌙⭐🍕☕🎉✅❌😈🫠😅🤝"
-  .match(/\p{Extended_Pictographic}(?:\uFE0F|\u200D\p{Extended_Pictographic})*/gu) || [];
+/* ---------- emoji picker: every twemoji emoji, search, recents, favorites, skin tones, saved gifs tab ----------
+   emoji data is fetched once from jsdelivr (emojibase) and cached in localStorage; a built-in list is used if that fails.
+   favorites: right-click / long-press / shift-click an emoji. they sync to firebase at emojiFavs/<you> (and stay on this device either way). */
+tw($("emojiBtn")); tw($("gear"));
+{
 const picker = $("picker");
-EMOJIS.forEach(e => { const b = document.createElement("button"); b.textContent = e; b.dataset.e = e; picker.append(b); });
-tw(picker); tw($("emojiBtn")); tw($("gear"));
-picker.addEventListener("click", e => {
-  const b = e.target.closest("button"); if (!b) return;
-  msg.value += b.dataset.e; msg.focus(); caretEnd();
+const SRC = "https://cdn.jsdelivr.net/npm/emoji-picker-element-data@1.7.2/en/emojibase/data.json", KEY = "wc_emoji_v1", MAXV = 15.1;
+const GROUPS = [[0, "😀", "smileys & emotion"], [1, "👋", "people & body"], [3, "🐻", "animals & nature"], [4, "🍔", "food & drink"], [5, "✈️", "travel & places"], [6, "⚽", "activities"], [7, "💡", "objects"], [8, "🔣", "symbols"], [9, "🏁", "flags"]];
+const FALL = "⌚⌛⏩⏪⏫⏬⏰⏳◽◾☔☕♈♉♊♋♌♍♎♏♐♑♒♓♿⚓⚡⚪⚫⚽⚾⛄⛅⛎⛔⛪⛲⛳⛵⛺⛽✅✊✋✨❌❎❓❔❕❗➕➖➗➰➿⬛⬜⭐⭕🀄🃏🆎🆑🆒🆓🆔🆕🆖🆗🆘🆙🆚🈁🈚🈯🈲🈳🈴🈵🈶🈸🈹🈺🉐🉑🌀🌁🌂🌃🌄🌅🌆🌇🌈🌉🌊🌋🌌🌍🌎🌏🌐🌑🌒🌓🌔🌕🌖🌗🌘🌙🌚🌛🌜🌝🌞🌟🌠🌭🌮🌯🌰🌱🌲🌳🌴🌵🌷🌸🌹🌺🌻🌼🌽🌾🌿🍀🍁🍂🍃🍄🍅🍆🍇🍈🍉🍊🍋🍌🍍🍎🍏🍐🍑🍒🍓🍔🍕🍖🍗🍘🍙🍚🍛🍜🍝🍞🍟🍠🍡🍢🍣🍤🍥🍦🍧🍨🍩🍪🍫🍬🍭🍮🍯🍰🍱🍲🍳🍴🍵🍶🍷🍸🍹🍺🍻🍼🍾🍿🎀🎁🎂🎃🎄🎅🎆🎇🎈🎉🎊🎋🎌🎍🎎🎏🎐🎑🎒🎓🎠🎡🎢🎣🎤🎥🎦🎧🎨🎩🎪🎫🎬🎭🎮🎯🎰🎱🎲🎳🎴🎵🎶🎷🎸🎹🎺🎻🎼🎽🎾🎿🏀🏁🏂🏃🏄🏅🏆🏇🏈🏉🏊🏏🏐🏑🏒🏓🏠🏡🏢🏣🏤🏥🏦🏧🏨🏩🏪🏫🏬🏭🏮🏯🏰🏴🏸🏹🏺🐀🐁🐂🐃🐄🐅🐆🐇🐈🐉🐊🐋🐌🐍🐎🐏🐐🐑🐒🐓🐔🐕🐖🐗🐘🐙🐚🐛🐜🐝🐞🐟🐠🐡🐢🐣🐤🐥🐦🐧🐨🐩🐪🐫🐬🐭🐮🐯🐰🐱🐲🐳🐴🐵🐶🐷🐸🐹🐺🐻🐼🐽🐾👀👂👃👄👅👆👇👈👉👊👋👌👍👎👏👐👑👒👓👔👕👖👗👘👙👚👛👜👝👞👟👠👡👢👣👤👥👦👧👨👩👪👫👬👭👮👯👰👱👲👳👴👵👶👷👸👹👺👻👼👽👾👿💀💁💂💃💄💅💆💇💈💉💊💋💌💍💎💏💐💑💒💓💔💕💖💗💘💙💚💛💜💝💞💟💠💡💢💣💤💥💦💧💨💩💪💫💬💭💮💯💰💱💲💳💴💵💶💷💸💹💺💻💼💽💾💿📀📁📂📃📄📅📆📇📈📉📊📋📌📍📎📏📐📑📒📓📔📕📖📗📘📙📚📛📜📝📞📟📠📡📢📣📤📥📦📧📨📩📪📫📬📭📮📯📰📱📲📳📴📵📶📷📸📹📺📻📼📿🔀🔁🔂🔃🔄🔅🔆🔇🔈🔉🔊🔋🔌🔍🔎🔏🔐🔑🔒🔓🔔🔕🔖🔗🔘🔙🔚🔛🔜🔝🔞🔟🔠🔡🔢🔣🔤🔥🔦🔧🔨🔩🔪🔫🔬🔭🔮🔯🔰🔱🔲🔳🔴🔵🔶🔷🔸🔹🔺🔻🔼🔽🕋🕌🕍🕎🕐🕑🕒🕓🕔🕕🕖🕗🕘🕙🕚🕛🕜🕝🕞🕟🕠🕡🕢🕣🕤🕥🕦🕧🕺🖕🖖🖤🗻🗼🗽🗾🗿😀😁😂😃😄😅😆😇😈😉😊😋😌😍😎😏😐😑😒😓😔😕😖😗😘😙😚😛😜😝😞😟😠😡😢😣😤😥😦😧😨😩😪😫😬😭😮😯😰😱😲😳😴😵😶😷😸😹😺😻😼😽😾😿🙀🙁🙂🙃🙄🙅🙆🙇🙈🙉🙊🙋🙌🙍🙎🙏🚀🚁🚂🚃🚄🚅🚆🚇🚈🚉🚊🚋🚌🚍🚎🚏🚐🚑🚒🚓🚔🚕🚖🚗🚘🚙🚚🚛🚜🚝🚞🚟🚠🚡🚢🚣🚤🚥🚦🚧🚨🚩🚪🚫🚬🚭🚮🚯🚰🚱🚲🚳🚴🚵🚶🚷🚸🚹🚺🚻🚼🚽🚾🚿🛀🛁🛂🛃🛄🛅🛌🛐🛑🛒🛕🛖🛗🛜🛝🛞🛟🛫🛬🛴🛵🛶🛷🛸🛹🛺🛻🛼🟠🟡🟢🟣🟤🟥🟦🟧🟨🟩🟪🟫🟰🤌🤍🤎🤏🤐🤑🤒🤓🤔🤕🤖🤗🤘🤙🤚🤛🤜🤝🤞🤟🤠🤡🤢🤣🤤🤥🤦🤧🤨🤩🤪🤫🤬🤭🤮🤯🤰🤱🤲🤳🤴🤵🤶🤷🤸🤹🤺🤼🤽🤾🤿🥀🥁🥂🥃🥄🥅🥇🥈🥉🥊🥋🥌🥍🥎🥏🥐🥑🥒🥓🥔🥕🥖🥗🥘🥙🥚🥛🥜🥝🥞🥟🥠🥡🥢🥣🥤🥥🥦🥧🥨🥩🥪🥫🥬🥭🥮🥯🥰🥱🥲🥳🥴🥵🥶🥷🥸🥹🥺🥻🥼🥽🥾🥿🦀🦁🦂🦃🦄🦅🦆🦇🦈🦉🦊🦋🦌🦍🦎🦏🦐🦑🦒🦓🦔🦕🦖🦗🦘🦙🦚🦛🦜🦝🦞🦟🦠🦡🦢🦣🦤🦥🦦🦧🦨🦩🦪🦫🦬🦭🦮🦯🦰🦱🦲🦳🦴🦵🦶🦷🦸🦹🦺🦻🦼🦽🦾🦿🧀🧁🧂🧃🧄🧅🧆🧇🧈🧉🧊🧋🧌🧍🧎🧏🧐🧑🧒🧓🧔🧕🧖🧗🧘🧙🧚🧛🧜🧝🧞🧟🧠🧡🧢🧣🧤🧥🧦🧧🧨🧩🧪🧫🧬🧭🧮🧯🧰🧱🧲🧳🧴🧵🧶🧷🧸🧹🧺🧻🧼🧽🧾🧿🩰🩱🩲🩳🩴🩵🩶🩷🩸🩹🩺🩻🩼🪀🪁🪂🪃🪄🪅🪆🪇🪈🪐🪑🪒🪓🪔🪕🪖🪗🪘🪙🪚🪛🪜🪝🪞🪟🪠🪡🪢🪣🪤🪥🪦🪧🪨🪩🪪🪫🪬🪭🪮🪯🪰🪱🪲🪳🪴🪵🪶🪷🪸🪹🪺🪻🪼🪽🪿🫀🫁🫂🫃🫄🫅🫎🫏🫐🫑🫒🫓🫔🫕🫖🫗🫘🫙🫚🫛🫠🫡🫢🫣🫤🫥🫦🫧🫨🫰🫱🫲🫳🫴🫵🫶🫷🫸";
+const TONES = ["👋", "👋🏻", "👋🏼", "👋🏽", "👋🏾", "👋🏿"];
+const LJ = (k, d) => { try { return JSON.parse(localStorage.getItem(k)) ?? d; } catch { return d; } }, LW = (k, v) => { try { localStorage.setItem(k, JSON.stringify(v)); } catch {} };
+const fromKey = k => String.fromCodePoint(...k.split("-").map(x => parseInt(x, 16)));
+let DATA = [], limited = false, built = false, tone = Math.min(5, Math.max(0, +LJ("wc_emoji_tone", 0) || 0)), recent = LJ("wc_emoji_recent", []).filter(x => typeof x === "string").slice(0, 36);
+let favs = {}, favFor = "", favUn = null, favWarn = 0, once = null, tab = "emoji", secs = [], io = null, longT = 0, longHit = 0, qT = 0;
+picker.innerHTML = `<div class="ptabs"><button type="button" data-t="emoji" class="on">😀 emoji</button><button type="button" data-t="gifs">🖼️ gifs</button></div>
+<div id="pEmo"><div class="psr"><input type="text" id="pQ" placeholder="search emoji" maxlength="30" autocomplete="off"><button type="button" id="pTone" title="skin tone"></button></div>
+<div id="pCats"></div><div id="pScroll"><div id="pSpec"></div><div id="pGroups"></div><div id="pRes" hidden></div></div></div>
+<div id="pGif" hidden><small class="phint">your saved gifs. add more with the 🖼️ button, or tap ☆ on any image in chat.</small><div id="pGifG" class="gifg"></div></div>`;
+const sc = $("pScroll");
+const parseLazy = el => { if (window.twemoji) twemoji.parse(el, { folder: "svg", ext: ".svg", attributes: () => ({ loading: "lazy" }) }); };
+const tonedE = it => { if (tone) { const s = it.s.find(k => k[0] === tone); if (s) return s[1]; } return it.e; };
+/* build buttons detached, convert to twemoji images (lazy-loaded), then attach: the page-wide twemoji observer never sees raw text */
+function fillGrid(g, items) {
+  const d = document.createElement("div");
+  items.forEach(([e, n]) => { const b = document.createElement("button"); b.type = "button"; b.dataset.e = e; if (n) b.title = n; b.textContent = e; d.append(b); });
+  parseLazy(d); g.replaceChildren(...d.childNodes);
+}
+/* ---- data ---- */
+const parse = arr => arr.filter(x => x && (x.emoji || x.unicode) && x.group !== 2 && (+x.version || 0) <= MAXV).sort((a, b) => (a.order || 0) - (b.order || 0)).map(x => ({
+  e: x.emoji || x.unicode, n: String(x.annotation || x.label || "").toLowerCase(), t: (x.tags || []).join(" ").toLowerCase(),
+  g: GROUPS.some(g => g[0] === x.group) ? x.group : 8,
+  s: (x.skins || []).filter(k => typeof k.tone === "number" && (+k.version || 0) <= MAXV).map(k => [k.tone, k.emoji || k.unicode])
+}));
+async function load() {
+  const c = LJ(KEY, null); if (c && c.v === 1 && c.d?.length > 1000) return c.d;
+  try { const r = await fetch(SRC); if (!r.ok) throw 0; const d = parse(await r.json()); if (d.length < 1000) throw 0; LW(KEY, { v: 1, d }); return d; }
+  catch { limited = true; return [...FALL].map(e => ({ e, n: "", t: "", g: 0, s: [] })); }
+}
+/* ---- favorites ---- */
+function syncFavs() {
+  if (!me || favFor === me.name) return; favUn?.(); favFor = me.name;
+  const lk = "wc_efav_" + me.name; favs = LJ(lk, {}); let pushed = 0;
+  favUn = onValue(ref(db, `emojiFavs/${me.name}`), s => {
+    const v = s.val();
+    if (v) { favs = v; LW(lk, favs); } else if (Object.keys(favs).length && !pushed) { pushed = 1; set(ref(db, `emojiFavs/${me.name}`), favs).catch(() => {}); }
+    if (picker.classList.contains("open")) drawSpecials();
+  }, () => {});
+}
+function toggleFav(e) {
+  syncFavs(); const k = ecode(e), on = !favs[k];
+  on ? favs[k] = Date.now() : delete favs[k]; LW("wc_efav_" + me.name, favs);
+  (on ? set(ref(db, `emojiFavs/${me.name}/${k}`), favs[k]) : remove(ref(db, `emojiFavs/${me.name}/${k}`))).catch(() => { if (!favWarn) { favWarn = 1; toast("favorites are saved on this device only (add a rule for \"emojiFavs\" to sync them)", 4500); } });
+  toast(on ? "added to favorites ⭐" : "removed from favorites", 1200); drawSpecials();
+}
+/* ---- sections ---- */
+function drawSpecials() {
+  const host = $("pSpec"); host.replaceChildren();
+  const fav = Object.keys(favs).sort((a, b) => favs[b] - favs[a]).map(fromKey);
+  [["favorites", fav], ["recent", recent]].forEach(([label, list]) => {
+    if (!list.length) return;
+    const w = document.createElement("section"), h = document.createElement("h5"), g = document.createElement("div"); h.textContent = label; g.className = "pgrid";
+    fillGrid(g, list.map(e => [e, ""])); w.append(h, g); host.append(w);
+  });
+  if (!fav.length) { const t = document.createElement("small"); t.className = "phint"; t.textContent = "tip: right-click (or long-press) any emoji to favorite it ⭐"; host.prepend(t); }
+}
+function renderSec(s) { s.done = true; fillGrid(s.g, s.items.map(it => [tonedE(it), it.n])); }
+function buildGroups() {
+  const host = $("pGroups"), cats = $("pCats"); host.replaceChildren(); cats.replaceChildren(); secs = []; io?.disconnect();
+  io = new IntersectionObserver(es => es.forEach(en => { if (!en.isIntersecting) return; const s = en.target._s; if (s && !s.done) renderSec(s); io.unobserve(en.target); }), { root: sc, rootMargin: "300px" });
+  const rowH = 38;
+  GROUPS.forEach(([id, icon, label]) => {
+    const items = DATA.filter(it => it.g === id); if (!items.length) return;
+    const w = document.createElement("section"), h = document.createElement("h5"), g = document.createElement("div"); h.textContent = limited ? "emoji" : label; g.className = "pgrid"; g.style.minHeight = Math.ceil(items.length / 8) * rowH + "px";
+    w.append(h, g); host.append(w); const s = { w, g, items, icon, label, done: false }; w._s = s; secs.push(s); io.observe(w);
+  });
+  if (secs.length > 1) {
+    [["🕘", "favorites & recent", () => 0], ...secs.map(s => [s.icon, s.label, () => s.w.offsetTop])].forEach(([i, t, top], n) => {
+      const b = document.createElement("button"); b.type = "button"; b.textContent = i; b.title = t; b.dataset.n = n; b.onclick = () => sc.scrollTo({ top: n ? top() : 0, behavior: "smooth" }); cats.append(b);
+    });
+    tw(cats);
+  }
+}
+sc.addEventListener("scroll", () => {
+  if (!secs.length || $("pRes").hidden === false) return;
+  const y = sc.scrollTop + 12; let n = 0; secs.forEach((s, i) => { if (s.w.offsetTop <= y) n = i + 1; });
+  $("pCats").querySelectorAll("button").forEach(b => b.classList.toggle("on", +b.dataset.n === n));
+}, { passive: true });
+/* ---- search ---- */
+function search() {
+  const q = $("pQ").value.trim().toLowerCase(), res = $("pRes"), on = !!q;
+  res.hidden = !on; $("pSpec").hidden = $("pGroups").hidden = on; $("pCats").hidden = on; if (!on) return;
+  const hits = limited ? [] : DATA.filter(it => it.n.includes(q) || it.t.split(" ").some(w => w.startsWith(q))).sort((a, b) => (b.n.startsWith(q) - a.n.startsWith(q)) || (b.n.split(" ").includes(q) - a.n.split(" ").includes(q))).slice(0, 160);
+  res.replaceChildren();
+  if (!hits.length) { const t = document.createElement("small"); t.className = "phint"; t.textContent = limited ? "search needs the emoji list, which couldn't be loaded (check your connection)" : "no emoji found"; res.append(t); return; }
+  const g = document.createElement("div"); g.className = "pgrid"; res.append(g); fillGrid(g, hits.map(it => [tonedE(it), it.n]));
+}
+$("pQ").addEventListener("input", () => { clearTimeout(qT); qT = setTimeout(search, 120); });
+$("pQ").addEventListener("keydown", e => { if (e.key !== "Escape") e.stopPropagation(); });
+$("pTone").textContent = TONES[tone];
+$("pTone").onclick = () => { tone = (tone + 1) % 6; LW("wc_emoji_tone", tone); $("pTone").textContent = TONES[tone]; secs.forEach(s => { if (s.done) renderSec(s); }); search(); };
+/* ---- picking ---- */
+function pick(e) {
+  if (once) { const f = once; once = null; picker.classList.remove("open"); f(e); }
+  else { msg.value += e; msg.focus(); caretEnd(); }
+  recent = [e, ...recent.filter(x => x !== e)].slice(0, 36); LW("wc_emoji_recent", recent); // shown the next time the picker opens
+}
+sc.addEventListener("click", e => {
+  const b = e.target.closest("button[data-e]"); if (!b) return;
+  if (longHit) { longHit = 0; return; }
+  e.shiftKey ? toggleFav(b.dataset.e) : pick(b.dataset.e);
 });
-$("emojiBtn").onclick = e => { e.stopPropagation(); picker.classList.toggle("open"); };
-document.addEventListener("click", e => { if (!picker.contains(e.target)) picker.classList.remove("open"); });
+sc.addEventListener("contextmenu", e => { const b = e.target.closest("button[data-e]"); if (b) { e.preventDefault(); toggleFav(b.dataset.e); } });
+sc.addEventListener("touchstart", e => { const b = e.target.closest("button[data-e]"); if (!b) return; clearTimeout(longT); longT = setTimeout(() => { longHit = 1; toggleFav(b.dataset.e); navigator.vibrate?.(20); }, 500); }, { passive: true });
+["touchend", "touchmove", "touchcancel"].forEach(ev => sc.addEventListener(ev, () => clearTimeout(longT), { passive: true }));
+/* ---- tabs + open/close ---- */
+function setTab(t) {
+  tab = t; picker.querySelectorAll(".ptabs button").forEach(b => b.classList.toggle("on", b.dataset.t === t));
+  $("pEmo").hidden = t !== "emoji"; $("pGif").hidden = t !== "gifs";
+  if (t === "gifs") window.__wcMedia?.draw($("pGifG"), () => picker.classList.remove("open"));
+  else if (!matchMedia("(hover:none)").matches) $("pQ").focus();
+}
+picker.querySelector(".ptabs").onclick = e => { const b = e.target.closest("button"); if (b) setTab(b.dataset.t); };
+window.__wcGifRefresh = () => { if (picker.classList.contains("open") && tab === "gifs") window.__wcMedia?.draw($("pGifG"), () => picker.classList.remove("open")); };
+async function openP(show) {
+  picker.classList.toggle("open", show); if (!show) { once = null; return; }
+  syncFavs(); drawSpecials(); setTab(tab);
+  if (!built) { built = true; const l = document.createElement("small"); l.className = "phint"; l.textContent = "loading emoji..."; $("pGroups").append(l); DATA = await load(); buildGroups(); }
+}
+$("emojiBtn").onclick = e => { e.stopPropagation(); document.getElementById("mediaP")?.classList.remove("open"); once = null; openP(!picker.classList.contains("open")); };
+document.addEventListener("click", e => { if (!e.composedPath().includes(picker)) { picker.classList.remove("open"); once = null; } });
+window.__emojiPick = cb => { once = cb; tab = "emoji"; openP(true); }; // reactions: pick any emoji for a message
+}
 
 /* ---------- connection indicator ---------- */
 let online = false;
@@ -1441,7 +1618,7 @@ async function openProfile(name) {
   $("pDot").className = dotCls(name); setDecor($("pDecor"), (self ? me : p).decor);
   $("pDisplay").textContent = p.displayName || name; $("pUser").textContent = name; $("pPro").textContent = p.pronouns ? "• " + p.pronouns : "";
   $("pBadges").replaceChildren(...(p.badges || []).map(b => mk("span", "bdg", "🏅 " + b)));
-  $("pStatus").textContent = p.status || "";
+  $("pStatus").textContent = p.status || ""; paintAct($("pAct"), name);
   $("pBio").textContent = p.bio || "no bio set."; $("pBio").parentElement.hidden = !p.bio;
   $("pStats").textContent = `${p.joinDate ? fmtD(p.joinDate) : "unknown"} · ${p.messageCount || 0} messages`;
   $("pMore").replaceChildren(...[p.location && "📍 " + p.location, p.birthday && "🎂 " + p.birthday, p.interests && "✨ " + p.interests, p.favSong && "🎵 " + p.favSong].filter(Boolean).map(t => mk("div", "", t)));
@@ -1484,7 +1661,7 @@ function openMini(name, anchor) {
   $("mStatus").textContent = p.status || ""; $("mDisplay").textContent = p.displayName || name;
   $("mUser").textContent = name; $("mPro").textContent = p.pronouns ? "• " + p.pronouns : "";
   $("mBadges").replaceChildren(...(p.badges || []).map(b => mk("span", "bdg", "🏅 " + b))); $("mBadges").hidden = !(p.badges || []).length;
-  $("mBio").textContent = p.bio || ""; $("mBio").hidden = !p.bio; $("mFull").hidden = (p.bio || "").length < 90;
+  $("mBio").textContent = p.bio || ""; $("mBio").hidden = !p.bio; paintAct($("mAct"), name); $("mFull").hidden = (p.bio || "").length < 90;
   $("mMut").hidden = true; $("mRevAv").replaceChildren();
   const full = tab => { closeMini(); openProfile(name); if (tab) { pTab = tab; renderPTabs(); } };
   $("mExp").onclick = $("mFull").onclick = () => full(); $("mRevRow").onclick = () => full("reviews");
@@ -1645,9 +1822,10 @@ async function start() {
     renderRooms();
   });
   const pr = ref(db, `presence/${me.name}`);
-  presRef = pr;
-  onValue(ref(db, ".info/connected"), s => { if (s.val()) { onDisconnect(pr).remove(); applyPresence(); } });
-  onValue(ref(db, "presence"), s => { presence = s.val() || {}; renderRooms(); if ($("fr").classList.contains("active")) renderFr(); });
+  presRef = pr; actRef = ref(db, `activity/${me.name}`);
+  onValue(ref(db, ".info/connected"), s => { if (s.val()) { onDisconnect(pr).remove(); onDisconnect(actRef).remove(); applyPresence(); } });
+  onValue(ref(db, "presence"), s => { presence = s.val() || {}; renderRooms(); if ($("fr").classList.contains("active")) renderFr(); paintActs(); });
+  onValue(ref(db, "activity"), s => { acts = s.val() || {}; paintActs(); }, () => {});
   onValue(ref(db, `blocks/${me.name}`), s => { blocks = s.val() || {}; renderRooms(); });
   onValue(ref(db, `friends/${me.name}`), s => {
     const old = friends; friends = s.val() || {};
@@ -2055,6 +2233,7 @@ function move(id, g, i) {
   update(gref(id), up);
 }
 function paintGames() {
+  try { const mt = Object.values(gs).find(g => g.pl?.[me.name] && g.st !== "done"); setAct("tbl", mt ? { n: GN[mt.type][0].replace(/^\S+\s/, ""), d: mt.st === "live" ? "in a match" : "waiting for players" } : null); } catch {}
   const cards = Object.entries(gs).filter(([, g]) => g.st !== "done" || Date.now() - g.ts < 36e5).sort((x, y) => y[1].ts - x[1].ts).slice(0, 4).map(([id, g]) => {
     const c = mk("div", "", "gc"), mineP = g.pl?.[me.name], b = (t, f) => { const x = mk("button"); x.textContent = t; x.onclick = f; return x; }, bar = mk("div", "", "gb");
     c.append(mk("h4", "", "", `<span>${GN[g.type][0]}${g.stake ? " · 🪙 " + fm(g.stake) : ""}</span><small>${g.st}</small>`));
@@ -2433,7 +2612,7 @@ send = function () {
   else if (c === "flip") msg.value = "🪙 " + me.name + " flipped **" + (Math.random() < .5 ? "heads" : "tails") + "**";
   else if (c === "roll") { const r = /^(\d{1,2})?d(\d{1,3})$/i.exec(a.trim() || "2d6") || [0, 2, 6], n = +r[1] || 1, s = Math.max(2, +r[2]), d = Array.from({ length: n }, () => 1 + Math.random() * s | 0); msg.value = `🎲 ${me.name} rolled ${n}d${s}: **${d.reduce((x, y) => x + y)}**` + (n > 1 ? ` (${d.join(", ")})` : ""); }
   else if (c === "me") msg.value = "*" + me.name + " " + a + "*";
-  else if (GAMES[c]) { const out = GAMES[c](a); if (!out) return local(); msg.value = out; }
+  else if (GAMES[c]) { if (c !== "join" && c !== "games") cmdAct(c); const out = GAMES[c](a); if (!out) return local(); msg.value = out; }
   else msg.value = (a ? a + " " : "") + CM[c][0];
   _send(); afterSend();
 };
@@ -2472,7 +2651,7 @@ document.addEventListener("keydown", e => {
 {
 const mk = (t, id, c) => { const e = document.createElement(t); if (id) e.id = id; if (c) e.className = c; return e; };
 const su = u => { try { const x = new URL(u); return /^https?:$/.test(x.protocol) ? x.href : ""; } catch { return ""; } };
-const foot = document.querySelector("footer"), IMG = /\.(png|jpe?g|gif|webp)(\?\S*)?$/i, TOK = /(\|\|[^|\n]+\|\||https?:\/\/[^\s<>)\]]+)/;
+const foot = document.querySelector("footer"), IMG = /(\.(png|jpe?g|gif|webp|avif)(\?\S*)?$)|^https:\/\/(media\d*\.tenor\.com|i\.giphy\.com|media\d*\.giphy\.com|i\.imgur\.com|cdn\.discordapp\.com\/attachments|media\.discordapp\.net\/attachments)\//i, TOK = /(\|\|[^|\n]+\|\||https?:\/\/[^\s<>)\]]+)/;
 /* lightbox */
 const lb = mk("div", "lb"); document.body.append(lb); lb.onclick = () => lb.classList.remove("on");
 const openLb = u => { const i = new Image(); i.src = u; lb.replaceChildren(i); lb.classList.add("on"); };
@@ -2694,25 +2873,43 @@ const EMBEDS=[
   {id:"stickman",icon:"🪢",name:"stickman hook",sub:"swing from the hooks",url:"games/stickman%20hook/Stickman%20Hook.html"},
   {id:"singlefile",icon:"📦",name:"single-file",sub:"game launcher",url:"games/huge%20file/single-file%20(1).html"}
 ];
-let gmTimer=0,gmCurEmbed=null;
+let gmTimer=0,gmCurEmbed=null,gmWatchT=0,gmPosted=0;
 const gmPaint=()=>{const B=J(K("wc_best"),{}),g=$("gmGrid");g.replaceChildren();
   const card=(icon,name,sub,fn)=>{const c=mk("button","gmcard"),i=mk("b","",icon),n=mk("span","",esc(name)),d=mk("small","",esc(sub));c.append(i,n,d);c.onclick=fn;g.append(c)};
   Object.entries(GM).forEach(([id,[nm]])=>{const sp=nm.indexOf(" ");card(nm.slice(0,sp),nm.slice(sp+1),B[id]!==undefined?"best: "+B[id]:"arcade",()=>gmArcade(id))});
   EMBEDS.forEach(e=>card(e.icon,e.name,e.sub,()=>gmEmbed(e)));tw(g)};
-const gmStop=()=>{stop();clearTimeout(gmTimer);gmCurEmbed=null;
+const gmStop=()=>{stop();clearTimeout(gmTimer);clearInterval(gmWatchT);gmPosted=0;setAct("arc",null);gmCurEmbed=null;
   const w=$("gmWrap"),f=w.querySelector("iframe");if(f){f.src="about:blank";f.remove()}
   if(document.fullscreenElement===w)document.exitFullscreen().catch(()=>{});
   $("gmArc").replaceChildren();$("gmOut").textContent="";$("gmArc").hidden=w.hidden=$("gmFs").hidden=$("gmOpen").hidden=$("gmPlay").hidden=true;$("gmList").hidden=false;gmPaint()};
 const gmShow=()=>{$("gmList").hidden=true;$("gmPlay").hidden=false};
-const gmArcade=g=>{gmStop();gmShow();const ar=$("gmArc"),out=$("gmOut");ar.hidden=false;
+const gmArcade=g=>{gmStop();gmShow();const ar=$("gmArc"),out=$("gmOut");ar.hidden=false;setAct("arc",{n:GM[g][0].slice(GM[g][0].indexOf(" ")+1),d:"arcade"});
   const go=()=>{stop();ar.replaceChildren();out.textContent="";cl=G[g](ar,sc=>finish(g,sc,out,()=>{const a=mk("button","wide","play again");a.onclick=go;ar.replaceChildren(a)}))};go()};
-const gmEmbed=e=>{gmStop();gmShow();gmCurEmbed=e;const w=$("gmWrap"),ld=$("gmLoad");w.hidden=$("gmFs").hidden=$("gmOpen").hidden=false;ld.classList.remove("done");$("gmLoadT").textContent="loading game...";
+const gmEmbed=e=>{gmStop();gmShow();gmCurEmbed=e;setAct("arc",{n:e.name,d:e.sub});const w=$("gmWrap"),ld=$("gmLoad");w.hidden=$("gmFs").hidden=$("gmOpen").hidden=false;ld.classList.remove("done");$("gmLoadT").textContent="loading game...";
   const f=document.createElement("iframe");f.title=e.name;f.allow="fullscreen; autoplay; gamepad; clipboard-write";
   f.setAttribute("sandbox","allow-scripts allow-same-origin allow-forms allow-popups allow-pointer-lock allow-modals allow-downloads allow-popups-to-escape-sandbox");
   f.referrerPolicy="no-referrer";f.onload=()=>{clearTimeout(gmTimer);ld.classList.add("done")};
   /* a slow or blocked game never removes its card: just offer the new-tab link */
   gmTimer=setTimeout(()=>{if(gmCurEmbed===e&&!ld.classList.contains("done"))$("gmLoadT").textContent="taking a while... try \"open in new tab\""},15000);
+  if(e.id==="singlefile")gmWatch(f,e);
   f.src=e.url;w.appendChild(f);cl=()=>{f.src="about:blank";f.remove()}};
+/* single-file launcher: work out which game is open inside it. same-origin pages are read directly (nested iframe title/src, page title, hash, common title elements);
+   any embedded page can also report itself with parent.postMessage({wcActivity:{name:"...",detail:"..."}},"*") */
+const gmWatch=(f,e)=>{let t0="";
+  const read=()=>{if(gmPosted||gmCurEmbed!==e)return;try{
+    const d=f.contentDocument;if(!d||!d.body)return;if(!t0)t0=(d.title||"").trim();let name="";
+    const inn=d.querySelector("iframe");
+    if(inn){try{name=(inn.contentDocument?.title||"").trim()}catch{}
+      if(!name)name=inn.title||inn.getAttribute("data-name")||"";
+      if(!name&&inn.src&&!/^about:/.test(inn.src))name=decodeURIComponent(inn.src.split("/").pop().split("?")[0]).replace(/\.\w+$/,"").replace(/[-_]+/g," ")}
+    if(!name){const el=d.querySelector("[data-game],.game-title,#gameTitle,#game-title,#currentGame,#title");name=(el?.getAttribute("data-game")||el?.textContent||"").trim()}
+    if(!name){const t=(d.title||"").trim();if(t&&t!==t0)name=t}
+    if(!name&&d.location.hash.length>1)name=decodeURIComponent(d.location.hash.slice(1)).replace(/[-_]+/g," ");
+    setAct("arc",name?{n:name,d:"via "+e.name}:{n:e.name,d:e.sub})}catch{}};
+  f.addEventListener("load",read);gmWatchT=setInterval(read,3000)};
+addEventListener("message",ev=>{const f=$("gmWrap").querySelector("iframe"),a=ev.data&&ev.data.wcActivity;
+  if(!f||!gmCurEmbed||ev.source!==f.contentWindow||!a||typeof a.name!=="string"||!a.name.trim())return;
+  gmPosted=1;setAct("arc",{n:a.name,d:typeof a.detail==="string"&&a.detail.trim()?a.detail:gmCurEmbed.name})});
 $("gmBack").onclick=gmStop;
 $("gmOpen").onclick=()=>gmCurEmbed&&window.open(gmCurEmbed.url,"_blank","noopener");
 $("gmFs").onclick=()=>{const w=$("gmWrap");document.fullscreenElement?document.exitFullscreen():w.requestFullscreen&&w.requestFullscreen().catch(()=>toast("fullscreen blocked by your browser",2000))};
@@ -2785,6 +2982,7 @@ async function delTrack(id){if(!confirm("delete this song from your library?"))r
 /* ---- playback ---- */
 function paint(){const x=cur&&T.get(cur);$("mpT").textContent=x?x.title:"nothing playing";$("mpA").textContent=x?.artist||"";$("mpAl").textContent=x?.album||"";$("mpCov").src=x?.cu||NO;
   $("mpPlay").textContent=au.paused?"▶":"⏸";hb.textContent=au.paused?"♪":"⏸";hb.title=x?x.title+(x.artist?" — "+x.artist:""):"mp3 player (settings > music)";
+  setAct("mus",x&&!au.paused?{n:x.title,d:x.artist}:null);
   if("mediaSession"in navigator&&x){navigator.mediaSession.metadata=new MediaMetadata({title:x.title,artist:x.artist,album:x.album,artwork:x.cu?[{src:x.cu}]:[]});}}
 function play(id){const x=T.get(id);if(!x)return;cur=id;au.src=x.url;au.play().catch(()=>{});paint();drawList()}
 function step(d){const q=view();if(!q.length)return;let i=q.indexOf(cur);if(P.shuf&&q.length>1){let j;do j=Math.floor(Math.random()*q.length);while(j===i);return play(q[j])}i+=d;if(i>=q.length){if(!P.loop)return;i=0}if(i<0)i=q.length-1;play(q[i])}
@@ -2809,6 +3007,146 @@ const hb=mk("button");hb.textContent="♪";hb.onclick=toggle;document.querySelec
 if("mediaSession"in navigator)[["play",toggle],["pause",toggle],["previoustrack",()=>step(-1)],["nexttrack",()=>step(1)]].forEach(([a,f])=>{try{navigator.mediaSession.setActionHandler(a,f)}catch{}});
 ui();paint();
 (async()=>{try{(await st("readonly",s=>s.getAll())).sort((a,b)=>a.t-b.t).forEach(hydrate)}catch{}Object.keys(PL).forEach(n=>PL[n]=PL[n].filter(id=>T.has(id)));drawList()})();
+}
+/* ===== images + gifs: send by link or upload (embedded), favorites =====
+   media/<id>   = { u: https url | data:image, g: gif?, by, ts }   content-addressed, written once, shared by everyone
+   favs/<me>/<id> = timestamp                                      a favorite is just a pointer, so re-sending never re-uploads
+   a message carries only the short token [gif:<id>] */
+{
+const TK = /\[(?:gif|img):([a-f0-9]{20,32})\]/g, RX = /^[a-f0-9]{20,32}$/, MAXGIF = 5000000, MAXFAV = 60;
+const h53 = (s, seed) => { let h1 = 0xdeadbeef ^ seed, h2 = 0x41c6ce57 ^ seed; for (let i = 0; i < s.length; i++) { const c = s.charCodeAt(i); h1 = Math.imul(h1 ^ c, 2654435761); h2 = Math.imul(h2 ^ c, 1597334677); } h1 = Math.imul(h1 ^ (h1 >>> 16), 2246822507) ^ Math.imul(h2 ^ (h2 >>> 13), 3266489909); h2 = Math.imul(h2 ^ (h2 >>> 16), 2246822507) ^ Math.imul(h1 ^ (h1 >>> 13), 3266489909); return 4294967296 * (2097151 & h2) + (h1 >>> 0); };
+const mid = s => h53(s, 1).toString(16).padStart(14, "0") + h53(s, 2).toString(16).padStart(14, "0");
+const MC = new Map(); let favs = {}, favUn = null, favFor = "", tab = "send";
+const okMedia = o => o && typeof o.u === "string" && o.u.length < 7000000 && /^(data:image\/(png|jpe?g|gif|webp);base64,|https:\/\/)/.test(o.u);
+const getMedia = id => {
+  if (!RX.test(id)) return Promise.resolve(null);
+  if (!MC.has(id)) MC.set(id, get(ref(db, "media/" + id)).then(s => { const v = s.val(); return okMedia(v) ? v : null; }).catch(() => { MC.delete(id); return null; }));
+  return MC.get(id);
+};
+async function putMedia(id, u, g) {
+  if (await getMedia(id)) return true; // already stored: nothing to upload
+  const o = { u, g: g ? 1 : 0, by: me.name, ts: Date.now() };
+  try { await set(ref(db, "media/" + id), o); MC.set(id, Promise.resolve(o)); return true; }
+  catch { MC.delete(id); toast("couldn't store image (add a rule for \"media\" in your firebase database rules)", 4500); return false; }
+}
+function ensureFavs() {
+  if (!me || favFor === me.name) return; favUn?.(); favFor = me.name;
+  favUn = onValue(ref(db, `favs/${me.name}`), s => { favs = s.val() || {}; refreshStars(); if (P.classList.contains("open") && tab === "fav") drawFav(); window.__wcGifRefresh?.(); }, () => {});
+}
+async function toggleFav(id, u, g) {
+  ensureFavs();
+  if (favs[id]) { remove(ref(db, `favs/${me.name}/${id}`)).then(() => toast("removed from favorites")).catch(() => toast("couldn't update favorites")); return; }
+  if (Object.keys(favs).length >= MAXFAV) return toast(`favorites are full (max ${MAXFAV})`);
+  if (u && !(await putMedia(id, u, g))) return;
+  set(ref(db, `favs/${me.name}/${id}`), Date.now()).then(() => toast("saved to favorites ⭐")).catch(() => toast("couldn't save favorite (add a rule for \"favs\" in your firebase database rules)", 4500));
+}
+function refreshStars() { document.querySelectorAll(".embs").forEach(b => { const on = !!favs[b.dataset.mid]; b.textContent = on ? "★" : "☆"; b.classList.toggle("on", on); b.title = on ? "remove from favorites" : "add to favorites"; }); }
+const star = (id, u, g) => { const b = document.createElement("button"); b.className = "embs"; b.dataset.mid = id; b.textContent = favs[id] ? "★" : "☆"; b.onclick = e => { e.stopPropagation(); toggleFav(id, u, g); }; return b; };
+const lbOpen = u => { const l = document.getElementById("lb"); if (!l) return; const i = new Image(); i.src = u; l.replaceChildren(i); l.classList.add("on"); };
+
+/* ---- send helpers ---- */
+const readURL = f => new Promise((r, j) => { const fr = new FileReader(); fr.onload = () => r(fr.result); fr.onerror = j; fr.readAsDataURL(f); });
+async function fileToMedia(f) {
+  if (!/^image\//.test(f.type)) { toast("that's not an image"); return null; }
+  if (f.type === "image/gif") { // gifs stay untouched so they keep animating
+    if (f.size > MAXGIF) { toast("that gif is too big (max 5mb). try a smaller one or use a link", 4500); return null; }
+    return { u: await readURL(f), g: 1 };
+  }
+  const src = URL.createObjectURL(f);
+  try {
+    const im = await new Promise((r, j) => { const i = new Image(); i.onload = () => r(i); i.onerror = j; i.src = src; });
+    let best = "";
+    for (const [dim, q] of [[900, .82], [700, .7], [500, .6]]) {
+      const k = Math.min(1, dim / Math.max(im.width, im.height)), c = document.createElement("canvas");
+      c.width = Math.max(1, Math.round(im.width * k)); c.height = Math.max(1, Math.round(im.height * k));
+      c.getContext("2d").drawImage(im, 0, 0, c.width, c.height);
+      best = c.toDataURL("image/webp", q); if (best.length < 450000) break;
+    }
+    return { u: best, g: 0 };
+  } catch { toast("couldn't read that image"); return null; } finally { URL.revokeObjectURL(src); }
+}
+function sendMedia(id) { const cap = msg.value.trim().slice(0, 450); msg.value = (cap ? cap + " " : "") + `[gif:${id}]`; send(); }
+async function sendFile(f, fav) {
+  toast("uploading...", 1500); const m = await fileToMedia(f); if (!m) return;
+  const id = mid(m.u); if (!(await putMedia(id, m.u, m.g))) return;
+  ensureFavs(); if (fav && !favs[id]) toggleFav(id); sendMedia(id);
+}
+async function sendUrl(raw, fav) {
+  const u = String(raw || "").trim(); if (!/^https:\/\/\S+$/i.test(u) || u.length > 1000) return toast("enter a full https link to an image or gif");
+  const ok = await new Promise(r => { const i = new Image(); i.referrerPolicy = "no-referrer"; i.onload = () => r(true); i.onerror = () => r(false); setTimeout(() => r(false), 10000); i.src = u; });
+  if (!ok) return toast("couldn't load that as an image. use the direct link (right-click the gif → copy image address)", 5000);
+  const id = mid(u); if (!(await putMedia(id, u, /\.gif(\?|#|$)|tenor|giphy/i.test(u)))) return;
+  ensureFavs(); if (fav && !favs[id]) toggleFav(id); sendMedia(id); return true;
+}
+
+/* ---- panel ---- */
+const foot = document.querySelector("footer"), P = document.createElement("div"); P.id = "mediaP";
+P.innerHTML = `<div class="mt"><button data-t="send" class="on">send</button><button data-t="fav">⭐ favorites</button></div>
+<div id="mdSend"><input type="text" id="mdUrl" placeholder="paste an image or gif link (https)" maxlength="1000" autocomplete="off">
+<div class="row"><button id="mdUrlBtn">send link</button><button id="mdFileBtn">upload file</button></div>
+<label class="mdc"><input type="checkbox" id="mdFav"> also save to favorites</label>
+<small>anything typed in the message box is sent as the caption. you can also paste or drag an image into the chat.</small>
+<input type="file" id="mdFile" accept="image/*" hidden></div>
+<div id="mdFavs" hidden><div id="mediaG" class="gifg"></div></div>`;
+foot.append(P);
+const mb = document.createElement("button"); mb.id = "mediaBtn"; mb.textContent = "🖼️"; mb.title = "images & gifs"; document.getElementById("emojiBtn").before(mb); tw(mb); tw(P);
+const q = s => P.querySelector(s);
+function setTab(t) { tab = t; P.querySelectorAll(".mt button").forEach(b => b.classList.toggle("on", b.dataset.t === t)); q("#mdSend").hidden = t !== "send"; q("#mdFavs").hidden = t !== "fav"; if (t === "fav") drawFav(); }
+function drawFav(g = q("#mediaG"), done = () => P.classList.remove("open")) {
+  ensureFavs(); const ids = Object.keys(favs).sort((a, b) => favs[b] - favs[a]); g.replaceChildren();
+  if (!ids.length) { const s = document.createElement("small"); s.textContent = "no favorites yet. tap ☆ on any image or gif in chat."; g.append(s); return; }
+  ids.forEach(id => {
+    const c = document.createElement("div"); c.className = "mi"; g.append(c);
+    getMedia(id).then(o => {
+      if (!o || !safeImg(o.u)) return c.remove();
+      const i = document.createElement("img"); i.src = o.u; i.alt = ""; i.loading = "lazy"; c.append(i);
+      const x = document.createElement("button"); x.className = "mx"; x.textContent = "✕"; x.title = "remove from favorites"; x.onclick = e => { e.stopPropagation(); toggleFav(id); }; c.append(x);
+      c.onclick = () => { sendMedia(id); done(); }; // sends the stored reference: nothing is uploaded again
+    });
+  });
+}
+window.__wcMedia = { draw: (g, done) => drawFav(g, done) };
+P.querySelector(".mt").onclick = e => { const b = e.target.closest("button"); if (b) setTab(b.dataset.t); };
+q("#mdUrlBtn").onclick = async () => { const i = q("#mdUrl"); if (await sendUrl(i.value, q("#mdFav").checked)) { i.value = ""; P.classList.remove("open"); } };
+q("#mdUrl").addEventListener("keydown", e => { if (e.key === "Enter") { e.preventDefault(); e.stopPropagation(); q("#mdUrlBtn").click(); } });
+q("#mdFileBtn").onclick = () => q("#mdFile").click();
+q("#mdFile").onchange = e => { const f = e.target.files[0]; e.target.value = ""; if (f) { sendFile(f, q("#mdFav").checked); P.classList.remove("open"); } };
+mb.onclick = e => { e.stopPropagation(); document.getElementById("picker")?.classList.remove("open"); P.classList.toggle("open"); if (P.classList.contains("open")) { ensureFavs(); setTab(tab); } };
+document.addEventListener("click", e => { if (!P.contains(e.target) && e.target !== mb && e.target.closest("#mediaBtn") !== mb) P.classList.remove("open"); });
+msg.addEventListener("paste", e => { const f = [...(e.clipboardData?.files || [])].find(x => /^image\//.test(x.type)); if (f) { e.preventDefault(); sendFile(f, 0); } });
+chat.addEventListener("dragover", e => { if ([...(e.dataTransfer?.types || [])].includes("Files")) e.preventDefault(); });
+chat.addEventListener("drop", e => { const f = [...(e.dataTransfer?.files || [])].find(x => /^image\//.test(x.type)); if (f) { e.preventDefault(); sendFile(f, 0); } });
+
+/* ---- rendering: tokens become images, plain image links get a favorite star ---- */
+function addMedia(el, ids) {
+  const t = el.querySelector(".bubble .text"); if (!t) return;
+  t.style.display = t.textContent.trim() ? "" : "none";
+  const near = chat.scrollHeight - chat.scrollTop - chat.clientHeight < 200; let anchor = t;
+  ids.forEach(id => {
+    const w = document.createElement("div"); w.className = "embw"; anchor.after(w); anchor = w;
+    getMedia(id).then(o => {
+      if (!w.isConnected) return; if (!o || !safeImg(o.u)) return w.remove();
+      const im = document.createElement("img"); im.className = "emb"; im.alt = ""; im.loading = "lazy"; im.referrerPolicy = "no-referrer";
+      im.onclick = () => lbOpen(o.u); im.onload = () => { if (near) chat.scrollTop = chat.scrollHeight; }; im.onerror = () => w.remove();
+      im.src = o.u; w.append(im, star(id));
+    });
+  });
+}
+const _fillM = fill;
+fill = function (el, key, m) {
+  ensureFavs();
+  const txt = typeof m.text === "string" ? m.text : "", ids = [...txt.matchAll(TK)].map(x => x[1]);
+  _fillM(el, key, ids.length ? { ...m, text: txt.replace(TK, "").trim() } : m);
+  if (ids.length) msgs[key] = m; // keep the real text (token included) for editing
+  try {
+    el.querySelectorAll("img.emb:not([data-w])").forEach(im => {
+      im.dataset.w = 1; const u = im.src; if (!/^https:/i.test(u) || u.length > 1000) return;
+      const w = document.createElement("div"); w.className = "embw"; im.replaceWith(w); w.append(im, star(mid(u), u, /\.gif(\?|#|$)|tenor|giphy/i.test(u)));
+      im.addEventListener("error", () => w.remove());
+    });
+    if (ids.length) addMedia(el, [...new Set(ids)].slice(0, 3));
+  } catch {}
+};
 }
 onAuthStateChanged(auth, gate);
 </script>
