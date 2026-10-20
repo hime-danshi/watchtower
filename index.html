@@ -369,6 +369,23 @@ select{width:100%;padding:8px;background:#000;color:var(--tx);border:2px solid v
 #mpCard{display:flex;gap:12px;align-items:center;margin:8px 0}#mpCov{width:84px;height:84px;border-radius:10px;object-fit:cover;background:#000;border:2px solid var(--bd);flex:none}
 #mpInfo{display:flex;flex-direction:column;min-width:0;gap:3px}#mpInfo b{font-size:13px;font-weight:normal;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}#mpInfo small{opacity:.65;font-size:10px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 #mpSeek,#mpVol{width:100%}#mpList{margin-top:8px;max-height:260px;overflow-y:auto}.mpr{cursor:pointer}.mpr img{border-radius:6px!important}.mpr.on{background:var(--bd)}#mpPlay{flex:1.5}.row button.on{background:var(--bd);box-shadow:0 0 8px var(--glow)}
+/* about me: scrollable, html-friendly */
+#pBio{max-height:220px;overflow-y:auto;overflow-x:hidden;padding-right:6px;scrollbar-width:thin;word-break:break-word}
+#pBio *{max-width:100%}
+#pBio img{height:auto;border-radius:6px;vertical-align:middle}
+#pBio h1{font-size:18px;opacity:1}#pBio h2{font-size:16px;opacity:1}#pBio h3{font-size:14px;opacity:1}
+#pBio h1,#pBio h2,#pBio h3,#pBio h4,#pBio h5,#pBio h6{font-weight:700;opacity:1;margin:6px 0 2px}
+#pBio h4,#pBio h5,#pBio h6{font-size:13px}
+#pBio p{margin:4px 0}
+#pBio ul,#pBio ol{padding-left:20px;margin:4px 0}#pBio ul{list-style:disc}#pBio ol{list-style:decimal}
+#pBio blockquote{border-left:3px solid var(--bd);padding-left:8px;margin:4px 0;opacity:.85}
+#pBio code,#pBio pre{font-family:monospace;background:rgba(255,255,255,.08);border-radius:4px;padding:0 4px}
+#pBio pre{padding:6px 8px;overflow-x:auto;white-space:pre}
+#pBio hr{border:0;border-top:1px solid var(--bd);margin:6px 0}
+#pBio table{border-collapse:collapse}#pBio td,#pBio th{padding:2px 6px;border:1px solid var(--bd)}
+#pBio summary{cursor:pointer}#pBio marquee{display:block}
+#fBio{min-height:120px;resize:vertical}
+:root[data-light] #pBio code,:root[data-light] #pBio pre{background:rgba(0,0,0,.08)}
 /* light themes (pale green etc.) */
 :root[data-light]{color-scheme:light}
 :root[data-light] .stars{opacity:0}
@@ -461,7 +478,7 @@ select{width:100%;padding:8px;background:#000;color:var(--tx);border:2px solid v
     <button class="wide" id="renameBtn">change username</button>
     <label>display name</label><input type="text" id="fDisplay" placeholder="display name">
     <label>pronouns</label><input type="text" id="fPro" placeholder="e.g. he/him">
-    <label>bio</label><textarea id="fBio" placeholder="write something cool..."></textarea>
+    <label>bio <span style="opacity:.6">(basic html allowed · 2000 chars)</span></label><textarea id="fBio" placeholder="write something cool... try &lt;b&gt;bold&lt;/b&gt;, &lt;a href=&quot;https://...&quot;&gt;links&lt;/a&gt;, &lt;img src=&quot;https://...&quot;&gt;"></textarea>
     <label>status</label><input type="text" id="fStatus" placeholder="what's on your mind?">
     <label>favorite song</label><input type="text" id="fSong" placeholder="song - artist">
     <label>website</label><input type="text" id="fWeb" placeholder="https://example.com">
@@ -730,6 +747,49 @@ function setDecor(img, f) {
   if (u) { if (img.getAttribute("src") !== u) img.src = u; img.hidden = false; } else { img.hidden = true; img.removeAttribute("src"); }
 }
 const safeUrl = s => /^https?:\/\//i.test(s || "") ? s : "";
+/* ---- bio html: allowlist sanitizer (nothing outside this list survives) ---- */
+const BIO_TAGS = new Set("b i u s em strong small sub sup mark del ins br hr p div span center a h1 h2 h3 h4 h5 h6 ul ol li blockquote code pre details summary table thead tbody tr td th img marquee".split(" "));
+const BIO_DROP = /^(script|style|iframe|frame|frameset|object|embed|noscript|template|svg|math|form|textarea|select|option|button|input|link|meta|title|head|base|audio|video|canvas|applet)$/;
+const BIO_CSS = new Set("color background background-color font-size font-weight font-style font-family text-align text-decoration text-shadow text-transform letter-spacing line-height border border-radius padding margin opacity".split(" "));
+const bioSize = v => { const m = /^(\d+(?:\.\d+)?)(px|pt|em|rem|%)$/i.exec(v); if (!m) return false; const n = +m[1], u = m[2].toLowerCase(); return u === "px" || u === "pt" ? n <= 48 : u === "%" ? n <= 300 : n <= 4; };
+function bioStyle(css) {
+  const out = [];
+  for (const d of String(css).split(";")) {
+    const i = d.indexOf(":"); if (i < 1) continue;
+    const k = d.slice(0, i).trim().toLowerCase(), v = d.slice(i + 1).trim();
+    if (!BIO_CSS.has(k) || !v || v.length > 120) continue;
+    if (!/^[\w\s#.,%()\-'"+]+$/.test(v) || /url\(|expression|javascript|image-set|var\(|attr\(|env\(|@|\\/i.test(v)) continue;
+    if ((k === "margin" || k === "padding") && /-\s*\d/.test(v)) continue;
+    if (k === "font-size" && !bioSize(v)) continue;
+    out.push(k + ":" + v);
+  }
+  return out.join(";");
+}
+function sanitizeBio(html) {
+  const doc = new DOMParser().parseFromString("<body>" + String(html || "") + "</body>", "text/html");
+  const frag = document.createDocumentFragment();
+  const walk = (src, dst, depth) => {
+    for (const n of src.childNodes) {
+      if (n.nodeType === 3) { dst.append(document.createTextNode(n.nodeValue)); continue; }
+      if (n.nodeType !== 1) continue;
+      const t = n.tagName.toLowerCase();
+      if (depth > 20) { dst.append(document.createTextNode(n.textContent)); continue; }
+      if (!BIO_TAGS.has(t)) { if (!BIO_DROP.test(t)) walk(n, dst, depth + 1); continue; }
+      const e = document.createElement(t), at = k => n.getAttribute(k);
+      const st = at("style"); if (st) { const c = bioStyle(st); if (c) e.setAttribute("style", c); }
+      if (at("title")) e.title = at("title").slice(0, 100);
+      if (t === "a") { const h = safeUrl((at("href") || "").trim()); if (h) { e.href = h; e.target = "_blank"; e.rel = "noopener noreferrer nofollow"; } }
+      else if (t === "img") { const u = safeImg((at("src") || "").trim()); if (!u) continue; e.src = u; e.alt = (at("alt") || "").slice(0, 100); e.loading = "lazy"; e.referrerPolicy = "no-referrer"; }
+      else if (t === "details" && n.hasAttribute("open")) e.setAttribute("open", "");
+      else if ((t === "td" || t === "th") && /^\d{1,2}$/.test(at("colspan") || "")) e.colSpan = +at("colspan");
+      if (/^(left|center|right)$/i.test(at("align") || "")) e.setAttribute("align", at("align").toLowerCase());
+      walk(n, e, depth + 1); dst.append(e);
+    }
+  };
+  walk(doc.body, frag, 0);
+  return frag;
+}
+const bioPlain = s => { const d = document.createElement("div"); d.append(sanitizeBio(String(s || "").replace(/<\/?(br|p|div|li|h\d|tr)\b[^>]*>/gi, " "))); return d.textContent.replace(/\s+/g, " ").trim(); };
 const hex = s => /^#[0-9a-f]{6}$/i.test(s || "") ? s : "";
 const avatar = n => "data:image/svg+xml," + encodeURIComponent(
   `<svg xmlns="http://www.w3.org/2000/svg" width="36" height="36"><rect width="36" height="36" fill="#0b1f4b"/><text x="18" y="24" font-size="18" text-anchor="middle" fill="#93c5fd" font-family="monospace">${(n || "?")[0].toUpperCase()}</text></svg>`);
@@ -748,7 +808,7 @@ function cleanProfile(d) {
   const im = k => typeof d[k] === "string" && d[k].length < (/^data:image\/gif/.test(d[k]) ? 1000000 : 500000) ? safeImg(d[k]) : "";
   return {
     name: (s("name", 20) || s("username", 20)).replace(/[^\w-]/g, ""),
-    displayName: s("displayName", 32), pronouns: s("pronouns", 20), decor: okDecor(d.decor) ? d.decor : "", bio: s("bio"), status: s("status", 60),
+    displayName: s("displayName", 32), pronouns: s("pronouns", 20), decor: okDecor(d.decor) ? d.decor : "", bio: s("bio", 2000), status: s("status", 60),
     pfp: im("pfp"), banner: im("banner"),
     color: hex(s("color", 7) || s("profileColor", 7)) || "#1e3a8a",
     bg: hex(s("bg", 7) || s("profileCardBg", 7)) || "#111827",
@@ -1513,7 +1573,7 @@ document.querySelector(".tabs").addEventListener("click", e => {
 $("saveProfile").onclick = async () => {
   const v = id => $(id).value.trim();
   Object.assign(me, {
-    displayName: v("fDisplay").slice(0, 32), pronouns: v("fPro").slice(0, 20), bio: v("fBio").slice(0, 300),
+    displayName: v("fDisplay").slice(0, 32), pronouns: v("fPro").slice(0, 20), bio: v("fBio").slice(0, 2000),
     status: v("fStatus").slice(0, 60), favSong: v("fSong").slice(0, 80),
     location: v("fLoc").slice(0, 40), birthday: $("fBday").value, interests: v("fInt").slice(0, 80), nameColor: $("fNameColor").value,
     website: safeUrl(v("fWeb")), github: safeUrl(v("fGit")),
@@ -1643,7 +1703,7 @@ async function openProfile(name) {
   $("pDisplay").textContent = p.displayName || name; $("pUser").textContent = name; $("pPro").textContent = p.pronouns ? "• " + p.pronouns : "";
   $("pBadges").replaceChildren(...(p.badges || []).map(b => mk("span", "bdg", "🏅 " + b)));
   $("pStatus").textContent = p.status || ""; paintAct($("pAct"), name);
-  $("pBio").textContent = p.bio || "no bio set."; $("pBio").parentElement.hidden = !p.bio;
+  $("pBio").replaceChildren(sanitizeBio(p.bio || "no bio set.")); $("pBio").scrollTop = 0; $("pBio").parentElement.hidden = !p.bio;
   $("pStats").textContent = `${p.joinDate ? fmtD(p.joinDate) : "unknown"} · ${p.messageCount || 0} messages`;
   $("pMore").replaceChildren(...[p.location && "📍 " + p.location, p.birthday && "🎂 " + p.birthday, p.interests && "✨ " + p.interests, p.favSong && "🎵 " + p.favSong].filter(Boolean).map(t => mk("div", "", t)));
   $("pMore").parentElement.hidden = !$("pMore").children.length;
@@ -1685,7 +1745,7 @@ function openMini(name, anchor) {
   $("mStatus").textContent = p.status || ""; $("mDisplay").textContent = p.displayName || name;
   $("mUser").textContent = name; $("mPro").textContent = p.pronouns ? "• " + p.pronouns : "";
   $("mBadges").replaceChildren(...(p.badges || []).map(b => mk("span", "bdg", "🏅 " + b))); $("mBadges").hidden = !(p.badges || []).length;
-  $("mBio").textContent = p.bio || ""; $("mBio").hidden = !p.bio; paintAct($("mAct"), name); $("mFull").hidden = (p.bio || "").length < 90;
+  $("mBio").textContent = bioPlain(p.bio); $("mBio").hidden = !p.bio; paintAct($("mAct"), name); $("mFull").hidden = (p.bio || "").length < 90;
   $("mMut").hidden = true; $("mRevAv").replaceChildren();
   const full = tab => { closeMini(); openProfile(name); if (tab) { pTab = tab; renderPTabs(); } };
   $("mExp").onclick = $("mFull").onclick = () => full(); $("mRevRow").onclick = () => full("reviews");
