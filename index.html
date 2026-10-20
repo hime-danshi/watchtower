@@ -301,6 +301,7 @@ header,footer,#rooms,.bubble,#card,.fc{transition:background .4s,border-color .4
 .gmcard{display:flex;flex-direction:column;align-items:center;gap:6px;padding:16px 10px;text-align:center;border:2px solid var(--bd);border-radius:10px;background:rgba(0,0,0,.35)}
 .gmcard:hover{border-color:var(--glow);box-shadow:0 0 14px color-mix(in srgb,var(--glow) 45%,transparent)}
 .gmcard b{font-size:30px;font-weight:normal;line-height:1}.gmcard span{font-size:12px}.gmcard small{opacity:.7;font-size:10px}
+#gmArc .gc{font-size:13px}#gmArc .gc .hand{font-size:18px}#gmArc .gc .gb button{font-size:13px}
 #gmWrap{position:relative;margin-top:10px;width:100%;height:min(520px,62vh);min-height:320px;background:#000;border:2px solid var(--bd);border-radius:8px;overflow:hidden}
 #gmWrap iframe{position:absolute;inset:0;width:100%;height:100%;border:0;background:#000}
 #gmWrap:fullscreen{height:100vh;border:0;border-radius:0}
@@ -2212,7 +2213,7 @@ function join() {
   } else if (g.type === "tictactoe") Object.assign(up, { st: "live", bd: "         ", turn: g.host });
   else if (g.type === "connect4") Object.assign(up, { st: "live", bd: " ".repeat(42), turn: g.host });
   else if (!NG[g.type] && cnt(pl).length >= g.need) startBJ(up, pl);
-  update(gref(id), up).catch(() => toast("couldn't join", 2500)); gp.classList.add("on"); return `👥 **${me.name}** joined ${GN[g.type][0]}`;
+  update(gref(id), up).catch(() => toast("couldn't join", 2500)); if (g.type === "uno") setTimeout(() => window.__wcOpenUno?.(), 0); else gp.classList.add("on"); return `👥 **${me.name}** joined ${GN[g.type][0]}`;
 }
 function startBJ(up, pl) {
   const d = deck(), h = {}; cnt(pl).forEach(n => h[n] = [d.pop(), d.pop()]); Object.assign(up, { st: "live", dk: d, hd: h, dl: [d.pop(), d.pop()], turn: cnt(pl)[0], stood: {} });
@@ -2234,7 +2235,7 @@ function move(id, g, i) {
 }
 function paintGames() {
   try { const mt = Object.values(gs).find(g => g.pl?.[me.name] && g.st !== "done"); setAct("tbl", mt ? { n: GN[mt.type][0].replace(/^\S+\s/, ""), d: mt.st === "live" ? "in a match" : "waiting for players" } : null); } catch {}
-  const cards = Object.entries(gs).filter(([, g]) => g.st !== "done" || Date.now() - g.ts < 36e5).sort((x, y) => y[1].ts - x[1].ts).slice(0, 4).map(([id, g]) => {
+  const cards = Object.entries(gs).filter(([, g]) => (g.st !== "done" || Date.now() - g.ts < 36e5) && (g.type !== "uno" || (g.st === "open" && !g.pl?.[me.name]))).sort((x, y) => y[1].ts - x[1].ts).slice(0, 4).map(([id, g]) => {
     const c = mk("div", "", "gc"), mineP = g.pl?.[me.name], b = (t, f) => { const x = mk("button"); x.textContent = t; x.onclick = f; return x; }, bar = mk("div", "", "gb");
     c.append(mk("h4", "", "", `<span>${GN[g.type][0]}${g.stake ? " · 🪙 " + fm(g.stake) : ""}</span><small>${g.st}</small>`));
     const info = mk("div"); c.append(info); info.textContent = "players: " + cnt(g.pl).join(", ");
@@ -2256,6 +2257,7 @@ function paintGames() {
     if (bar.children.length) c.append(bar); tw(c); return c;
   });
   gp.replaceChildren(...cards); if (!cards.length) gp.classList.remove("on");
+  try { unoPaint(); } catch {}
 }
 Object.assign(GAMES, { blackjack: a => open("blackjack", a), duel: a => open("duel", a), dicewar: a => open("dicewar", a), highcard: a => open("highcard", a), tictactoe: a => open("tictactoe", a), connect4: a => open("connect4", a), join: () => join(), games: () => { listenGames(); gp.classList.toggle("on"); paintGames(); return null; } });
 /* ---- more table games: uno (2-6), rps table (2-6), race to 21 (2-6) ---- */
@@ -2273,7 +2275,7 @@ function openN(type) {
   if (Object.values(gs).some(g => g.host === me.name && g.st !== "done")) { toast("you already have a game open — finish or /games to cancel it", 3000); return null; }
   const id = push(gref()).key;
   set(gref(id), { type, host: me.name, stake: 0, st: "open", ts: Date.now(), pl: { [me.name]: true }, need: GN[type][1] }).catch(() => toast("couldn't open game — add a rule for \"games\" in your firebase database rules", 4500));
-  gp.classList.add("on"); return `${GN[type][0]} table opened by **${me.name}** · type **/join** (2-${GN[type][1]} players), then the host hits start`;
+  if (type !== "uno") gp.classList.add("on"); return `${GN[type][0]} table opened by **${me.name}** · type **/join** (2-${GN[type][1]} players), then the host hits start`;
 }
 function startN(id, g) {
   const ord = cnt(g.pl), up = { st: "live", ord, ts: Date.now(), turn: ord[0], log: "game started!" };
@@ -2343,9 +2345,116 @@ function paintN(c, id, g, bar, b, info) {
     if (g.st === "live" && g.pk && cnt(g.pk).length >= cnt(g.pl).length) rResolve(id);
   } else XG[g.type]?.paint({ c, id, g, bar, b, D, my, mineP });
 }
-Object.assign(CM, { uno: ["", "🟥 /uno · 2-6 players, host hits start"], rpstable: ["", "✊ /rpstable · 2-6 players, first to 3"], race21: ["", "🔢 /race21 · 2-6 players, first to hit 21"] });
-TABS.games += " uno rpstable race21"; TABS["vs players"] += " uno rpstable race21";
-Object.assign(GAMES, { uno: () => openN("uno"), rpstable: () => openN("rpsw"), race21: () => openN("race21") });
+Object.assign(CM, { rpstable: ["", "✊ /rpstable · 2-6 players, first to 3"], race21: ["", "🔢 /race21 · 2-6 players, first to hit 21"] });
+TABS.games += " rpstable race21"; TABS["vs players"] += " rpstable race21";
+Object.assign(GAMES, { rpstable: () => openN("rpsw"), race21: () => openN("race21") });
+/* ---- uno: embedded in settings > games (no / command, no extra tab). 1 player = local vs bots, 2-6 players = online table + join message in chat ---- */
+const unoUI = { mode: null, ar: null, stop: null };
+const uB = (t, f) => { const x = mk("button"); x.textContent = t; x.onclick = f; return x; };
+const uPost = txt => { const d = msg.value; msg.value = txt; _send(); if (!msg.value) msg.value = d; };
+function unoMenu(ar) {
+  unoUI.stop?.(); unoUI.stop = null; unoUI.ar = ar; unoUI.mode = null; ar.replaceChildren();
+  const c = mk("div", "", "gc"), row = mk("div", "", "gb");
+  c.append(mk("h4", "", "", "<span>🃏 uno</span><small>pick a mode</small>"), mk("div", "", "", "2-6 players opens a table and posts a join message in chat, then the host hits start."));
+  row.append(uB("🤖 1 player · vs 3 bots", () => unoSolo(ar)), uB("👥 2-6 players · online", () => unoOnline(ar)));
+  c.append(row); ar.append(c); tw(ar);
+}
+function unoNew() { const o = openN("uno"); if (o) uPost(o); }
+function unoJoin(id, g) {
+  if (!g || g.st !== "open" || g.pl?.[me.name] || cnt(g.pl).length >= g.need) return;
+  update(gref(id), { pl: { ...g.pl, [me.name]: true } }).catch(() => toast("couldn't join", 2500));
+  uPost(`👥 **${me.name}** joined ${GN.uno[0]}`);
+}
+function unoOnline(ar) {
+  unoUI.stop?.(); unoUI.stop = null; unoUI.ar = ar; unoUI.mode = "online"; listenGames(); unoPaint();
+  setTimeout(() => {
+    if (unoUI.mode !== "online" || unoUI.ar !== ar) return;
+    const al = Object.entries(gs).filter(([, g]) => g.type === "uno");
+    const mine = al.some(([, g]) => g.pl?.[me.name] && g.st !== "done"), open = al.some(([, g]) => g.st === "open" && !g.pl?.[me.name] && cnt(g.pl).length < g.need);
+    if (!mine && !open) unoNew();
+  }, 800);
+}
+function unoPaint() {
+  if (unoUI.mode !== "online" || !unoUI.ar || !unoUI.ar.isConnected) return;
+  const ar = unoUI.ar, al = Object.entries(gs).filter(([, g]) => g.type === "uno");
+  const mine = al.filter(([, g]) => g.pl?.[me.name] && (g.st !== "done" || Date.now() - g.ts < 36e5)).sort((x, y) => y[1].ts - x[1].ts)[0];
+  const c = mk("div", "", "gc"), bar = mk("div", "", "gb"); ar.replaceChildren(c);
+  if (mine) {
+    const [id, g] = mine;
+    c.append(mk("h4", "", "", `<span>🟥 uno · online</span><small>${g.st}</small>`));
+    const info = mk("div"); info.textContent = "players: " + cnt(g.pl).join(", "); c.append(info);
+    if (g.st === "open") {
+      const w = mk("div"); w.textContent = "waiting for players… others can type /join in chat or join from their 🎮 panel. the host hits start once 2+ are in."; c.append(w);
+      if (g.host === me.name) bar.append(uB("cancel", () => update(gref(id), { st: "done" })));
+    }
+    paintN(c, id, g, bar, uB, info);
+    if (g.st === "done") bar.append(uB("new table", unoNew));
+    else if (g.st === "live" && g.host === me.name && Date.now() - g.ts > 18e5) bar.append(uB("abort", () => update(gref(id), { st: "done" })));
+  } else {
+    c.append(mk("h4", "", "", "<span>🟥 uno · lobby</span><small>2-6 players</small>"));
+    const o = al.filter(([, g]) => g.st === "open" && !g.pl?.[me.name] && cnt(g.pl).length < g.need);
+    if (o.length) o.forEach(([id, g]) => bar.append(uB(`join ${g.host}'s table (${cnt(g.pl).length}/${g.need})`, () => unoJoin(id, g))));
+    else { const w = mk("div"); w.textContent = "no open tables here"; c.append(w); }
+    bar.append(uB("open a new table", unoNew));
+  }
+  bar.append(uB("← modes", () => unoMenu(ar))); c.append(bar); tw(c);
+}
+function unoSolo(ar) {
+  unoUI.stop?.(); unoUI.ar = ar; unoUI.mode = "solo";
+  const names = ["you", "🤖 rex", "🤖 luna", "🤖 fang"]; let G = null, pend = null;
+  unoUI.stop = () => { G = null; };
+  const start = () => {
+    const d = uDeck(), hd = {}; names.forEach(n => hd[n] = d.splice(0, 7));
+    const k = d.findIndex(c => /^[RYGB]\d$/.test(c)), t = d.splice(k, 1)[0];
+    G = { ord: [...names], hd, dk: d, ds: [], top: t, col: t[0], dir: 1, turn: "you", drew: false, log: "game started — you go first", win: null }; pend = null; paint();
+  };
+  const play = (n, c, col) => {
+    const g = G, v = c[1]; g.hd[n].splice(g.hd[n].indexOf(c), 1); g.ds.push(g.top);
+    let t = uNext(g, n), log = `${n} played ${uLbl(c)}`;
+    if (v === "R" && c[0] !== "W") { if (g.ord.length === 2) t = n; else { g.dir = -g.dir; t = uNext(g, n); } }
+    else if (v === "S") { log += ` · ${t} skipped`; t = uNext(g, t); }
+    else if (v === "D" || c === "W4") { const k = c === "W4" ? 4 : 2; g.hd[t].push(...uDraw(g, k)); log += ` · ${t} draws ${k}`; t = uNext(g, t); }
+    g.top = c; g.col = c[0] === "W" ? col : c[0]; g.drew = false; g.turn = t; g.log = log;
+    if (!g.hd[n].length) { g.win = n; g.turn = null; g.log = `${n} wins! 🏆`; if (n === "you") { try { confetti(); } catch {} } }
+    else if (g.hd[n].length === 1) g.log += " · UNO!!";
+  };
+  const drawFor = n => {
+    const g = G, [c] = uDraw(g, 1); if (c) g.hd[n].push(c);
+    g.drew = !!c && uOk(c, g); g.log = `${n} drew a card` + (g.drew ? "" : " · pass"); if (!g.drew) g.turn = uNext(g, n);
+  };
+  const bots = () => {
+    const g = G; if (!g || g.win || g.turn === "you") return; const n = g.turn;
+    setTimeout(() => {
+      if (G !== g || g.win || g.turn !== n) return;
+      let c = g.hd[n].find(k => k[0] !== "W" && uOk(k, g)) || g.hd[n].find(k => uOk(k, g));
+      if (!c) { drawFor(n); if (g.drew) c = g.hd[n][g.hd[n].length - 1]; }
+      if (c) { const cc = [..."RYGB"].map(x => [x, g.hd[n].filter(k => k[0] === x).length]).sort((a, b) => b[1] - a[1])[0][0]; play(n, c, cc); }
+      paint(); bots();
+    }, 900);
+  };
+  const go = f => { f(); paint(); bots(); };
+  const paint = () => {
+    if (!G || unoUI.mode !== "solo" || !ar.isConnected) return;
+    const g = G, my = g.turn === "you" && !g.win, c = mk("div", "", "gc"), bar = mk("div", "", "gb");
+    const D = (t, cls) => { const e = mk("div", "", cls || ""); e.textContent = t; c.append(e); return e; };
+    ar.replaceChildren(c);
+    c.append(mk("h4", "", "", `<span>🟥 uno · vs bots</span><small>${g.win ? "finished" : "live"}</small>`));
+    D("top: " + uLbl(g.top) + (g.top[0] === "W" ? " · color " + UE[g.col] : ""), "hand");
+    D(g.ord.map(n => `${n === g.turn ? "▶" : ""}${n} (${g.hd[n].length})`).join(" · "));
+    D(g.log);
+    if (my && pend) { D("pick a color:"); [..."RYGB"].forEach(k => bar.append(uB(UE[k], () => go(() => { const w = pend; pend = null; play("you", w, k); })))); }
+    else {
+      const row = mk("div", "", "gb");
+      g.hd.you.slice().sort().forEach(k => { const x = uB(uLbl(k), () => { if (k[0] === "W") { pend = k; paint(); } else go(() => play("you", k)); }); x.disabled = !my || !uOk(k, g); row.append(x); });
+      c.append(row);
+      if (my) bar.append(g.drew ? uB("pass", () => go(() => { g.turn = uNext(g, "you"); g.drew = false; })) : uB("draw 🃏", () => go(() => drawFor("you"))));
+    }
+    bar.append(uB("new game", start), uB("← modes", () => unoMenu(ar))); c.append(bar); tw(c);
+  };
+  start();
+}
+window.__wcUno = { menu: unoMenu, online: unoOnline, stop() { unoUI.stop?.(); unoUI.stop = null; unoUI.mode = null; unoUI.ar = null; } };
+
 /* ---- round 2: memory, hangman, pig + effects + fun commands ---- */
 const pick = a => a[ri(a.length)], nxt = (g, n) => uNext({ ord: g.ord, dir: 1 }, n), seenL = new Set();
 Object.assign(NG, { memory: 1, hangman: 1, pig: 1 });
@@ -2869,31 +2978,39 @@ function openHub(t){stop();ldQ();hub.classList.add("on");$("hbT").replaceChildre
    Nothing is probed, filtered or hidden: all games stay listed in the tab at all times. */
 const EMBEDS=[
   {id:"bitlife",icon:"🎂",name:"bitlife",sub:"life simulator",url:"games/bitlife/index.html"},
-  {id:"uno",icon:"🃏",name:"uno",sub:"4 colors multiplayer",url:"https://showcase.codethislab.com/games/multiplayer/four_colors/"},
   {id:"stickman",icon:"🪢",name:"stickman hook",sub:"swing from the hooks",url:"games/stickman%20hook/Stickman%20Hook.html"},
   {id:"singlefile",icon:"📦",name:"single-file",sub:"game launcher",url:"games/huge%20file/single-file%20(1).html"},
-  {id:"guessword",icon:"🔤",name:"guess the word!",sub:"1v1 word battle · 2-3 players",url:"games/guess%20the%20word!/wordduel.html"}
+  {id:"guessword",icon:"🔤",name:"guess the word!",sub:"1v1 word battle · 2-3 players",url:"games/guess%20the%20word!/wordduel.html"},
+  /* an array = candidate file names, the first one that exists is used */
+  {id:"blackjack",icon:"🂡",name:"blackjack",sub:"classic 21",url:["games/blackjack/index.html","games/blackjack/blackjack.html","games/blackjack/Blackjack.html"]},
+  {id:"tablesoccer",icon:"⚽",name:"table soccer",sub:"foosball",url:["games/table%20soccer/index.html","games/table%20soccer/table%20soccer.html","games/table%20soccer/Table%20Soccer.html","games/table%20soccer/tablesoccer.html","games/table%20soccer/table-soccer.html"]}
 ];
-let gmTimer=0,gmCurEmbed=null,gmWatchT=0,gmPosted=0;
+let gmTimer=0,gmCurEmbed=null,gmWatchT=0,gmPosted=0,gmCurUrl="";
 const gmPaint=()=>{const B=J(K("wc_best"),{}),g=$("gmGrid");g.replaceChildren();
   const card=(icon,name,sub,fn)=>{const c=mk("button","gmcard"),i=mk("b","",icon),n=mk("span","",esc(name)),d=mk("small","",esc(sub));c.append(i,n,d);c.onclick=fn;g.append(c)};
   Object.entries(GM).forEach(([id,[nm]])=>{const sp=nm.indexOf(" ");card(nm.slice(0,sp),nm.slice(sp+1),B[id]!==undefined?"best: "+B[id]:"arcade",()=>gmArcade(id))});
+  card("🃏","uno","1 player or 2-6 online",()=>gmUno());
   EMBEDS.forEach(e=>card(e.icon,e.name,e.sub,()=>gmEmbed(e)));tw(g)};
-const gmStop=()=>{stop();clearTimeout(gmTimer);clearInterval(gmWatchT);gmPosted=0;setAct("arc",null);gmCurEmbed=null;
+const gmStop=()=>{stop();window.__wcUno?.stop();clearTimeout(gmTimer);clearInterval(gmWatchT);gmPosted=0;setAct("arc",null);gmCurEmbed=null;
   const w=$("gmWrap"),f=w.querySelector("iframe");if(f){f.src="about:blank";f.remove()}
   if(document.fullscreenElement===w)document.exitFullscreen().catch(()=>{});
   $("gmArc").replaceChildren();$("gmOut").textContent="";$("gmArc").hidden=w.hidden=$("gmFs").hidden=$("gmOpen").hidden=$("gmPlay").hidden=true;$("gmList").hidden=false;gmPaint()};
 const gmShow=()=>{$("gmList").hidden=true;$("gmPlay").hidden=false};
+/* uno is built into wolfchat: it renders right here in the games tab (solo vs bots, or an online table) */
+const gmUno=mode=>{gmStop();gmShow();const ar=$("gmArc");ar.hidden=false;setAct("arc",{n:"uno",d:"card game"});mode==="online"?window.__wcUno.online(ar):window.__wcUno.menu(ar)};
+window.__wcOpenUno=()=>{openGames();gmUno("online")};
+const gmResolve=async u=>{const a=[].concat(u);if(a.length<2)return a[0];for(const x of a){try{const r=await fetch(x,{method:"HEAD",cache:"no-store"});if(r.ok)return x}catch{}}return a[0]};
 const gmArcade=g=>{gmStop();gmShow();const ar=$("gmArc"),out=$("gmOut");ar.hidden=false;setAct("arc",{n:GM[g][0].slice(GM[g][0].indexOf(" ")+1),d:"arcade"});
   const go=()=>{stop();ar.replaceChildren();out.textContent="";cl=G[g](ar,sc=>finish(g,sc,out,()=>{const a=mk("button","wide","play again");a.onclick=go;ar.replaceChildren(a)}))};go()};
-const gmEmbed=e=>{gmStop();gmShow();gmCurEmbed=e;setAct("arc",{n:e.name,d:e.sub});const w=$("gmWrap"),ld=$("gmLoad");w.hidden=$("gmFs").hidden=$("gmOpen").hidden=false;ld.classList.remove("done");$("gmLoadT").textContent="loading game...";
+const gmEmbed=e=>{gmStop();gmShow();gmCurEmbed=e;gmCurUrl="";setAct("arc",{n:e.name,d:e.sub});const w=$("gmWrap"),ld=$("gmLoad");w.hidden=$("gmFs").hidden=$("gmOpen").hidden=false;ld.classList.remove("done");$("gmLoadT").textContent="loading game...";
   const f=document.createElement("iframe");f.title=e.name;f.allow="fullscreen; autoplay; gamepad; clipboard-write";
   f.setAttribute("sandbox","allow-scripts allow-same-origin allow-forms allow-popups allow-pointer-lock allow-modals allow-downloads allow-popups-to-escape-sandbox");
   f.referrerPolicy="no-referrer";f.onload=()=>{clearTimeout(gmTimer);ld.classList.add("done")};
   /* a slow or blocked game never removes its card: just offer the new-tab link */
   gmTimer=setTimeout(()=>{if(gmCurEmbed===e&&!ld.classList.contains("done"))$("gmLoadT").textContent="taking a while... try \"open in new tab\""},15000);
   if(e.id==="singlefile")gmWatch(f,e);
-  f.src=e.url;w.appendChild(f);cl=()=>{f.src="about:blank";f.remove()}};
+  cl=()=>{f.src="about:blank";f.remove()};
+  gmResolve(e.url).then(u=>{if(gmCurEmbed!==e)return;gmCurUrl=u;f.src=u;w.appendChild(f)})};
 /* single-file launcher: work out which game is open inside it. same-origin pages are read directly (nested iframe title/src, page title, hash, common title elements);
    any embedded page can also report itself with parent.postMessage({wcActivity:{name:"...",detail:"..."}},"*") */
 const gmWatch=(f,e)=>{let t0="";
@@ -2912,7 +3029,7 @@ addEventListener("message",ev=>{const f=$("gmWrap").querySelector("iframe"),a=ev
   if(!f||!gmCurEmbed||ev.source!==f.contentWindow||!a||typeof a.name!=="string"||!a.name.trim())return;
   gmPosted=1;setAct("arc",{n:a.name,d:typeof a.detail==="string"&&a.detail.trim()?a.detail:gmCurEmbed.name})});
 $("gmBack").onclick=gmStop;
-$("gmOpen").onclick=()=>gmCurEmbed&&window.open(gmCurEmbed.url,"_blank","noopener");
+$("gmOpen").onclick=()=>gmCurEmbed&&window.open(gmCurUrl||[].concat(gmCurEmbed.url)[0],"_blank","noopener");
 $("gmFs").onclick=()=>{const w=$("gmWrap");document.fullscreenElement?document.exitFullscreen():w.requestFullscreen&&w.requestFullscreen().catch(()=>toast("fullscreen blocked by your browser",2000))};
 /* leaving the tab or closing settings stops whatever is running (so bitlife/uno don't keep playing in the background) */
 document.querySelector(".tabs").addEventListener("click",e=>{const b=e.target.closest(".tab");if(!b)return;if(b.dataset.tab==="games")gmPaint();else gmStop()});
