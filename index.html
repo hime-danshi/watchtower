@@ -101,17 +101,6 @@ textarea{resize:vertical;min-height:60px}
 #pAvatar{width:80px;height:80px;border:4px solid #111827;border-radius:50%;margin:-40px 0 0 16px;background:#000;object-fit:cover;display:block}
 .pc{padding:16px;word-break:break-word}
 .ps{margin-top:12px;font-size:12px;line-height:1.6}
-#fBio{min-height:180px;max-height:360px;resize:vertical;overflow:auto;white-space:pre-wrap}
-.bio-rich{max-height:280px;overflow-y:auto;overflow-x:hidden;scrollbar-width:thin;scrollbar-color:var(--bd) transparent;padding-right:5px}
-.bio-rich img{max-width:100%;height:auto}
-.bio-rich video{max-width:100%;height:auto}
-.bio-rich a{color:#93c5fd}
-.bio-rich pre{white-space:pre-wrap;overflow:auto;background:rgba(0,0,0,.35);padding:8px;border-radius:4px}
-.bio-rich blockquote{border-left:3px solid var(--glow);padding-left:8px;opacity:.85}
-.bio-rich table{max-width:100%;border-collapse:collapse}
-.bio-rich td,.bio-rich th{border:1px solid var(--bd);padding:4px}
-.bio-rich *{max-width:100%}
-
 .ps h4{font-size:10px;opacity:.6;margin-bottom:3px}
 .ps a{color:#93c5fd}
 .act{margin-top:8px;padding:8px 10px;border-radius:10px;background:rgba(255,255,255,.07);font-size:12px;line-height:1.5;word-break:break-word}.act div+div{margin-top:3px}.actl{display:block;opacity:.65;font-size:11px;font-weight:400;margin-top:1px}
@@ -472,13 +461,7 @@ select{width:100%;padding:8px;background:#000;color:var(--tx);border:2px solid v
     <button class="wide" id="renameBtn">change username</button>
     <label>display name</label><input type="text" id="fDisplay" placeholder="display name">
     <label>pronouns</label><input type="text" id="fPro" placeholder="e.g. he/him">
-    <label>about me (HTML + CSS)</label>
-<textarea id="fBio" maxlength="10000" spellcheck="false" placeholder="<style>
-.bio-title { color: #60a5fa; font-size: 18px; }
-</style>
-<div class="bio-title">hello!</div>
-<p>write your about me here.</p>"></textarea>
-<div class="box">HTML is rendered inside a sandboxed profile area. &lt;script&gt;, event handlers, iframes, forms, and other unsafe elements are removed. CSS is scoped to this About Me section.</div>
+    <label>bio</label><textarea id="fBio" placeholder="write something cool..."></textarea>
     <label>status</label><input type="text" id="fStatus" placeholder="what's on your mind?">
     <label>favorite song</label><input type="text" id="fSong" placeholder="song - artist">
     <label>website</label><input type="text" id="fWeb" placeholder="https://example.com">
@@ -765,8 +748,7 @@ function cleanProfile(d) {
   const im = k => typeof d[k] === "string" && d[k].length < (/^data:image\/gif/.test(d[k]) ? 1000000 : 500000) ? safeImg(d[k]) : "";
   return {
     name: (s("name", 20) || s("username", 20)).replace(/[^\w-]/g, ""),
-    displayName: s("displayName", 32), pronouns: s("pronouns", 20), decor: okDecor(d.decor) ? d.decor : "",
-    bio: s("bio"), bioHtml: s("bioHtml", 10000), status: s("status", 60),
+    displayName: s("displayName", 32), pronouns: s("pronouns", 20), decor: okDecor(d.decor) ? d.decor : "", bio: s("bio"), status: s("status", 60),
     pfp: im("pfp"), banner: im("banner"),
     color: hex(s("color", 7) || s("profileColor", 7)) || "#1e3a8a",
     bg: hex(s("bg", 7) || s("profileCardBg", 7)) || "#111827",
@@ -827,7 +809,7 @@ function setMe(p) {
 
 function hydrate() {
   $("fName").value = me.name; $("fDisplay").value = me.displayName; $("fPro").value = me.pronouns;
-  $("fBio").value = me.bioHtml || (me.bio ? escapeHtml(me.bio) : ""); $("fStatus").value = me.status; $("fSong").value = me.favSong; $("fLoc").value = me.location; $("fBday").value = me.birthday; $("fInt").value = me.interests; $("fNameColor").value = me.nameColor || "#93c5fd";
+  $("fBio").value = me.bio; $("fStatus").value = me.status; $("fSong").value = me.favSong; $("fLoc").value = me.location; $("fBday").value = me.birthday; $("fInt").value = me.interests; $("fNameColor").value = me.nameColor || "#93c5fd";
   $("fWeb").value = me.website; $("fGit").value = me.github; $("fBadges").value = me.badges.join(", ");
   $("fJoin").value = (me.joinDate || "").slice(0, 10); $("fColor").value = me.color; $("fBg").value = me.bg;
   $("fBubColor").value = me.bubColor || "#1e3a8a"; $("fBubText").value = me.bubText || "#c7d2fe"; $("fTextColor").value = me.textColor || "#c7d2fe"; ["fBubColor", "fBubText", "fTextColor"].forEach(i => delete $(i).dataset.t);
@@ -1531,7 +1513,7 @@ document.querySelector(".tabs").addEventListener("click", e => {
 $("saveProfile").onclick = async () => {
   const v = id => $(id).value.trim();
   Object.assign(me, {
-    displayName: v("fDisplay").slice(0, 32), pronouns: v("fPro").slice(0, 20), bio: "", bioHtml: v("fBio").slice(0, 10000),
+    displayName: v("fDisplay").slice(0, 32), pronouns: v("fPro").slice(0, 20), bio: v("fBio").slice(0, 300),
     status: v("fStatus").slice(0, 60), favSong: v("fSong").slice(0, 80),
     location: v("fLoc").slice(0, 40), birthday: $("fBday").value, interests: v("fInt").slice(0, 80), nameColor: $("fNameColor").value,
     website: safeUrl(v("fWeb")), github: safeUrl(v("fGit")),
@@ -1649,82 +1631,7 @@ function renderPTabs() {
   }
   tw(body);
 }
-async 
-function escapeHtml(s) {
-  return String(s || "").replace(/[&<>"']/g, c => ({ "&":"&amp;", "<":"&lt;", ">":"&gt;", '"':"&quot;", "'":"&#39;" }[c]));
-}
-function cleanCss(css) {
-  return String(css || "")
-    .replace(/@import\b[^;]+;?/gi, "")
-    .replace(/url\s*\(\s*[^)]*\)/gi, "")
-    .replace(/(?:expression|behavior|-moz-binding)\s*:/gi, "")
-    .replace(/javascript\s*:/gi, "")
-    .slice(0, 20000);
-}
-function cleanBioHtml(source) {
-  const t = document.createElement("template");
-  t.innerHTML = String(source || "").slice(0, 10000);
-
-  const blocked = new Set(["script","iframe","object","embed","form","input","button","textarea","select","option","link","meta","base","svg","math"]);
-  const allowed = new Set(["a","abbr","b","blockquote","br","code","del","div","em","h1","h2","h3","h4","h5","h6","hr","i","img","li","ol","p","pre","s","small","span","strong","sub","sup","table","tbody","td","tfoot","th","thead","tr","u","ul","style","video","source"]);
-
-  const walk = node => {
-    [...node.children].forEach(el => {
-      const tag = el.tagName.toLowerCase();
-      if (blocked.has(tag) || !allowed.has(tag)) {
-        el.replaceWith(...el.childNodes);
-        return;
-      }
-
-      [...el.attributes].forEach(a => {
-        const n = a.name.toLowerCase();
-        const v = a.value || "";
-        if (n.startsWith("on") || n === "srcdoc" || n === "formaction" || n === "xlink:href") {
-          el.removeAttribute(a.name);
-          return;
-        }
-        if (n === "style") {
-          el.setAttribute("style", cleanCss(v));
-          return;
-        }
-        if (tag === "a" && n === "href") {
-          if (!/^(https?:|mailto:)/i.test(v)) el.removeAttribute(a.name);
-          else { el.setAttribute("target", "_blank"); el.setAttribute("rel", "noopener noreferrer"); }
-          return;
-        }
-        if ((tag === "img" || tag === "source" || tag === "video") && (n === "src" || n === "poster")) {
-          if (!/^(https?:|data:image\/)/i.test(v)) el.removeAttribute(a.name);
-          return;
-        }
-        if (["class","title","alt","width","height","colspan","rowspan","controls","autoplay","loop","muted"].includes(n)) return;
-        el.removeAttribute(a.name);
-      });
-
-      if (tag === "style") el.textContent = cleanCss(el.textContent);
-      walk(el);
-    });
-  };
-  walk(t.content);
-  return t.innerHTML;
-}
-function renderBio(el, source) {
-  el.classList.add("bio-rich");
-  const html = cleanBioHtml(source);
-  if (!el.shadowRoot) el.attachShadow({ mode: "open" });
-  const root = el.shadowRoot;
-  root.replaceChildren();
-  const wrap = document.createElement("div");
-  wrap.innerHTML = html || "<span style='opacity:.6'>no bio set.</span>";
-  root.appendChild(wrap);
-  const style = document.createElement("style");
-  style.textContent = `
-    :host { display:block; color:inherit; font:inherit; line-height:1.6; overflow-wrap:anywhere; }
-    :host a { color:#93c5fd; }
-    ${cleanCss("")}
-  `;
-  root.prepend(style);
-}
-function openProfile(name) {
+async function openProfile(name) {
   const p = profiles[name] || {}, card = $("card"), self = name === me.name, fst = friends[name], c = pCtx = { name, p, mf: [], ms: [], rv: {} };
   pTab = "activity"; card.classList.remove("listening");
   const w = $("pWrap"), pc = hex(p.color) || "#1e3a8a", pb = hex(p.bg) || "#111827";
@@ -1736,7 +1643,7 @@ function openProfile(name) {
   $("pDisplay").textContent = p.displayName || name; $("pUser").textContent = name; $("pPro").textContent = p.pronouns ? "• " + p.pronouns : "";
   $("pBadges").replaceChildren(...(p.badges || []).map(b => mk("span", "bdg", "🏅 " + b)));
   $("pStatus").textContent = p.status || ""; paintAct($("pAct"), name);
-  renderBio($("pBio"), p.bioHtml || (p.bio ? escapeHtml(p.bio) : "")); $("pBio").parentElement.hidden = !(p.bioHtml || p.bio);
+  $("pBio").textContent = p.bio || "no bio set."; $("pBio").parentElement.hidden = !p.bio;
   $("pStats").textContent = `${p.joinDate ? fmtD(p.joinDate) : "unknown"} · ${p.messageCount || 0} messages`;
   $("pMore").replaceChildren(...[p.location && "📍 " + p.location, p.birthday && "🎂 " + p.birthday, p.interests && "✨ " + p.interests, p.favSong && "🎵 " + p.favSong].filter(Boolean).map(t => mk("div", "", t)));
   $("pMore").parentElement.hidden = !$("pMore").children.length;
