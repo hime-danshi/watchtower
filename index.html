@@ -49,7 +49,7 @@ button:active{transform:translateY(1px) scale(.97)}
 /* input */
 footer{display:flex;align-items:center;gap:6px;padding:8px;border-top:2px solid var(--bd);background:color-mix(in srgb,var(--bg) 80%,transparent);position:relative}
 footer input{flex:1;padding:12px;background:transparent;border:none;color:#e0e7ff;font-family:inherit;font-size:13px;outline:none}
-#msg{flex:1;min-width:0;padding:12px;color:#e0e7ff;font-family:inherit;font-size:13px;line-height:1.5;outline:none;max-height:120px;overflow-y:auto;white-space:pre-wrap;word-break:break-word;cursor:text}
+#msg{tab-size:4;flex:1;min-width:0;padding:12px;color:#e0e7ff;font-family:inherit;font-size:13px;line-height:1.5;outline:none;max-height:240px;overflow-y:auto;white-space:pre-wrap;word-break:break-word;cursor:text}
 #msg:empty::before{content:attr(data-ph);opacity:.5;pointer-events:none}
 #msg img.emoji{height:1.3em;width:1.3em;vertical-align:-.25em}
 #send{background:var(--bd);padding:12px 20px;animation:pulse 3s infinite}
@@ -159,7 +159,7 @@ textarea{resize:vertical;min-height:60px}
 
 
 /* markdown + tooltip */
-code{background:rgba(0,0,0,.45);padding:1px 5px;border-radius:3px}.mdq{border-left:3px solid var(--glow);padding-left:8px;opacity:.85}.bubble a{color:#93c5fd}.bubble s{opacity:.7}
+code{background:rgba(0,0,0,.45);padding:1px 5px;border-radius:3px}.mdq{border-left:3px solid var(--glow);padding-left:8px;opacity:.85}.bubble .text{white-space:pre-wrap;tab-size:4}.bubble pre{background:rgba(0,0,0,.55);border:1px solid var(--bd);border-radius:4px;padding:8px 10px;margin:4px 0;overflow-x:auto;white-space:pre;tab-size:4;font-family:ui-monospace,Menlo,Consolas,monospace;font-size:12px;line-height:1.4;max-width:100%;user-select:text}.bubble pre code{background:none;padding:0;font-family:inherit}.cb{margin:4px 0;border:1px solid var(--bd);border-radius:4px;background:rgba(0,0,0,.55);overflow:hidden;max-width:100%}.cb pre{border:0;margin:0;background:none;border-radius:0}.cbh{display:flex;justify-content:space-between;align-items:center;padding:2px 6px;border-bottom:1px solid var(--bd);opacity:.85}.cbh small{font-size:10px}.cbh button{padding:1px 6px;font-size:10px}.cb .c{opacity:.55;font-style:italic}.cb .t{color:#f472b6}.cb .s{color:#86efac}.cb .a{color:#fcd34d}.cb .n{color:#fdba74}.cb .k{color:#c4b5fd}.cb.min .cbh{gap:6px}.cb.min .cbh small{flex:1}.cb.min pre{padding:6px 10px;overflow:hidden;max-height:none}.cb .dim{opacity:.5;font-style:italic}#npPop{position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:700;display:flex;align-items:center;justify-content:center}#npPop .np{position:relative;width:min(560px,94vw);height:min(400px,70vh);display:flex;flex-direction:column;background:#fff;color:#000;border:1px solid #6b6b6b;box-shadow:0 10px 30px rgba(0,0,0,.55);font:12px 'Segoe UI',Tahoma,Arial,sans-serif;text-transform:none;letter-spacing:0}#npPop .np.mx{width:96vw;height:92vh}#npPop button{all:unset;cursor:default;box-sizing:border-box;font:inherit;color:#000}#npPop .nptb{display:flex;align-items:center;height:30px;padding-left:8px;background:#fff;user-select:none;cursor:default;touch-action:none}#npPop .npi{margin-right:6px;font-size:13px}#npPop .npt{flex:1;font-size:12px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}#npPop .nptb button{width:46px;height:30px;text-align:center;line-height:30px;font-size:12px}#npPop .nptb button:hover{background:#e5e5e5}#npPop .nptb button.x:hover{background:#c42b1c;color:#fff}#npPop .npmb{position:relative;display:flex;height:24px;background:#fff;border-bottom:1px solid #e0e0e0;user-select:none}#npPop .npmb>button{padding:0 9px;line-height:24px}#npPop .npmb>button:hover,#npPop .npmb>button.on{background:#d9d9d9}#npPop .npdd{position:absolute;top:24px;min-width:150px;background:#f9f9f9;border:1px solid #b5b5b5;box-shadow:2px 3px 6px rgba(0,0,0,.3);z-index:2;padding:2px 0}#npPop .npdd[hidden]{display:none}#npPop .npdd button{display:block;width:100%;padding:3px 22px;line-height:18px}#npPop .npdd button:hover{background:#0078d7;color:#fff}#npPop textarea{box-sizing:border-box;flex:1;width:100%;min-height:0;margin:0;padding:4px 6px;border:0;outline:0;resize:none;border-radius:0;background:#fff;color:#000;font:13px Consolas,'Courier New',monospace;line-height:1.35;tab-size:4;white-space:pre;overflow:auto;box-shadow:none;text-transform:none}#npPop textarea::selection{background:#0078d7;color:#fff}#npPop .npsb{display:flex;gap:0;height:22px;background:#f0f0f0;border-top:1px solid #d0d0d0;font-size:11px;user-select:none}#npPop .npsb span{padding:0 10px;line-height:22px;border-right:1px solid #d0d0d0;white-space:nowrap}#npPop .npsb span:first-child{flex:1}.mdh{font-weight:bold;font-size:1.15em;margin:2px 0}.mdh.h1{font-size:1.4em}.mdh.h2{font-size:1.25em}.mdl>div{padding-left:4px}.text.clamp{max-height:320px;overflow:hidden;-webkit-mask-image:linear-gradient(#000 70%,transparent);mask-image:linear-gradient(#000 70%,transparent)}.more{display:block;margin:2px 0;font-size:10px;padding:2px 8px}#fmtbar{position:absolute;left:8px;top:-30px;display:flex;gap:2px;background:var(--bg);border:1px solid var(--bd);padding:2px;z-index:5}#fmtbar button{padding:2px 7px;font-size:11px;text-transform:none}#fmtpv,#fmtsn{position:absolute;left:8px;right:8px;bottom:calc(100% + 2px);max-height:240px;overflow:auto;background:var(--bg);border:2px solid var(--bd);padding:8px;z-index:6;font-size:13px;line-height:1.5}#fmtsn{width:260px;right:auto;display:flex;flex-direction:column;gap:3px}#fmtsn[hidden],#fmtpv[hidden]{display:none}#fmtsn .sn{display:flex;gap:3px}#fmtsn .sn button:first-child{flex:1;text-align:left;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.bubble a{color:#93c5fd}.bubble s{opacity:.7}
 .owner-star{position:relative;cursor:help;display:inline-block;animation:twinkle 2.4s infinite}
 .owner-star::after{content:attr(data-tip);position:absolute;bottom:130%;left:50%;transform:translate(-50%,6px) scale(.8);background:#000;border:1px solid var(--bd);padding:3px 7px;border-radius:4px;font-size:10px;color:var(--tx);white-space:nowrap;opacity:0;pointer-events:none;transition:.18s}
 .owner-star:hover::after{opacity:1;transform:translate(-50%,0) scale(1)}
@@ -414,9 +414,37 @@ select{width:100%;padding:8px;background:#000;color:var(--tx);border:2px solid v
 <div class="pulse"></div>
 <div id="scrim"></div>
 
+<div id="lock" role="dialog" aria-modal="true" aria-label="wolfchat lock">
+  <div class="lk-shake" id="lkShake">
+    <canvas id="lkFx"></canvas>
+    <div class="lk-glow"></div>
+    <div class="lk-stage">
+      <div class="lk-logo">wolfchat<span>.</span></div>
+      <div class="lk-sub" id="lkSub">waking up...</div>
+      <div class="lk-wrap" id="lkWrap">
+        <div class="lk-ring"></div><div class="lk-ring r2"></div>
+        <div class="lk-grid" id="lkGrid"><svg class="lk-svg" id="lkSvg"><polyline id="lkLine" points=""/><line id="lkLive" x1="0" y1="0" x2="0" y2="0"/></svg></div>
+      </div>
+      <div class="lk-pips" id="lkPips" hidden></div>
+      <div class="lk-msg" id="lkMsg"></div>
+      <div class="lk-count" id="lkCount"></div>
+      <button id="lkBtn" hidden>retry</button>
+      <button id="lkSkip" hidden>not now</button>
+    </div>
+  </div>
+</div>
+<script>setTimeout(function(){if(window.__lkOk)return;var s=document.getElementById("lkSub");if(s)s.textContent="couldn't load. check your connection and refresh";},12000);</script>
+
+<div id="dim"></div>
+<div id="down" role="alert" aria-live="polite">
+  <div class="dn-in"><h1 id="dnTitle"></h1><ul id="dnList"></ul></div>
+  <div id="dnOwner" hidden><button id="dnUnlock">unlock site</button><button id="dnOthers">lock for others instead</button></div>
+  <button id="dnDot" hidden title="log in">·</button>
+</div>
+
 <div class="app">
   <header>
-    <div style="display:flex;gap:10px;align-items:center"><button id="menuBtn">☰</button><b class="logo">wolfchat<span>.</span></b></div>
+    <div style="display:flex;gap:10px;align-items:center"><button id="menuBtn">☰</button><b class="logo">wolfchat<span>.</span></b><small id="lockedTag" hidden>locked</small></div>
     <div class="hr"><div id="connEl" class="conn" title="checking connection..."></div></div>
   </header>
   <div class="body"><div id="side"><nav id="rooms"></nav><div id="ubar"><div id="ubMain" tabindex="0" role="button" title="your profile"><span class="ubav"><img id="ubAv" alt=""><img id="ubDecor" class="decor" alt="" hidden><i id="ubDot" class="dot"></i></span><span class="ubtx"><b id="ubName"></b><small id="ubSt"></small></span></div><button id="gear" title="settings">⚙️</button></div></div><div class="col">
@@ -441,6 +469,7 @@ select{width:100%;padding:8px;background:#000;color:var(--tx);border:2px solid v
     <button class="tab" data-tab="games">games</button>
     <button class="tab" data-tab="updates">updates</button>
     <button class="tab" data-tab="account">account</button>
+    <button class="tab" data-tab="protection" id="tabProt" hidden>protection</button>
   </nav><button id="closePanel" title="close (esc)">✕</button></div><div class="scont"><div class="ph"><b>settings</b></div>
 
   <section class="tc active" id="tab-music">
@@ -566,6 +595,37 @@ select{width:100%;padding:8px;background:#000;color:var(--tx);border:2px solid v
     <h3 style="margin-top:20px">account</h3>
     <div class="box" id="acctMail"></div>
     <button class="wide" id="logoutBtn">log out</button>
+  </section>
+
+  <section class="tc" id="tab-protection">
+    <h3>protection</h3>
+    <div id="prLock">🔒</div>
+    <div class="box" id="prStat"></div>
+    <button class="wide" id="prSet">set lock</button>
+    <button class="wide" id="prToggle" hidden>turn lock off</button>
+    <button class="wide" id="prReset" hidden>reset lock</button>
+    <div class="box">the lock shows every time the tab loads, for everyone including you. 10 wrong tries = 5 minute wait, then the tries come back. changing, resetting or toggling the lock also refills everyone's tries.<br><br>reset = remove the lock completely and start over. if you ever forget the pattern, delete the <b>siteLock</b> node in the firebase console.</div>
+    <h3 style="margin-top:22px">site lockdown</h3>
+    <div class="box" id="dnStat"></div>
+    <label>title shown on the black screen</label>
+    <input type="text" id="dnTitleIn" maxlength="140" placeholder="wolfchat is currently undergoing maintenance.">
+    <label>description <span style="opacity:.6">(each line becomes a bullet)</span></label>
+    <textarea id="dnDescIn" maxlength="600" placeholder="we are working on the servers. est: 12 minutes."></textarea>
+    <div class="row"><button id="dnAll">lock for all</button><button id="dnOth">lock for others</button></div>
+    <button class="wide" id="dnSave">save text</button>
+    <button class="wide" id="dnOff" hidden>unlock site</button>
+    <div class="box"><b>lock for all</b>: nobody gets in, including you (you keep an unlock button on the black screen).<br><b>lock for others</b>: everyone else sees the black screen. you still get in, the tab is dimmed and "locked" shows next to the logo. changes hit open tabs instantly.</div>
+    <details class="box"><summary>firebase rules needed (one time)</summary>
+      <pre>"siteLock": {
+  ".read": true,
+  ".write": "auth != null &amp;&amp; root.child('uidMap').child(auth.uid).val() === 'wolf'"
+},
+"siteDown": {
+  ".read": true,
+  ".write": "auth != null &amp;&amp; root.child('uidMap').child(auth.uid).val() === 'wolf'"
+}</pre>
+      add this next to your other rules (inside "rules"). the lock must be readable before anyone logs in, but only wolf can change it.
+    </details>
   </section>
 
   <section class="tc" id="tab-updates">
@@ -729,7 +789,7 @@ const PKEY = pkey(ACTIVE);
 const accIds = () => { try { return JSON.parse(localStorage.getItem("wc_accts")) || []; } catch { return []; } };
 const saveAccs = l => localStorage.setItem("wc_accts", JSON.stringify([...new Set(l)]));
 const accProfile = id => { try { return JSON.parse(localStorage.getItem(pkey(id))); } catch { return null; } };
-const switchTo = id => { localStorage.setItem("wc_active", id); location.reload(); };
+const switchTo = id => { localStorage.setItem("wc_active", id); lockPass(); location.reload(); };
 const messagesRef = ref(db, "messages");
 const messagesQuery = query(messagesRef, limitToLast(100));
 const LASTFM_KEY = "c08ea0f29eef2eec1c27b99a86afe75d";
@@ -865,6 +925,7 @@ function setMe(p) {
   me = p; localStorage.setItem(PKEY, JSON.stringify(me));
   $("first").classList.remove("active");
   hydrate(); paintUbar(); start();
+  try { lockOwner(); } catch {}
 }
 
 function hydrate() {
@@ -956,7 +1017,13 @@ msg.addEventListener("input", e => {
   const off = caretOff(); tw(msg); if (off !== null) setCaret(off);
 });
 msg.addEventListener("compositionend", () => msg.dispatchEvent(new Event("input")));
-msg.addEventListener("paste", e => { e.preventDefault(); document.execCommand("insertText", false, (e.clipboardData.getData("text/plain") || "").replace(/\r?\n/g, " ")); });
+msg.addEventListener("paste", e => { e.preventDefault(); { let t = (e.clipboardData.getData("text/plain") || "").replace(/\r\n?/g, "\n");
+  if (!/```/.test(t)) { const l = detect(t), isH = l === "html" && (t.trim().length > 20 || /^\s*</.test(t));
+    /* html is kept exactly as pasted (no reformatting, tabs/indents untouched) so it copies back identical */
+    if (isH || (l && l !== "html" && t.trim().length > 20)) { const f = !isH && messy(t) ? fmt(t, l) : t; toast((f !== t ? "formatted " : "detected ") + l + " ✨"); t = "```" + l + "\n" + (isH ? f : f.replace(/\s+$/, "")) + "\n```"; } }
+  document.execCommand("insertText", false, t); } });
+/* tab key inserts a real tab (keeps indents) instead of leaving the box */
+msg.addEventListener("keydown", e => { if (e.key === "Tab" && !e.shiftKey && !e.ctrlKey && !e.altKey && !e.metaKey) { e.preventDefault(); document.execCommand("insertText", false, "\t"); } });
 const div = c => { const d = document.createElement("div"); d.className = c; return d; };
 const ecode = e => [...e].map(c => c.codePointAt(0).toString(16)).join("-");
 const GLOBAL = { title: "# global", path: "messages" };
@@ -1001,11 +1068,249 @@ function mdInto(el, text) {
     el.append(n);
   });
 }
-function richText(el, text) {
-  el.textContent = "";
-  if (text.startsWith("> ")) { el.classList.add("mdq"); text = text.slice(2); }
-  mdInto(el, text); tw(el);
+/* ===== code detect / auto-format ===== */
+const VOID = /^(area|base|br|col|embed|hr|img|input|link|meta|param|source|track|wbr|!doctype)$/i;
+function fmtCss(t) { let d = 0; return t.replace(/\s+/g, " ").replace(/\s*\{\s*/g, " {\n").replace(/;(?![^(]*\))\s*/g, ";\n").replace(/\s*\}\s*/g, "\n}\n").split("\n").map(l => l.trim()).filter(Boolean).map((l, i, a) => { if (!l.includes("{") && l[0] !== "}") l = l.replace(/^([\w-]+):\s*/, "$1: "); if (l[0] === "}") d = Math.max(0, d - 1); const r = "  ".repeat(d) + l + (l[0] === "}" && d === 0 && i < a.length - 1 ? "\n" : ""); if (l.endsWith("{")) d++; return r; }).join("\n"); }
+function fmtJs(t) {
+  let o = "", d = 0, q = "", p = 0; const nl = () => "\n" + "  ".repeat(d);
+  for (let i = 0; i < t.length; i++) {
+    const c = t[i];
+    if (q) { o += c; if (c === "\\") o += t[++i] || ""; else if (c === q) q = ""; continue; }
+    if (c === '"' || c === "'" || c === "`") { q = c; o += c; continue; }
+    if (c === "(") p++; else if (c === ")") p--;
+    if (c === "{") { d++; o += "{" + nl(); }
+    else if (c === "}") { d = Math.max(0, d - 1); o = o.replace(/\s+$/, "") + nl() + "}"; if (!/^\s*[,;).]/.test(t.slice(i + 1))) o += nl(); }
+    else if (c === ";" && p <= 0) o += ";" + nl();
+    else o += c;
+  }
+  return o.replace(/[ \t]+\n/g, "\n").replace(/\n{3,}/g, "\n\n").trim();
 }
+function fmtHtml(t) {
+  const toks = t.match(/<!--[\s\S]*?-->|<[^>]+>|[^<]+/g) || [], out = []; let d = 0; const ind = () => "  ".repeat(d);
+  for (let i = 0; i < toks.length; i++) {
+    const tk = toks[i];
+    if (tk[0] !== "<") { const x = tk.replace(/\s+/g, " ").trim(); if (x) out.push(ind() + x); continue; }
+    const m = /^<(\/?)([\w!-]+)/.exec(tk), name = m ? m[2].toLowerCase() : "";
+    if (tk.startsWith("<!--") || !m || VOID.test(name) || /\/>$/.test(tk)) { out.push(ind() + tk); continue; }
+    if (m[1]) { d = Math.max(0, d - 1); out.push(ind() + tk); continue; }
+    if (name === "script" || name === "style" || name === "pre" || name === "textarea") {
+      let j = i + 1; while (j < toks.length && !new RegExp("^</" + name + "\\b", "i").test(toks[j])) j++;
+      if (j < toks.length) {
+        const inner = toks.slice(i + 1, j).join("");
+        if (name === "pre" || name === "textarea") out.push(ind() + tk + inner + toks[j]);
+        else { out.push(ind() + tk); const f = inner.trim() ? (name === "style" ? fmtCss(inner) : (inner.length / (inner.split("\n").length) > 120 ? fmtJs(inner) : inner.replace(/^\n+|\s+$/g, "").replace(/^[ \t]{0,40}/, "") )) : ""; if (f) d++, out.push(...f.split("\n").map(l => ind() + l.trimEnd())), d--; out.push(ind() + toks[j]); }
+        i = j; continue;
+      }
+    }
+    if (toks[i + 1] && toks[i + 1][0] !== "<" && toks[i + 2] && new RegExp("^</" + name + "\\s*>", "i").test(toks[i + 2]) && toks[i + 1].trim().length < 90 && !toks[i + 1].includes("\n")) { out.push(ind() + tk + toks[i + 1].trim() + toks[i + 2]); i += 2; continue; }
+    out.push(ind() + tk); d++;
+  }
+  return out.join("\n");
+}
+function detect(t) {
+  t = (t || "").trim(); if (t.length < 8) return "";
+  if (/^[\[{]/.test(t)) { try { JSON.parse(t); return "json"; } catch {} }
+  if (/^<!doctype|^<(html|head|body|div|span|p|ul|ol|li|a|h[1-6]|section|nav|table|form|script|style|button|img|input|svg|main|header|footer|label|select|textarea)\b/i.test(t) || (/<([a-z][\w-]*)\b[^>]*>[\s\S]*<\/\1\s*>/i.test(t))) return "html";
+  const js = /\b(function|const|let|var|=>|console\.|import |export |document\.|return )/.test(t) && /[;{}()]/.test(t);
+  if (!js && /[^{};]+\{\s*[\w-]+\s*:[^{}]*\}/.test(t)) return "css";
+  if (js) return "js";
+  return "";
+}
+function messy(t) {
+  const L = t.split("\n"), ind = L.filter(l => /^\s+\S/.test(l)).length;
+  return L.length < 3 || Math.max(...L.map(l => l.length)) > 160 || (L.length > 4 && ind / L.length < .12);
+}
+function fmt(t, l) {
+  t = t.replace(/\t/g, "  "); try {
+    if (l === "json") return JSON.stringify(JSON.parse(t), null, 2);
+    if (l === "html") return fmtHtml(t); if (l === "css") return fmtCss(t); if (l === "js" || l === "javascript") return fmtJs(t);
+  } catch {} return t;
+}
+function fmtAll(t) {
+  if (/```/.test(t)) return t.replace(/```([^\n`]*)\n([\s\S]*?)```/g, (m, l, b) => { l = l.trim().toLowerCase() || detect(b); return "```" + l + "\n" + fmt(b, l).replace(/\s+$/, "") + "\n```"; });
+  const l = detect(t); return l ? "```" + l + "\n" + fmt(t, l).replace(/\s+$/, "") + "\n```" : t;
+}
+function splitMsg(v, max = 8000) {
+  const out = []; let s = v;
+  while (s.length > max && out.length < 4) {
+    let c = s.lastIndexOf("\n", max); if (c < max / 2) c = max;
+    let a = s.slice(0, c), b = s.slice(c).replace(/^\n/, "");
+    if ((a.match(/```/g) || []).length % 2) { const lang = (a.match(/```([^\n`]*)\n(?![\s\S]*```)/) || [])[1] || ""; a += "\n```"; b = "```" + lang + "\n" + b; }
+    out.push(a); s = b;
+  }
+  out.push(s.slice(0, max)); return out;
+}
+/* ===== syntax highlight + rich blocks ===== */
+const HL = {
+  html: [[/<!--[\s\S]*?-->/, "c"], [/<\/?[\w!-]+/, "t"], [/"[^"]*"|'[^']*'/, "s"], [/[\w:@-]+(?==)/, "a"]],
+  css: [[/\/\*[\s\S]*?\*\//, "c"], [/"[^"]*"|'[^']*'/, "s"], [/#[0-9a-fA-F]{3,8}\b|-?\d*\.?\d+(?:px|em|rem|%|vh|vw|s|ms)?\b/, "n"], [/[\w-]+(?=\s*:)/, "a"]],
+  js: [[/\/\/.*|\/\*[\s\S]*?\*\//, "c"], [/"(?:\\.|[^"\\\n])*"|'(?:\\.|[^'\\\n])*'|`(?:\\.|[^`\\])*`/, "s"], [/\b(?:const|let|var|function|return|if|else|for|while|class|new|import|from|export|default|async|await|true|false|null|undefined|this|typeof|try|catch|throw)\b/, "k"], [/\b\d+\.?\d*\b/, "n"]]
+};
+HL.json = HL.js; HL.javascript = HL.js; HL.jsx = HL.js; HL.ts = HL.js; HL.htm = HL.html;
+function hlInto(el, code, lang) {
+  const R = HL[lang]; if (!R) { el.textContent = code; return; }
+  const re = new RegExp(R.map(r => "(" + r[0].source + ")").join("|"), "g"); let last = 0, m;
+  while ((m = re.exec(code))) {
+    if (!m[0]) { re.lastIndex++; continue; }
+    if (m.index > last) el.append(code.slice(last, m.index));
+    const sp = document.createElement("span"); sp.className = R[m.findIndex((x, j) => j && x !== undefined) - 1][1]; sp.textContent = m[0]; el.append(sp); last = re.lastIndex;
+  }
+  el.append(code.slice(last));
+}
+const FULLHTML = new Map(); let fhId = 0;
+/* notepad-style popup showing the exact full text */
+function notepad(body) {
+  document.getElementById("npPop")?.remove();
+  const o = div(""), w = div("np"), tb = div("nptb"), mb = div("npmb"), dd = div("npdd"), ta = document.createElement("textarea"), sb = div("npsb");
+  o.id = "npPop"; dd.hidden = true; let wrapOn = false;
+  const bt = (t, c, f) => { const x = document.createElement("button"); x.type = "button"; x.textContent = t; if (c) x.className = c; if (f) x.onclick = f; return x; };
+  const sp = (t, c) => { const x = document.createElement("span"); x.textContent = t; if (c) x.className = c; return x; };
+  const esc = e => { if (e.key === "Escape") { e.stopPropagation(); close(); } };
+  const close = () => { o.remove(); document.removeEventListener("keydown", esc, true); };
+  document.addEventListener("keydown", esc, true);
+  const lines = body.split("\n").length, st = sp("Ln 1, Col 1"), note = (t) => { st.textContent = t; setTimeout(upd, 1200); };
+  function upd() { const p = ta.selectionStart || 0, b = ta.value.slice(0, p).split("\n"); st.textContent = "Ln " + b.length + ", Col " + (b[b.length - 1].length + 1); }
+  const copyAll = () => navigator.clipboard?.writeText(body).then(() => note("copied ✅"));
+  ta.value = body; ta.readOnly = true; ta.spellcheck = false; ta.setAttribute("wrap", "off");
+  ["click", "keyup", "select", "focus"].forEach(ev => ta.addEventListener(ev, upd));
+  const M = {
+    File: () => [["copy all", copyAll], ["exit", close]],
+    Edit: () => [["select all", () => { ta.focus(); ta.select(); upd(); }], ["copy selection", () => { ta.focus(); document.execCommand("copy"); }]],
+    Format: () => [[(wrapOn ? "✓ " : "") + "word wrap", () => { wrapOn = !wrapOn; ta.setAttribute("wrap", wrapOn ? "soft" : "off"); ta.style.whiteSpace = wrapOn ? "pre-wrap" : "pre"; }]]
+  };
+  let openM = null;
+  const hide = () => { dd.hidden = true; openM = null; mb.querySelectorAll("button").forEach(x => x.classList.remove("on")); };
+  Object.keys(M).forEach(k => {
+    const b = bt(k, "", e => {
+      e.stopPropagation(); if (openM === k) return hide(); hide(); openM = k; b.classList.add("on");
+      dd.replaceChildren(...M[k]().map(([t, f]) => bt(t, "", ev => { ev.stopPropagation(); hide(); f(); })));
+      dd.style.left = b.offsetLeft + "px"; dd.hidden = false;
+    });
+    mb.append(b);
+  });
+  mb.append(dd); w.addEventListener("mousedown", e => { if (!e.target.closest(".npmb")) hide(); });
+  const mx = bt("☐", "", () => { w.classList.toggle("mx"); w.style.position = w.style.left = w.style.top = w.style.margin = ""; });
+  tb.append(sp("📝", "npi"), sp("html.txt - Notepad", "npt"), mx, bt("✕", "x", close));
+  tb.addEventListener("pointerdown", e => {
+    if (e.target.closest("button") || w.classList.contains("mx")) return;
+    const r = w.getBoundingClientRect(), dx = e.clientX - r.left, dy = e.clientY - r.top;
+    w.style.position = "absolute"; w.style.margin = "0"; w.style.left = r.left + "px"; w.style.top = r.top + "px"; tb.setPointerCapture(e.pointerId);
+    tb.onpointermove = ev => { w.style.left = Math.max(80 - r.width, Math.min(innerWidth - 80, ev.clientX - dx)) + "px"; w.style.top = Math.max(0, Math.min(innerHeight - 30, ev.clientY - dy)) + "px"; };
+    tb.onpointerup = () => { tb.onpointermove = tb.onpointerup = null; };
+  });
+  sb.append(st, sp(body.length + " characters"), sp(lines + " lines"), sp("100%"), sp("Unix (LF)"), sp("UTF-8"));
+  w.append(tb, mb, ta, sb); o.append(w); o.addEventListener("mousedown", e => { if (e.target === o) close(); });
+  document.body.append(o); ta.focus(); ta.setSelectionRange(0, 0);
+}
+function codeBlock(lang, body) {
+  const l = (lang || "").trim().toLowerCase() || detect(body) || "", w = div("cb"), h = div("cbh"), n = document.createElement("small"), b = document.createElement("button");
+  n.textContent = l || "code"; b.type = "button"; b.textContent = "copy";
+  b.onclick = () => navigator.clipboard?.writeText(body).then(() => { b.textContent = "copied ✅"; setTimeout(() => b.textContent = "copy", 1200); });
+  const pre = document.createElement("pre"), c = document.createElement("code");
+  if (l === "html" || l === "htm") {
+    /* html is always minimized: a few preview lines + "view html" (notepad popup). full text lives in FULLHTML so copying gives it back exactly */
+    const id = "h" + (++fhId); FULLHTML.set(id, body); w.dataset.k = id; w.classList.add("min");
+    const L = body.split("\n"), pv = L.slice(0, 3).map(x => x.length > 90 ? x.slice(0, 90) + "…" : x).join("\n");
+    n.textContent = "html · " + L.length + (L.length === 1 ? " line" : " lines");
+    hlInto(c, pv, l); pre.append(c);
+    if (L.length > 3) { const d = document.createElement("div"); d.className = "dim"; d.textContent = "… " + (L.length - 3) + " more line" + (L.length - 3 === 1 ? "" : "s"); pre.append(d); }
+    const v = document.createElement("button"); v.type = "button"; v.textContent = "view html"; v.onclick = () => notepad(body);
+    h.append(n, v, b);
+  } else { hlInto(c, body, l); pre.append(c); h.append(n, b); }
+  w.append(h, pre); return w;
+}
+/* copying anything that touches a minimized html block gives the full original html, not the preview */
+document.addEventListener("copy", e => {
+  const s = getSelection(); if (!s || s.isCollapsed || !s.rangeCount) return;
+  const r = s.getRangeAt(0); if (![...document.querySelectorAll(".cb.min")].some(x => r.intersectsNode(x))) return;
+  const a = r.commonAncestorContainer, one = (a.nodeType === 1 ? a : a.parentElement)?.closest(".cb.min"); let text;
+  if (one) text = FULLHTML.get(one.dataset.k) ?? "";
+  else {
+    const tmp = document.createElement("div"); tmp.style.cssText = "position:fixed;left:-99999px;top:0;width:800px;white-space:pre-wrap"; tmp.append(r.cloneContents()); document.body.append(tmp);
+    tmp.querySelectorAll(".cb.min").forEach(x => { const f = document.createDocumentFragment(); if (x.previousSibling) f.append("\n"); f.append(FULLHTML.get(x.dataset.k) ?? ""); if (x.nextSibling) f.append("\n"); x.replaceWith(f); });
+    text = tmp.innerText; tmp.remove();
+  }
+  e.clipboardData.setData("text/plain", text); e.preventDefault();
+});
+const kind = l => /^>\s?/.test(l) ? "q" : /^#{1,3}\s/.test(l) ? "h" : /^\s*(?:[-*]|\d+\.)\s/.test(l) ? "l" : "p";
+function mdBlocks(el, text) {
+  const L = text.split("\n"); let i = 0;
+  while (i < L.length) {
+    const k = kind(L[i]); let j = i + 1; if (k !== "h") while (j < L.length && kind(L[j]) === k) j++;
+    const g = L.slice(i, j); i = j;
+    if (k === "p") { const s = document.createElement("span"); mdInto(s, g.join("\n")); el.append(s); }
+    else if (k === "q") { const d = div("mdq"); mdInto(d, g.map(x => x.replace(/^>\s?/, "")).join("\n")); el.append(d); }
+    else if (k === "h") { const d = div("mdh h" + g[0].match(/^#+/)[0].length); mdInto(d, g[0].replace(/^#+\s/, "")); el.append(d); }
+    else { const d = div("mdl"); g.forEach(x => { const r = div(""); mdInto(r, x.trim().replace(/^[-*]\s/, "• ")); d.append(r); }); el.append(d); }
+  }
+}
+function clampEl(el) {
+  if (!el.closest || !el.classList.contains("text")) return;
+  requestAnimationFrame(() => {
+    if (!el.isConnected || !el.closest(".bubble") || el.scrollHeight <= 340) return;
+    el.classList.add("clamp"); const b = document.createElement("button"); b.type = "button"; b.className = "more"; b.textContent = "show more ▾";
+    b.onclick = () => { const c = el.classList.toggle("clamp"); b.textContent = c ? "show more ▾" : "show less ▴"; }; el.after(b);
+  });
+}
+function richText(el, text) {
+  el.textContent = ""; el.classList.remove("clamp");
+  if (text.includes("```")) {
+    const P = text.split(/```([^\n`]*)\n?([\s\S]*?)```/g);
+    for (let i = 0; i < P.length; i += 3) {
+      if (P[i]) mdBlocks(el, P[i].replace(/^\n|\n$/g, ""));
+      if (i + 2 < P.length) el.append(codeBlock(P[i + 1], P[i + 2].replace(/\n$/, "")));
+    }
+  } else mdBlocks(el, text);
+  tw(el); clampEl(el);
+}
+/* ===== multi-line edit ===== */
+function editMsg(key, m) {
+  const o = div(""), bx = div(""), r = div(""), ta = document.createElement("textarea");
+  o.style.cssText = "position:fixed;inset:0;background:rgba(0,0,0,.7);z-index:600;display:flex;align-items:center;justify-content:center";
+  bx.style.cssText = "width:min(640px,94vw);background:var(--bg);border:2px solid var(--bd);padding:12px;display:flex;flex-direction:column;gap:8px";
+  ta.value = m.text; ta.style.cssText = "height:300px;resize:vertical;background:#000;color:var(--tx);border:1px solid var(--bd);font:12px ui-monospace,Menlo,Consolas,monospace;padding:8px;white-space:pre;tab-size:4";
+  ta.onkeydown = e => { if (e.key === "Tab") { e.preventDefault(); document.execCommand("insertText", false, "\t"); } if (e.key === "Escape") o.remove(); };
+  r.style.cssText = "display:flex;gap:6px;justify-content:flex-end";
+  const B = (t, f) => { const b = document.createElement("button"); b.textContent = t; b.onclick = f; return b; };
+  r.append(B("✨ format", () => { ta.value = fmtAll(ta.value); }), B("cancel", () => o.remove()), B("save", () => {
+    const v = ta.value.replace(/\s+$/, "").slice(0, 8000);
+    if (v.trim() && v !== m.text) update(ref(db, `${room.path}/${key}`), { text: v, edited: true }); o.remove();
+  }));
+  bx.append(ta, r); o.append(bx); document.body.append(o); ta.focus();
+}
+/* ===== toolbar, shortcuts, preview, snippets ===== */
+const fbar = div(""), pv = div(""), pt = div("text"), sp = div(""), ins = t => document.execCommand("insertText", false, t);
+fbar.id = "fmtbar"; pv.id = "fmtpv"; pv.hidden = true; pv.append(pt); sp.id = "fmtsn"; sp.hidden = true;
+const selTxt = () => { const s = getSelection(); return s.rangeCount && msg.contains(s.anchorNode) ? s.toString() : ""; };
+const back = n => { const s = getSelection(); for (let i = 0; i < n; i++) s.modify("move", "backward", "character"); };
+function wrap(l, r) { msg.focus(); const s = selTxt(); ins(l + s + r); if (!s) back(r.length); }
+function formatBox() {
+  msg.focus(); const s = selTxt();
+  if (s) ins(fmtAll(s)); else { const v = msg.value, f = fmtAll(v); if (f === v) return toast("no code found to format"); msg.value = f; caretEnd(); msg.dispatchEvent(new Event("input")); }
+  toast("formatted ✨");
+}
+const updPrev = () => { if (!pv.hidden) richText(pt, msg.value || "…"); };
+function togglePrev() { pv.hidden = !pv.hidden; sp.hidden = true; updPrev(); }
+let SN = []; try { SN = JSON.parse(localStorage.getItem("wc_snips")) || []; } catch {}
+const saveSn = () => { try { localStorage.setItem("wc_snips", JSON.stringify(SN)); } catch { toast("snippet too big for storage"); } };
+function drawSn() {
+  sp.replaceChildren(); const a = document.createElement("button"); a.textContent = "+ save current text";
+  a.onclick = () => { const t = msg.value; if (!t.trim()) return toast("type something first"); const n = (prompt("snippet name") || "").trim().slice(0, 30); if (!n) return; SN.unshift({ n, t }); SN = SN.slice(0, 30); saveSn(); drawSn(); };
+  sp.append(a);
+  SN.forEach((s, i) => { const r = div("sn"), b = document.createElement("button"), x = document.createElement("button"); b.textContent = s.n; b.onclick = () => { msg.focus(); ins(s.t); sp.hidden = true; }; x.textContent = "✕"; x.onclick = () => { SN.splice(i, 1); saveSn(); drawSn(); }; r.append(b, x); sp.append(r); });
+}
+function toggleSnips() { sp.hidden = !sp.hidden; pv.hidden = true; if (!sp.hidden) drawSn(); }
+const TB = [["B", () => wrap("**", "**"), "bold (ctrl+b)"], ["I", () => wrap("*", "*"), "italic (ctrl+i)"], ["U", () => wrap("__", "__"), "underline (ctrl+u)"], ["S", () => wrap("~~", "~~"), "strikethrough"],
+  ["</>", () => selTxt().includes("\n") ? wrap("```\n", "\n```") : wrap("`", "`"), "code (ctrl+e)"], ["{ }", () => { msg.focus(); const s = selTxt(); ins("```\n" + s + "\n```"); if (!s) back(4); }, "code block"],
+  ["❝", () => { msg.focus(); const s = selTxt(); ins(s ? s.replace(/^/gm, "> ") : "> "); }, "quote"], ["🔗", () => { msg.focus(); ins("[" + (selTxt() || "text") + "](https://)"); }, "link"],
+  ["✨", formatBox, "auto-format code (ctrl+shift+f)"], ["👁", togglePrev, "preview"], ["📎", toggleSnips, "snippets"]];
+TB.forEach(([t, f, ti]) => { const b = document.createElement("button"); b.type = "button"; b.textContent = t; b.title = ti; b.onmousedown = e => e.preventDefault(); b.onclick = f; fbar.append(b); });
+msg.parentElement.append(fbar, pv, sp);
+msg.addEventListener("input", updPrev);
+msg.addEventListener("keydown", e => {
+  if (!(e.ctrlKey || e.metaKey) || e.altKey) return; const k = e.key.toLowerCase();
+  if (e.shiftKey && k === "f") { e.preventDefault(); formatBox(); } else if (!e.shiftKey && k in { b: 0, i: 1, u: 2, e: 4 }) { e.preventDefault(); TB[{ b: 0, i: 1, u: 2, e: 4 }[k]][1](); }
+});
 
 function paint(el) {
   const p = profiles[el.dataset.name] || {};
@@ -1050,7 +1355,7 @@ function fill(el, key, m) {
 }
 
 const react = (key, h) => { const r = ref(db, `${room.path}/${key}/reactions/${h}/${me.name}`); msgs[key]?.reactions?.[h]?.[me.name] ? remove(r) : set(r, true); };
-const edit = (key, m) => { const v = prompt("edit message", m.text); if (v && v.trim() && v !== m.text) update(ref(db, `${room.path}/${key}`), { text: v.trim().slice(0, 500), edited: true }); };
+const edit = (key, m) => editMsg(key, m);
 const pin = (key, m) => { const r = ref(db, `pins/${tkey()}/${key}`); pins[key] ? remove(r) : set(r, { name: m.name, text: plainT(m.text).slice(0, 80) }); };
 function quick(b, key) {
   b.querySelector(".quick")?.remove();
@@ -1086,9 +1391,10 @@ function addMessage(key, m) {
 }
 
 function send() {
-  const v = msg.value.trim(); if (!v) return;
-  const o = { name: me.name, text: v.slice(0, 500), ts: Date.now() }; if (replyTo) o.reply = replyTo;
+  const v = msg.value.replace(/^\s*\n/, "").replace(/\s+$/, ""); if (!v.trim()) return;
+  const parts = splitMsg(v), o = { name: me.name, text: parts[0], ts: Date.now() }; if (replyTo) o.reply = replyTo;
   push(ref(db, room.path), o).catch(() => toast("message failed to send"));
+  parts.slice(1).forEach((c, i) => push(ref(db, room.path), { name: me.name, text: c, ts: o.ts + i + 1 })); if (parts.length > 1) toast("sent as " + parts.length + " messages");
   if (room.dm) update(ref(db), { [`dmIndex/${me.name}/${room.dm}`]: o.ts, [`dmIndex/${room.dm}/${me.name}`]: o.ts });
   me.messageCount = (me.messageCount || 0) + 1;
   localStorage.setItem(PKEY, JSON.stringify(me));
@@ -1815,7 +2121,7 @@ $("renameBtn").onclick = async () => {
     if (Object.keys(up).length) await update(ref(db), up);
     await set(ref(db, "uidMap/" + auth.currentUser.uid), n);
     await remove(ref(db, "profiles/" + old));
-    me = np; await pushProfile(); location.reload();
+    me = np; await pushProfile(); lockPass(); location.reload();
   } catch (e) { console.error(e); toast("couldn't change username", 3000); }
 };
 
@@ -2029,7 +2335,7 @@ $("logoutBtn").onclick = $("logout2").onclick = () => {
   localStorage.removeItem(PKEY); localStorage.removeItem("wc_prev");
   const rest = accIds().filter(i => i !== ACTIVE && accProfile(i)?.name);
   saveAccs(rest); localStorage.setItem("wc_active", rest[0] || "main");
-  signOut(auth).finally(() => location.reload());
+  signOut(auth).finally(() => { lockPass(); location.reload(); });
 };
 
 async function gate(u) {
@@ -2122,7 +2428,7 @@ function cmdUi() {
   ctEl.replaceChildren(...["all", ...Object.keys(TABS)].map(t => { const b = mk("button", "", t === curTab ? "on" : "", t); b.onmousedown = e => { e.preventDefault(); curTab = t; sel = 0; cmdUi(); }; return b; }));
   clEl.replaceChildren(...(list.length ? list.map((k, i) => { const d = mk("div", "", i === sel ? "on" : "", `<b>/${k}</b><small>${CM[k][1]}</small>`); d.onmousedown = e => { e.preventDefault(); msg.value = "/" + k + " "; caretEnd(); cmdUi(); }; return d; }) : [mk("div", "", "", "<small>no commands here</small>")]));
   clEl.children[sel]?.scrollIntoView({ block: "nearest" });
-  const n = v.length; cc.textContent = 500 - n; cc.classList.toggle("on", n > 400); cc.classList.toggle("over", n > 500);
+  const n = v.length; cc.textContent = 8000 - n; cc.classList.toggle("on", n > 6500); cc.classList.toggle("over", n > 8000);
 }
 const sb2 = mk("button", "slashBtn"); sb2.textContent = "/"; sb2.title = "commands"; sb2.onclick = () => { msg.value = "/"; cmdUi(); msg.focus(); caretEnd(); }; $("send").before(sb2);
 msg.addEventListener("input", () => { cmdUi(); try { localStorage.setItem("wc_draft_" + tkey(), msg.value); } catch {} });
@@ -3082,7 +3388,8 @@ const EMBEDS=[
   {id:"blackjack",icon:"🂡",name:"blackjack",sub:"classic 21",url:["games/blackjack/index.html","games/blackjack/blackjack.html","games/blackjack/Blackjack.html"]},
   {id:"tablesoccer",icon:"⚽",name:"table soccer",sub:"foosball",url:["games/table%20soccer/index.html","games/table%20soccer/table%20soccer.html","games/table%20soccer/Table%20Soccer.html","games/table%20soccer/tablesoccer.html","games/table%20soccer/table-soccer.html"]},
   {id:"unohtml",icon:"🃏",name:"uno",sub:"classic card game",url:"games/uno/uno.html"},
-  {id:"unoflip",icon:"🔄",name:"uno flip",sub:"card game · flip side",url:"games/uno%20flip/uno-flip.html"}
+  {id:"unoflip",icon:"🔄",name:"uno flip",sub:"card game · flip side",url:"games/uno%20flip/uno-flip.html"},
+  {id:"battleship",icon:"🚢",name:"battleship",sub:"sink the fleet · online 1v1",url:"games/battleship/battleship.html"}
 ];
 let gmTimer=0,gmCurEmbed=null,gmWatchT=0,gmPosted=0,gmCurUrl="";
 const gmPaint=()=>{const B=J(K("wc_best"),{}),g=$("gmGrid");g.replaceChildren();
@@ -3364,6 +3671,337 @@ fill = function (el, key, m) {
   } catch {}
 };
 }
+/* ===================================================================
+   wolflock: 9-dot pattern lock. the lock lives in firebase at "siteLock"
+   (hash only, never the pattern) so it applies to everyone. only wolf can write it.
+   =================================================================== */
+const lockEl = $("lock"), lkGrid = $("lkGrid"), lkLine = $("lkLine"), lkLive = $("lkLive");
+const lkSub = $("lkSub"), lkMsg = $("lkMsg"), lkCount = $("lkCount"), lkPips = $("lkPips");
+const lkDots = [], AK = "wc_lock_att", MAXTRY = 10, WAIT = 5 * 60 * 1000;
+for (let i = 0; i < 9; i++) { const d = document.createElement("i"); d.className = "lk-dot"; d.style.setProperty("--i", i); d.innerHTML = '<s class="halo"></s><b class="core"></b>'; lkGrid.append(d); lkDots.push(d); }
+const lkPipEls = Array.from({ length: MAXTRY }, () => { const p = document.createElement("i"); lkPips.append(p); return p; });
+
+/* ---- sounds (respects the app's mute switch) ---- */
+let LAC;
+const lkAudio = () => { try { LAC = LAC || new (window.AudioContext || window.webkitAudioContext)(); if (LAC.state === "suspended") LAC.resume(); } catch {} return LAC; };
+function tone(f, t0, d, type = "sine", v = .08) {
+  const a = lkAudio(); if (!a || localStorage.getItem("wc_mute") === "1") return;
+  const o = a.createOscillator(), g = a.createGain(), t = a.currentTime + t0;
+  o.type = type; o.frequency.setValueAtTime(f, t);
+  g.gain.setValueAtTime(.0001, t); g.gain.exponentialRampToValueAtTime(v, t + .02); g.gain.exponentialRampToValueAtTime(.0001, t + d);
+  o.connect(g).connect(a.destination); o.start(t); o.stop(t + d + .05);
+}
+const sOk = () => { tone(659, 0, .2, "sine", .09); tone(880, .11, .2, "sine", .09); tone(1318, .22, .55, "sine", .07); };
+const sBad = () => { tone(150, 0, .22, "sawtooth", .05); tone(105, .13, .3, "sawtooth", .05); };
+const vib = p => { try { navigator.vibrate && navigator.vibrate(p); } catch {} };
+
+/* ---- floating particles + success burst ---- */
+const fx = $("lkFx"), cx = fx.getContext("2d");
+let FW = 0, FH = 0, FD = 1, FP = [], FB = [], fxRun = false, fxCol = "#3b82f6";
+function fxSize() { FD = Math.min(devicePixelRatio || 1, 2); FW = fx.width = Math.floor(innerWidth * FD); FH = fx.height = Math.floor(innerHeight * FD); }
+function fxSeed() { FP = Array.from({ length: 55 }, () => ({ x: Math.random() * FW, y: Math.random() * FH, vx: (Math.random() - .5) * .25 * FD, vy: -(.15 + Math.random() * .45) * FD, r: (.8 + Math.random() * 2) * FD, a: .15 + Math.random() * .5, ph: Math.random() * 6.28 })); }
+function fxLoop(t) {
+  if (!fxRun) return;
+  cx.clearRect(0, 0, FW, FH); cx.globalCompositeOperation = "lighter"; cx.fillStyle = fxCol; cx.shadowColor = fxCol; cx.shadowBlur = 10 * FD;
+  for (const p of FP) {
+    p.x += p.vx + Math.sin(t / 1500 + p.ph) * .2 * FD; p.y += p.vy;
+    if (p.y < -10) p.y = FH + 10; if (p.x < -10) p.x = FW + 10; if (p.x > FW + 10) p.x = -10;
+    cx.globalAlpha = p.a * (.6 + .4 * Math.sin(t / 700 + p.ph)); cx.beginPath(); cx.arc(p.x, p.y, p.r, 0, 6.283); cx.fill();
+  }
+  for (let i = FB.length - 1; i >= 0; i--) {
+    const b = FB[i]; b.x += b.vx; b.y += b.vy; b.vx *= .97; b.vy = b.vy * .97 + .04 * FD; b.l--;
+    if (b.l <= 0) { FB.splice(i, 1); continue; }
+    cx.globalAlpha = Math.min(1, b.l / 40); cx.beginPath(); cx.arc(b.x, b.y, b.r, 0, 6.283); cx.fill();
+  }
+  requestAnimationFrame(fxLoop);
+}
+function fxStart() { if (fxRun) return; fxSize(); fxSeed(); fxRun = true; requestAnimationFrame(fxLoop); }
+addEventListener("resize", () => { if (fxRun) { fxSize(); fxSeed(); } });
+function burst() {
+  const r = lkGrid.getBoundingClientRect(), x = (r.left + r.width / 2) * FD, y = (r.top + r.height / 2) * FD;
+  for (let i = 0; i < 90; i++) { const a = Math.random() * 6.283, s = (2 + Math.random() * 8) * FD; FB.push({ x, y, vx: Math.cos(a) * s, vy: Math.sin(a) * s, r: (1 + Math.random() * 2.5) * FD, l: 50 + Math.random() * 60 }); }
+  const sh = document.createElement("em"); sh.className = "lk-shock"; $("lkWrap").append(sh); setTimeout(() => sh.remove(), 1200);
+}
+
+/* ---- tiny helpers ---- */
+const say = (el, t) => { el.textContent = t; el.classList.remove("pop"); void el.offsetWidth; el.classList.add("pop"); };
+const setState = s => { lockEl.dataset.s = s; fxCol = getComputedStyle(lockEl).getPropertyValue("--lk").trim() || "#3b82f6"; };
+function lkShake(cls = "shake") { const s = $("lkShake"); s.classList.remove("shake", "nudge"); void s.offsetWidth; s.classList.add(cls); }
+function inertApp(on) { [...document.body.children].forEach(el => { if (el.id === "lock" || el.tagName === "SCRIPT") return; if (on) { if (!el.inert) { el.inert = true; el.dataset.lki = 1; } } else if (el.dataset.lki) { el.inert = false; delete el.dataset.lki; } }); }
+const ctr = i => { const d = lkDots[i]; return [d.offsetLeft + d.offsetWidth / 2, d.offsetTop + d.offsetHeight / 2]; };
+const lkErr = e => toast(/permission/i.test(e && (e.code || e.message || "")) ? "firebase blocked it. add the siteLock rule (settings > protection)" : "couldn't save the lock", 5000);
+
+/* ---- hashing: pbkdf2 (slow on purpose), tiny fallback if crypto.subtle is missing ---- */
+async function hashPat(p, salt, iter, alg) {
+  const s = String(p), enc = new TextEncoder();
+  if (alg !== "fb" && crypto.subtle) {
+    const k = await crypto.subtle.importKey("raw", enc.encode(s), "PBKDF2", false, ["deriveBits"]);
+    const b = await crypto.subtle.deriveBits({ name: "PBKDF2", hash: "SHA-256", salt: enc.encode(salt), iterations: iter || 100000 }, k, 256);
+    return [...new Uint8Array(b)].map(x => x.toString(16).padStart(2, "0")).join("");
+  }
+  let out = "";
+  for (let seed = 0; seed < 4; seed++) {
+    let h1 = 0xdeadbeef ^ seed, h2 = 0x41c6ce57 ^ seed; const t = salt + "|" + s;
+    for (let r = 0; r < 2000; r++) for (let i = 0; i < t.length; i++) { const c = t.charCodeAt(i); h1 = Math.imul(h1 ^ c, 2654435761); h2 = Math.imul(h2 ^ c, 1597334677); }
+    h1 = Math.imul(h1 ^ (h1 >>> 16), 2246822507) ^ Math.imul(h2 ^ (h2 >>> 13), 3266489909); h2 = Math.imul(h2 ^ (h2 >>> 16), 2246822507) ^ Math.imul(h1 ^ (h1 >>> 13), 3266489909);
+    out += (h2 >>> 0).toString(16).padStart(8, "0") + (h1 >>> 0).toString(16).padStart(8, "0");
+  }
+  return out;
+}
+
+/* ---- attempts: stored on this device, tied to the lock version so any change refills them ---- */
+const att = () => { try { const a = JSON.parse(localStorage.getItem(AK)); if (a && L.cfg && a.v === L.cfg.v) return a; } catch {} return { v: L.cfg && L.cfg.v, n: 0, until: 0 }; };
+const putAtt = a => { try { localStorage.setItem(AK, JSON.stringify(a)); } catch {} };
+function paintPips() {
+  const n = att().n; lkPips.hidden = L.mode !== "verify";
+  lkPipEls.forEach((p, i) => p.classList.toggle("used", i >= MAXTRY - n));
+  lkPips.classList.toggle("low", MAXTRY - n <= 3);
+}
+
+/* ---- drawing the pattern ---- */
+function lkDraw() {
+  const pts = L.path.map(ctr);
+  lkLine.setAttribute("points", pts.map(p => p.join(",")).join(" "));
+  if (L.drawing && L.pt && pts.length) { const l = pts[pts.length - 1]; lkLive.setAttribute("x1", l[0]); lkLive.setAttribute("y1", l[1]); lkLive.setAttribute("x2", L.pt.x); lkLive.setAttribute("y2", L.pt.y); lkLive.style.opacity = 1; }
+  else lkLive.style.opacity = 0;
+}
+function lkClear() { L.path = []; lkDots.forEach(d => d.classList.remove("on")); lkDraw(); }
+function lkAdd(i) {
+  if (L.path.includes(i)) return;
+  const last = L.path[L.path.length - 1];
+  if (last !== undefined) { // dragging across a dot picks it up too, like android
+    const r1 = last / 3 | 0, c1 = last % 3, r2 = i / 3 | 0, c2 = i % 3;
+    if ((r1 + r2) % 2 === 0 && (c1 + c2) % 2 === 0) { const m = ((r1 + r2) / 2) * 3 + (c1 + c2) / 2; if (m !== i && !L.path.includes(m)) lkAdd(m); }
+  }
+  L.path.push(i); lkDots[i].classList.add("on");
+  const r = document.createElement("em"); r.className = "rip"; lkDots[i].append(r); setTimeout(() => r.remove(), 800); vib(8);
+}
+const lkLocal = e => { const r = lkGrid.getBoundingClientRect(); return { x: e.clientX - r.left, y: e.clientY - r.top }; };
+function lkHit() {
+  const R = lkDots[0].offsetWidth * .36;
+  for (let i = 0; i < 9; i++) { const c = ctr(i); if (Math.hypot(L.pt.x - c[0], L.pt.y - c[1]) < R) lkAdd(i); }
+}
+lkGrid.addEventListener("pointerdown", e => {
+  if (L.busy || L.drawing || !lockEl.classList.contains("ready")) return;
+  e.preventDefault(); lkAudio(); try { lkGrid.setPointerCapture(e.pointerId); } catch {}
+  lkClear(); L.drawing = true; L.pt = lkLocal(e); lkHit(); lkDraw();
+  say(lkMsg, "");
+});
+lkGrid.addEventListener("pointermove", e => { if (!L.drawing) return; L.pt = lkLocal(e); lkHit(); lkDraw(); });
+const lkEnd = () => { if (!L.drawing) return; L.drawing = false; L.pt = null; lkDraw(); lkSubmit(); };
+lkGrid.addEventListener("pointerup", lkEnd); lkGrid.addEventListener("pointercancel", lkEnd);
+lockEl.addEventListener("contextmenu", e => e.preventDefault());
+
+/* ---- outcomes ---- */
+function lkWrong(text, ms = 950) {
+  L.busy = true; setState("bad"); sBad(); lkShake(); vib([70, 40, 70]); say(lkMsg, text);
+  return new Promise(r => setTimeout(() => { lkClear(); setState(""); r(); }, ms));
+}
+function lkWin(kind) {
+  L.busy = true; setState("ok"); sOk(); burst(); vib(30);
+  say(lkSub, kind === "enter" ? "welcome back" : "lock saved"); say(lkMsg, "");
+  if (kind === "enter") {
+    setTimeout(() => lockEl.classList.add("fadeblack"), 1000); // fade the tab to black...
+    setTimeout(openApp, 1950);                                  // ...then wolfchat fades in
+  } else setTimeout(() => hideLock(), 1500);
+}
+function hideLock() {
+  lockEl.classList.add("gone"); inertApp(false); clearInterval(L.timer);
+  setTimeout(() => { if (lockEl.classList.contains("gone")) fxRun = false; }, 1200);
+}
+function openApp() {
+  L.unlocked = true; document.body.classList.add("wc-reveal"); hideLock();
+  setTimeout(() => document.body.classList.remove("wc-reveal"), 1800);
+  maybePrompt();
+}
+function goOut(until) {
+  lockEl.classList.add("out"); L.busy = true; setState("bad"); say(lkSub, "too many attempts"); say(lkMsg, "the door is locked for a bit");
+  const tick = () => {
+    const left = until - Date.now();
+    if (left <= 0) {
+      clearInterval(L.timer); putAtt({ v: L.cfg.v, n: 0, until: 0 }); lockEl.classList.remove("out");
+      L.busy = false; setState(""); lkClear(); paintPips(); lkCount.textContent = ""; say(lkSub, "draw your pattern to enter"); say(lkMsg, "you can try again"); return;
+    }
+    const s = Math.ceil(left / 1000); lkCount.textContent = Math.floor(s / 60) + ":" + String(s % 60).padStart(2, "0");
+  };
+  clearInterval(L.timer); tick(); L.timer = setInterval(tick, 250);
+}
+
+async function lkVerify(p) {
+  L.busy = true;
+  let a = att();
+  if (a.until > Date.now()) { lkClear(); return goOut(a.until); }
+  if (a.until) a = { v: L.cfg.v, n: 0, until: 0 };
+  let ok = false;
+  try { ok = (await hashPat(p.join("-"), L.cfg.salt, L.cfg.iter, L.cfg.alg)) === L.cfg.hash; } catch {}
+  if (ok) { putAtt({ v: L.cfg.v, n: 0, until: 0 }); return lkWin("enter"); }
+  a.n++; if (a.n >= MAXTRY) a.until = Date.now() + WAIT;
+  putAtt(a); paintPips();
+  await lkWrong(a.until ? "wrong pattern" : "wrong pattern · " + (MAXTRY - a.n) + " attempt" + (MAXTRY - a.n === 1 ? "" : "s") + " left");
+  if (a.until) goOut(a.until); else L.busy = false;
+}
+async function lkSave(pathStr) {
+  L.busy = true;
+  try {
+    const salt = [...crypto.getRandomValues(new Uint8Array(12))].map(x => x.toString(16).padStart(2, "0")).join(""), alg = crypto.subtle ? "pbkdf2" : "fb", iter = 100000;
+    const val = { hash: await hashPat(pathStr, salt, iter, alg), salt, iter, alg, v: Date.now(), off: false, by: OWNER };
+    await set(ref(db, "siteLock"), val);
+    L.cfg = val; L.rules = false; try { localStorage.removeItem(AK); } catch {} paintProt(); lkWin("saved");
+  } catch (e) {
+    lkErr(e); L.mode = "setA"; L.first = null;
+    await lkWrong(/permission/i.test(e && (e.code || e.message || "")) ? "firebase blocked the save (see protection tab)" : "couldn't save, try again", 2200);
+    say(lkSub, "set a lock pattern · connect at least 4 dots"); L.busy = false;
+  }
+}
+async function lkSubmit() {
+  const p = L.path.slice();
+  if (p.length < 4) { L.busy = true; setState("bad"); lkShake("nudge"); say(lkMsg, "connect at least 4 dots"); setTimeout(() => { lkClear(); setState(""); L.busy = false; }, 800); return; }
+  if (L.mode === "verify") return lkVerify(p);
+  if (L.mode === "setA") {
+    L.first = p.join("-"); L.busy = true; setState("ok");
+    setTimeout(() => { lkClear(); setState(""); L.mode = "setB"; say(lkSub, "draw it again to confirm"); say(lkMsg, ""); L.busy = false; }, 650);
+    return;
+  }
+  if (p.join("-") === L.first) return lkSave(L.first);
+  L.mode = "setA"; L.first = null;
+  await lkWrong("doesn't match · start over");
+  say(lkSub, "set a lock pattern · connect at least 4 dots"); L.busy = false;
+}
+
+/* ---- showing the lock (verify at load, or setup for wolf) ---- */
+function showLock(mode, o = {}) {
+  L.mode = mode; L.first = null; L.busy = false; L.drawing = false; L.cancel = !!o.cancel;
+  clearInterval(L.timer); lkClear(); setState(""); lkCount.textContent = "";
+  lockEl.classList.remove("gone", "fadeblack", "out", "ready"); inertApp(true);
+  $("lkSkip").hidden = !o.cancel; $("lkBtn").hidden = true;
+  void lockEl.offsetWidth; lockEl.classList.add("ready"); fxStart(); paintPips();
+  if (mode === "verify") {
+    say(lkSub, "draw your pattern to enter"); say(lkMsg, "");
+    const a = att(); if (a.until > Date.now()) goOut(a.until); else if (a.until) putAtt({ v: L.cfg.v, n: 0, until: 0 });
+    paintPips();
+  } else { say(lkSub, "set a lock pattern · connect at least 4 dots"); say(lkMsg, o.note || ""); }
+}
+$("lkSkip").onclick = () => { if (L.mode === "verify") return; try { sessionStorage.setItem("wc_lock_dismiss", 1); } catch {} hideLock(); };
+document.addEventListener("keydown", e => { if (e.key === "Escape" && L.cancel && L.mode !== "verify" && !lockEl.classList.contains("gone")) $("lkSkip").click(); });
+
+/* ===================================================================
+   site lockdown: wolf can shut the whole site ("lock for all") or shut it for everyone
+   except himself ("lock for others"). state lives in firebase at "siteDown" and is
+   listened to live, so open tabs go black instantly.
+   =================================================================== */
+const D = { cfg: null, ready: false, rules: false, authKnown: false, signedIn: false, peek: false };
+const DN_TITLE = "wolfchat is currently undergoing maintenance.", DN_DESC = "we are working on the servers.";
+let dnRes; const dnReady = new Promise(r => dnRes = r);
+const dnDone = () => { if (!D.ready) { D.ready = true; dnRes(); } };
+const isOwner = () => !!me && me.name === OWNER;
+const dnMode = () => D.cfg && (D.cfg.mode === "all" || D.cfg.mode === "others") ? D.cfg.mode : "off";
+function dnInert(on) {
+  [...document.body.children].forEach(el => {
+    if (el.id === "down" || el.tagName === "SCRIPT") return;
+    if (on) { if (!el.inert) { el.inert = true; el.dataset.dki = 1; } }
+    else if (el.dataset.dki) { el.inert = false; delete el.dataset.dki; }
+  });
+}
+function dnApply() {
+  const m = dnMode(), owner = isOwner();
+  const black = m === "all" || (m === "others" && !owner);
+  if (D.peek && (D.signedIn || owner || !black)) D.peek = false;   // login peek only works while signed out
+  const show = black && !D.peek, box = $("down");
+  if (show) {
+    const c = D.cfg || {};
+    $("dnTitle").textContent = c.title || DN_TITLE;
+    const ul = $("dnList"); ul.textContent = "";
+    String(c.desc || "").split("\n").map(x => x.trim()).filter(Boolean).forEach(x => { const li = document.createElement("li"); li.textContent = x; ul.append(li); });
+    ul.hidden = !ul.children.length;
+    if (!box.classList.contains("on")) { document.querySelectorAll("audio,video").forEach(a => { try { a.pause(); } catch {} }); }
+    dnInert(true);
+  } else dnInert(false);
+  box.classList.toggle("on", show);
+  $("dnOwner").hidden = !(show && owner);
+  $("dnDot").hidden = !(show && D.authKnown && !D.signedIn);
+  const dim = m === "others" && owner;
+  $("dim").classList.toggle("on", dim); $("lockedTag").hidden = !dim;
+}
+function paintDown() {
+  const c = D.cfg, m = dnMode(), t = $("dnTitleIn"), d = $("dnDescIn");
+  if (!t.dataset.dirty) t.value = c && c.title ? c.title : DN_TITLE;
+  if (!d.dataset.dirty) d.value = c ? (c.desc || "") : DN_DESC;
+  $("dnStat").innerHTML = D.rules ? "⚠️ can't reach the lockdown settings. add the siteDown rule below in firebase."
+    : m === "all" ? "🔴 site is locked for <b>everyone</b>, including you."
+    : m === "others" ? "🟠 site is locked for <b>others</b>. only you can enter."
+    : "🟢 site is open. everyone can enter.";
+  $("dnOff").hidden = m === "off";
+}
+async function dnSet(mode, msg) {
+  const v = { mode, title: $("dnTitleIn").value.trim().slice(0, 140) || DN_TITLE, desc: $("dnDescIn").value.trim().slice(0, 600), v: Date.now(), by: OWNER };
+  try {
+    await set(ref(db, "siteDown"), v); D.cfg = v; D.rules = false;
+    $("dnTitleIn").dataset.dirty = ""; $("dnDescIn").dataset.dirty = "";
+    dnApply(); paintDown(); toast(msg);
+  } catch (e) { toast(/permission/i.test(e && (e.code || e.message || "")) ? "firebase blocked it. add the siteDown rule (settings > protection)" : "couldn't save the lockdown", 5000); }
+}
+$("dnTitleIn").oninput = e => e.target.dataset.dirty = 1;
+$("dnDescIn").oninput = e => e.target.dataset.dirty = 1;
+$("dnAll").onclick = () => { if (confirm("lock the site for everyone, including you? you'll keep an unlock button on the black screen.")) dnSet("all", "locked for all 🔒"); };
+$("dnOth").onclick = () => dnSet("others", "locked for others 🔒");
+$("dnOff").onclick = () => dnSet("off", "site unlocked 🔓");
+$("dnSave").onclick = () => dnSet(dnMode(), "text saved ✅");
+$("dnUnlock").onclick = () => dnSet("off", "site unlocked 🔓");
+$("dnOthers").onclick = () => dnSet("others", "locked for others 🔒");
+$("dnDot").onclick = () => { D.peek = true; dnApply(); };
+onValue(ref(db, "siteDown"), s => { D.cfg = s.exists() ? s.val() : null; D.rules = false; dnDone(); dnApply(); paintDown(); },
+  e => { D.rules = /permission/i.test(e && (e.code || e.message || "")); dnDone(); paintDown(); });
+onAuthStateChanged(auth, u => { D.authKnown = true; D.signedIn = !!u; dnApply(); });
+
+/* ---- boot: read the lock, then either ask for the pattern or just fade in ---- */
+const passOk = () => { try { const t = +sessionStorage.getItem("wc_lock_pass"); sessionStorage.removeItem("wc_lock_pass"); return !!t && Date.now() - t < 20000; } catch { return false; } };
+async function lockInit() {
+  window.__lkOk = true; fxStart(); $("lkBtn").hidden = true; say(lkSub, "waking up...");
+  const pass = passOk();
+  try { const s = await get(ref(db, "siteLock")); L.cfg = s.exists() ? s.val() : null; }
+  catch (e) {
+    if (/permission/i.test(e && (e.code || e.message || ""))) { L.rules = true; L.cfg = null; }
+    else { say(lkSub, "can't reach the server"); $("lkBtn").hidden = false; return; }
+  }
+  L.loaded = true; paintProt();
+  await Promise.race([dnReady, new Promise(r => setTimeout(r, 4000))]);   // know the lockdown state before revealing anything
+  if (L.cfg && L.cfg.hash && !L.cfg.off && !pass) return showLock("verify");
+  openApp();
+}
+$("lkBtn").onclick = lockInit;
+
+/* ---- wolf only: first-time prompt + settings > protection ---- */
+function maybePrompt() {
+  if (!L.unlocked || !L.loaded || typeof me === "undefined" || !me || me.name !== OWNER) return;
+  if (L.rules) { if (!L.warned) { L.warned = true; toast("lock: add the siteLock rule in firebase (settings > protection)", 6000); } return; }
+  if (L.cfg || L.prompted) return;
+  try { if (sessionStorage.getItem("wc_lock_dismiss")) return; } catch {}
+  L.prompted = true; setTimeout(() => showLock("setA", { cancel: true, note: "only you see this. everyone will need it to enter." }), 1200);
+}
+function lockOwner() { dnApply(); const o = !!me && me.name === OWNER; $("tabProt").hidden = !o; if (o) { paintProt(); maybePrompt(); } }
+function paintProt() {
+  const c = L.cfg, on = !!(c && c.hash && !c.off); let t;
+  if (L.rules) t = "⚠️ can't reach the lock settings. add the siteLock rule below in firebase.";
+  else if (!c) t = "no lock set. everyone can enter freely.";
+  else if (c.off) t = "lock is OFF. everyone enters freely.<br>your pattern is still saved, turn it back on any time.";
+  else t = "lock is ON. everyone (including you) draws the pattern when the tab loads.<br>last changed " + new Date(c.v).toLocaleString();
+  $("prStat").innerHTML = t; $("prLock").textContent = on ? "🔒" : "🔓"; $("prLock").classList.toggle("on", on);
+  $("prSet").textContent = c && c.hash ? "change lock" : "set lock";
+  $("prToggle").hidden = !(c && c.hash); $("prToggle").textContent = c && c.off ? "turn lock on" : "turn lock off";
+  $("prReset").hidden = !c;
+}
+$("prSet").onclick = () => { panelOpen(false); setTimeout(() => showLock("setA", { cancel: true, note: c0() }), 280); };
+const c0 = () => L.cfg && L.cfg.hash ? "this replaces your old pattern" : "";
+$("prToggle").onclick = async () => {
+  if (!L.cfg || !L.cfg.hash) return;
+  try { const v = { ...L.cfg, off: !L.cfg.off, v: Date.now() }; await set(ref(db, "siteLock"), v); L.cfg = v; paintProt(); toast(v.off ? "lock turned off 🔓" : "lock turned on 🔒"); } catch (e) { lkErr(e); }
+};
+$("prReset").onclick = async () => {
+  if (!confirm("reset the lock? this removes it completely (everyone can enter) and you'll pick a brand new pattern.")) return;
+  try { await remove(ref(db, "siteLock")); L.cfg = null; try { localStorage.removeItem(AK); } catch {} paintProt(); toast("lock reset"); panelOpen(false); setTimeout(() => showLock("setA", { cancel: true, note: "pick a new pattern" }), 280); } catch (e) { lkErr(e); }
+};
+lockInit();
+
 onAuthStateChanged(auth, gate);
 </script>
 </body>
