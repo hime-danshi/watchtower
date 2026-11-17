@@ -407,91 +407,6 @@ select{width:100%;padding:8px;background:#000;color:var(--tx);border:2px solid v
 :root[data-light] #ubDot{border-color:color-mix(in srgb,var(--bg) 85%,#fff)}
 :root[data-light] #loading,:root[data-light] #first,:root[data-light] #auth{background:color-mix(in srgb,var(--bg1) 96%,transparent)}
 :root[data-light] .frow:hover,:root[data-light] #ubMain:hover{background:rgba(0,0,0,.06)}
-
-/* ===== wolflock: pattern lock ===== */
-#lock{--lk:var(--glow);--cell:min(104px,24vw,17vh);position:fixed;inset:0;z-index:99999;background:#000;overflow:hidden;color:var(--tx);font-family:inherit;touch-action:none;user-select:none;-webkit-user-select:none;opacity:1;visibility:visible;transition:opacity .9s ease,visibility 0s}
-#lock.gone{opacity:0;visibility:hidden;pointer-events:none;transition:opacity 1s ease,visibility 0s 1s}
-#lock[data-s=bad]{--lk:#ef4444}#lock[data-s=ok]{--lk:#4ade80}
-.lk-shake{position:absolute;inset:-30px;display:flex;align-items:center;justify-content:center;background:radial-gradient(ellipse at 50% 42%,color-mix(in srgb,var(--lk) 16%,#000),#000 68%);transition:opacity .8s ease,background .5s}
-#lock.fadeblack .lk-shake{opacity:0}
-.lk-shake.shake{animation:lkShake .62s cubic-bezier(.36,.07,.19,.97)}
-.lk-shake.nudge{animation:lkNudge .4s ease}
-@keyframes lkShake{0%,100%{transform:none}10%{transform:translate(-26px,3px) rotate(-.8deg)}22%{transform:translate(24px,-3px) rotate(.7deg)}34%{transform:translate(-20px,2px) rotate(-.5deg)}46%{transform:translate(16px,-2px) rotate(.4deg)}58%{transform:translate(-11px,1px)}70%{transform:translate(8px,0)}82%{transform:translate(-4px,0)}}
-@keyframes lkNudge{25%{transform:translateX(-9px)}50%{transform:translateX(9px)}75%{transform:translateX(-5px)}}
-#lkFx{position:absolute;inset:0;width:100%;height:100%;pointer-events:none;z-index:1}
-.lk-glow{position:absolute;width:76vmin;height:76vmin;border-radius:50%;background:radial-gradient(circle,color-mix(in srgb,var(--lk) 38%,transparent),transparent 66%);filter:blur(28px);animation:lkGlow 5s ease-in-out infinite;pointer-events:none;transition:background .4s}
-@keyframes lkGlow{0%,100%{transform:scale(.88);opacity:.55}50%{transform:scale(1.08);opacity:1}}
-#lock[data-s=ok] .lk-glow{animation:lkFlash 1s ease-out}
-#lock[data-s=bad] .lk-glow{animation:lkFlash .6s ease-out}
-@keyframes lkFlash{0%{transform:scale(.8);opacity:.6}30%{transform:scale(1.6);opacity:1}100%{transform:scale(1.1);opacity:.8}}
-.lk-stage{position:relative;z-index:2;display:flex;flex-direction:column;align-items:center;gap:clamp(8px,2vh,16px);animation:lkIn 1.4s cubic-bezier(.2,.8,.2,1) both;text-align:center;padding:10px}
-@keyframes lkIn{from{opacity:0;transform:translateY(14px) scale(.96);filter:blur(10px)}to{opacity:1;transform:none;filter:none}}
-.lk-logo{font-size:clamp(22px,5.5vmin,36px);letter-spacing:3px;color:#fff;text-shadow:0 0 10px var(--lk),0 0 28px var(--lk);animation:lkFlick 5s infinite}
-.lk-logo span{color:var(--lk)}
-@keyframes lkFlick{0%,91%,100%{opacity:1}93%{opacity:.55}95%{opacity:1}97%{opacity:.7}}
-.lk-sub,.lk-msg{font-size:clamp(10px,2.4vmin,13px);letter-spacing:1px;min-height:1.4em;text-transform:lowercase}
-.lk-sub{opacity:.85}
-.lk-msg{color:color-mix(in srgb,var(--lk) 70%,#fff);text-shadow:0 0 10px var(--lk)}
-.pop{animation:lkTxt .45s ease both}
-@keyframes lkTxt{from{opacity:0;transform:translateY(6px);filter:blur(3px)}to{opacity:1;transform:none;filter:none}}
-.lk-wrap{position:relative;margin:clamp(22px,4.5vh,34px);opacity:0;transform:scale(.9);transition:opacity .9s .25s,transform .9s .25s cubic-bezier(.2,1.2,.4,1),filter .5s}
-#lock.ready .lk-wrap{opacity:1;transform:none}
-#lock.out .lk-wrap{opacity:.18;filter:grayscale(.7) blur(1px);pointer-events:none;transition-delay:0s}
-.lk-ring{position:absolute;inset:-28px;border-radius:50%;background:conic-gradient(from 0deg,transparent 0 55%,var(--lk));-webkit-mask:radial-gradient(farthest-side,transparent calc(100% - 3px),#000 calc(100% - 2px));mask:radial-gradient(farthest-side,transparent calc(100% - 3px),#000 calc(100% - 2px));animation:lkSpin 5s linear infinite;opacity:.7;filter:drop-shadow(0 0 7px var(--lk));pointer-events:none}
-.lk-ring.r2{inset:-14px;background:none;-webkit-mask:none;mask:none;border:1px dashed color-mix(in srgb,var(--lk) 55%,transparent);animation:lkSpin 22s linear infinite reverse;opacity:.55;filter:none}
-@keyframes lkSpin{to{transform:rotate(360deg)}}
-.lk-grid{position:relative;display:grid;grid-template-columns:repeat(3,var(--cell));grid-template-rows:repeat(3,var(--cell));touch-action:none;cursor:pointer}
-.lk-svg{position:absolute;inset:0;width:100%;height:100%;overflow:visible;pointer-events:none;z-index:0}
-.lk-svg polyline,.lk-svg line{fill:none;stroke:var(--lk);stroke-width:5;stroke-linecap:round;stroke-linejoin:round;filter:drop-shadow(0 0 5px var(--lk)) drop-shadow(0 0 13px var(--lk));transition:stroke .3s,stroke-width .3s}
-.lk-svg line{opacity:0;stroke-opacity:.55}
-#lock[data-s=ok] .lk-svg polyline{stroke:#eafff1;stroke-width:8}
-.lk-dot{position:relative;z-index:1;display:flex;align-items:center;justify-content:center;opacity:0;font-style:normal}
-#lock.ready .lk-dot{animation:lkPop .7s cubic-bezier(.2,1.7,.4,1) both;animation-delay:calc(.35s + var(--i)*65ms)}
-@keyframes lkPop{from{opacity:0;transform:scale(0) rotate(-90deg)}to{opacity:1;transform:none}}
-.lk-dot .core{display:block;width:clamp(11px,2.6vmin,17px);height:clamp(11px,2.6vmin,17px);border-radius:50%;background:var(--lk);box-shadow:0 0 10px var(--lk),0 0 26px color-mix(in srgb,var(--lk) 65%,transparent);transition:transform .3s cubic-bezier(.2,1.8,.4,1),background .3s,box-shadow .3s;animation:lkBreath 3.2s ease-in-out infinite;animation-delay:calc(var(--i)*.27s)}
-@keyframes lkBreath{0%,100%{transform:scale(.85)}50%{transform:scale(1.15)}}
-.lk-dot .halo{position:absolute;width:calc(var(--cell)*.58);height:calc(var(--cell)*.58);border-radius:50%;border:2px solid var(--lk);opacity:0;transform:scale(.3);transition:opacity .25s,transform .35s cubic-bezier(.2,1.6,.4,1),border-color .3s;box-shadow:0 0 20px var(--lk),inset 0 0 14px color-mix(in srgb,var(--lk) 60%,transparent)}
-.lk-dot.on .core{animation:none;transform:scale(1.9);background:#fff;box-shadow:0 0 14px #fff,0 0 34px var(--lk),0 0 60px var(--lk)}
-.lk-dot.on .halo{opacity:1;transform:scale(1)}
-.lk-dot .rip{position:absolute;width:20px;height:20px;border-radius:50%;border:2px solid var(--lk);pointer-events:none;animation:lkRip .75s ease-out forwards}
-@keyframes lkRip{to{transform:scale(5.5);opacity:0}}
-.lk-shock{position:absolute;left:50%;top:50%;width:30px;height:30px;margin:-15px;border-radius:50%;border:3px solid var(--lk);box-shadow:0 0 30px var(--lk),inset 0 0 30px var(--lk);pointer-events:none;animation:lkShock 1.1s ease-out forwards}
-@keyframes lkShock{to{transform:scale(22);opacity:0}}
-.lk-pips{display:flex;gap:6px;opacity:0;transition:opacity .6s .6s}
-#lock.ready .lk-pips{opacity:1}.lk-pips[hidden]{display:none}
-.lk-pips i{width:8px;height:8px;border-radius:50%;background:var(--lk);box-shadow:0 0 8px var(--lk);transition:all .4s cubic-bezier(.2,1.6,.4,1)}
-.lk-pips i.used{background:#222;box-shadow:none;transform:scale(.6);opacity:.5}
-.lk-pips.low i:not(.used){background:#ef4444;box-shadow:0 0 9px #ef4444;animation:lkBreath 1s infinite}
-.lk-count{font-size:clamp(30px,9vmin,56px);letter-spacing:4px;color:#fff;text-shadow:0 0 14px var(--lk),0 0 36px var(--lk);font-variant-numeric:tabular-nums;animation:lkBreath 2s ease-in-out infinite}.lk-count:empty{display:none}
-#lkBtn,#lkSkip{margin-top:4px;background:rgba(0,0,0,.4);border-color:color-mix(in srgb,var(--lk) 60%,transparent);box-shadow:0 0 12px color-mix(in srgb,var(--lk) 30%,transparent)}
-#lkBtn[hidden],#lkSkip[hidden]{display:none}
-body.wc-reveal .app{animation:wcIn 1.6s cubic-bezier(.2,.8,.2,1) both}
-@keyframes wcIn{from{opacity:0;transform:scale(1.025);filter:blur(10px) brightness(.35)}to{opacity:1;transform:none;filter:none}}
-/* protection tab */
-.tab[hidden]{display:none}
-#prLock{font-size:44px;text-align:center;margin:6px 0 2px;filter:drop-shadow(0 0 10px var(--glow));animation:prFloat 3s ease-in-out infinite}
-#prLock.on{filter:drop-shadow(0 0 14px #4ade80)}
-@keyframes prFloat{50%{transform:translateY(-5px) scale(1.06)}}
-#tab-protection pre{white-space:pre-wrap;font-size:10px;line-height:1.6;margin-top:8px;user-select:text;word-break:break-all}
-#tab-protection summary{cursor:pointer}
-@media(prefers-reduced-motion:reduce){.lk-ring,.lk-glow,.lk-dot .core,.lk-logo{animation:none}.lk-shake.shake{animation-duration:.01s}}
-/* site lockdown */
-#down{position:fixed;inset:0;z-index:100000;background:#000;color:#fff;display:none;flex-direction:column;align-items:center;justify-content:center;padding:28px;text-align:center}
-#down.on{display:flex;animation:pop .35s ease}
-#down .dn-in{max-width:min(640px,92vw)}
-#down h1{margin:0 0 16px;font-size:clamp(17px,3.2vw,28px);font-weight:600;line-height:1.35;word-break:break-word}
-#down ul{margin:0;padding:0;list-style:none;font-size:clamp(12px,1.8vw,15px);line-height:1.8;opacity:.75;text-align:left;display:inline-block}
-#down li{position:relative;padding-left:16px;word-break:break-word}
-#down li::before{content:"*";position:absolute;left:0}
-#dnOwner{position:absolute;bottom:18px;left:0;right:0;display:flex;gap:8px;justify-content:center;flex-wrap:wrap;opacity:.5;transition:opacity .2s}
-#dnOwner:hover{opacity:1}
-#dnOwner[hidden],#dnDot[hidden]{display:none}
-#dnDot{position:absolute;right:10px;bottom:10px;width:30px;height:30px;padding:0;border-radius:50%;background:none;border:0;color:#fff;opacity:.12;font-size:18px;cursor:pointer}
-#dnDot:hover{opacity:.7}
-#dim{position:fixed;inset:0;z-index:99998;background:rgba(0,0,0,.5);pointer-events:none;opacity:0;transition:opacity .4s}
-#dim.on{opacity:1}
-#lockedTag{align-self:center;font-size:9px;letter-spacing:.5px;opacity:.65;margin-left:-4px}
-#dnStat{line-height:1.8}
 </style>
 </head>
 <body>
@@ -879,9 +794,6 @@ const messagesRef = ref(db, "messages");
 const messagesQuery = query(messagesRef, limitToLast(100));
 const LASTFM_KEY = "c08ea0f29eef2eec1c27b99a86afe75d";
 const OWNER = "wolf";
-/* wolflock state + helpers used by account switching (full logic lives at the bottom of this script) */
-const L = { unlocked: false, cfg: null, loaded: false, rules: false, mode: "verify", first: null, path: [], drawing: false, busy: false, pt: null, prompted: false, cancel: false, timer: 0, warned: false };
-function lockPass() { try { if (L.unlocked) sessionStorage.setItem("wc_lock_pass", Date.now()); } catch {} }
 const BOOKMARKED = ["echidna", "navidson", "shirou"];
 
 const $ = id => document.getElementById(id);
